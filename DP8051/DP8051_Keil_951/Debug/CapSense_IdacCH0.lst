@@ -1,0 +1,739 @@
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE_IDACCH0
+OBJECT MODULE PLACED IN .\DP8051\DP8051_Keil_951\Debug\CapSense_IdacCH0.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\import\keil\pk51\9.51\C51\BIN\c51.exe 
+                    -Generated_Source\PSoC3\CapSense_IdacCH0.c NOIV LARGE MODDP2 OMF2 VB(1) NOIP INCDIR(.,Generated_Source\PSoC3) FF(3) DB DF
+                    -(DEBUG) WL(2) PR(.\DP8051\DP8051_Keil_951\Debug/CapSense_IdacCH0.lst) CD OT(2,SIZE) OJ(.\DP8051\DP8051_Keil_951\Debug\Ca
+                    -pSense_IdacCH0.obj)
+
+line level    source
+
+   1          /*******************************************************************************
+   2          * File Name: CapSense_IdacCH0.c
+   3          * Version 2.0
+   4          *
+   5          * Description:
+   6          *  This file provides the source code to the API for the 8-bit Current 
+   7          *  DAC (IDAC8) User Module.
+   8          *
+   9          * Note:
+  10          *  None
+  11          *
+  12          ********************************************************************************
+  13          * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+  14          * You may use this file only in accordance with the license, terms, conditions, 
+  15          * disclaimers, and limitations in the end user license agreement accompanying 
+  16          * the software package with which this file was provided.
+  17          *******************************************************************************/
+  18          
+  19          #include "cytypes.h"
+  20          #include "CapSense_IdacCH0.h"   
+  21          
+  22          #if (CY_PSOC5A)
+                  #include <CyLib.h>
+              #endif /* CY_PSOC5A */
+  25          
+  26          
+  27          uint8 CapSense_IdacCH0_initVar = 0u;
+  28          
+  29          
+  30          #if (CY_PSOC5A)
+                  static CapSense_IdacCH0_LOWPOWER_BACKUP_STRUCT  CapSense_IdacCH0_lowPowerBackup;
+              #endif /* CY_PSOC5A */
+  33          
+  34          /* Variable to decide whether or not to restore control register in Enable()
+  35             API. This valid only for PSoC5A */
+  36          #if (CY_PSOC5A)
+                  static uint8 CapSense_IdacCH0_restoreReg = 0u;
+              #endif /* CY_PSOC5A */
+  39          
+  40          
+  41          /*******************************************************************************
+  42          * Function Name: CapSense_IdacCH0_Init
+  43          ********************************************************************************
+  44          * Summary:
+  45          *  Initialize to the schematic state.
+  46          * 
+  47          * Parameters:
+  48          *  void:
+  49          *
+  50          * Return:
+  51          *  (void)
+  52          *
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 2   
+
+  53          * Theory:
+  54          *
+  55          * Side Effects:
+  56          *
+  57          *******************************************************************************/
+  58          void CapSense_IdacCH0_Init(void) 
+  59          {
+  60   1          CapSense_IdacCH0_CR0 = (CapSense_IdacCH0_MODE_I | CapSense_IdacCH0_DEFAULT_RANGE );
+  61   1      
+  62   1          /* Set default data source */
+  63   1          #if(CapSense_IdacCH0_DEFAULT_DATA_SRC != 0u )    
+                      CapSense_IdacCH0_CR1 = (CapSense_IdacCH0_DEFAULT_CNTL | CapSense_IdacCH0_DACBUS_ENABLE);
+                  #else
+  66   1              CapSense_IdacCH0_CR1 = (CapSense_IdacCH0_DEFAULT_CNTL | CapSense_IdacCH0_DACBUS_DISABLE);
+  67   1          #endif /* (CapSense_IdacCH0_DEFAULT_DATA_SRC != 0u ) */
+  68   1          
+  69   1          /*Controls polarity from UDB Control*/
+  70   1          #if(CapSense_IdacCH0_DEFAULT_POLARITY == CapSense_IdacCH0_HARDWARE_CONTROLLED)
+                      CapSense_IdacCH0_CR1 |= CapSense_IdacCH0_IDIR_SRC_UDB;
+                  #else
+  73   1              CapSense_IdacCH0_CR1 |= CapSense_IdacCH0_DEFAULT_POLARITY;
+  74   1          #endif/* (CapSense_IdacCH0_DEFAULT_POLARITY == CapSense_IdacCH0_HARDWARE_CONTROLLED) */
+  75   1          /*Controls Current Source from UDB Control*/
+  76   1          #if(CapSense_IdacCH0_HARDWARE_ENABLE != 0u ) 
+  77   1              CapSense_IdacCH0_CR1 |= CapSense_IdacCH0_IDIR_CTL_UDB;
+  78   1          #endif /* (CapSense_IdacCH0_HARDWARE_ENABLE != 0u ) */ 
+  79   1          
+  80   1          /* Set default strobe mode */
+  81   1          #if(CapSense_IdacCH0_DEFAULT_STRB != 0u)
+                      CapSense_IdacCH0_Strobe |= CapSense_IdacCH0_STRB_EN;
+                  #endif /* (CapSense_IdacCH0_DEFAULT_STRB != 0u) */
+  84   1          
+  85   1          /* Set default speed */
+  86   1          CapSense_IdacCH0_SetSpeed(CapSense_IdacCH0_DEFAULT_SPEED);
+  87   1          
+  88   1          /* Set proper DAC trim */
+  89   1          CapSense_IdacCH0_DacTrim();
+  90   1          
+  91   1      }
+  92          
+  93          
+  94          /*******************************************************************************
+  95          * Function Name: CapSense_IdacCH0_Enable
+  96          ********************************************************************************
+  97          * Summary:
+  98          *  Enable the IDAC8
+  99          * 
+ 100          * Parameters:
+ 101          *  void:
+ 102          *
+ 103          * Return:
+ 104          *  (void)
+ 105          *
+ 106          * Theory:
+ 107          *
+ 108          * Side Effects:
+ 109          *
+ 110          *******************************************************************************/
+ 111          void CapSense_IdacCH0_Enable(void) 
+ 112          {
+ 113   1          CapSense_IdacCH0_PWRMGR |= CapSense_IdacCH0_ACT_PWR_EN;
+ 114   1          CapSense_IdacCH0_STBY_PWRMGR |= CapSense_IdacCH0_STBY_PWR_EN;
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 3   
+
+ 115   1      
+ 116   1          /* This is to restore the value of register CR0 which is saved 
+ 117   1            in prior to the modification in stop() API */
+ 118   1          #if (CY_PSOC5A)
+                      if(CapSense_IdacCH0_restoreReg == 1u)
+                      {
+                          CapSense_IdacCH0_CR0 = CapSense_IdacCH0_lowPowerBackup.DACCR0Reg;
+              
+                          /* Clear the flag */
+                          CapSense_IdacCH0_restoreReg = 0u;
+                      }
+                  #endif /* CY_PSOC5A */
+ 127   1      }
+ 128          
+ 129          
+ 130          /*******************************************************************************
+ 131          * Function Name: CapSense_IdacCH0_Start
+ 132          ********************************************************************************
+ 133          * Summary:
+ 134          *  Set power level then turn on IDAC8.
+ 135          *
+ 136          * Parameters:  
+ 137          *  power: Sets power level between off (0) and (3) high power
+ 138          *
+ 139          * Return:
+ 140          *  (void)
+ 141          *
+ 142          * Global variables:
+ 143          *  CapSense_IdacCH0_initVar: Is modified when this function is called for 
+ 144          *   the first time. Is used to ensure that initialization happens only once.
+ 145          *
+ 146          *******************************************************************************/
+ 147          void CapSense_IdacCH0_Start(void) 
+ 148          {
+ 149   1          /* Hardware initiazation only needs to occur the first time */
+ 150   1          if ( CapSense_IdacCH0_initVar == 0u)  
+ 151   1          {
+ 152   2              CapSense_IdacCH0_Init();
+ 153   2              
+ 154   2              CapSense_IdacCH0_initVar = 1u;
+ 155   2          }
+ 156   1         
+ 157   1          /* Enable power to DAC */
+ 158   1          CapSense_IdacCH0_Enable();
+ 159   1      
+ 160   1          /* Set default value */
+ 161   1          CapSense_IdacCH0_SetValue(CapSense_IdacCH0_DEFAULT_DATA);
+ 162   1      
+ 163   1      }
+ 164          
+ 165          
+ 166          /*******************************************************************************
+ 167          * Function Name: CapSense_IdacCH0_Stop
+ 168          ********************************************************************************
+ 169          * Summary:
+ 170          *  Powers down IDAC8 to lowest power state.
+ 171          *
+ 172          * Parameters:
+ 173          *  (void)
+ 174          *
+ 175          * Return:
+ 176          *  (void)
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 4   
+
+ 177          *
+ 178          * Theory:
+ 179          *
+ 180          * Side Effects:
+ 181          *
+ 182          *******************************************************************************/
+ 183          void CapSense_IdacCH0_Stop(void) 
+ 184          {
+ 185   1          /* Disble power to DAC */
+ 186   1          CapSense_IdacCH0_PWRMGR &= (uint8)(~CapSense_IdacCH0_ACT_PWR_EN);
+ 187   1          CapSense_IdacCH0_STBY_PWRMGR &= (uint8)(~CapSense_IdacCH0_STBY_PWR_EN);
+ 188   1          
+ 189   1          #if (CY_PSOC5A)
+                  
+                      /* Set the global variable  */
+                      CapSense_IdacCH0_restoreReg = 1u;
+              
+                      /* Save the control register and then Clear it. */
+                      CapSense_IdacCH0_lowPowerBackup.DACCR0Reg = CapSense_IdacCH0_CR0;
+                      CapSense_IdacCH0_CR0 = (CapSense_IdacCH0_MODE_I | CapSense_IdacCH0_RANGE_3 | CapSense_IdacCH0_HS_H
+             -IGHSPEED);
+                  #endif /* CY_PSOC5A */
+ 198   1      }
+ 199          
+ 200          
+ 201          /*******************************************************************************
+ 202          * Function Name: CapSense_IdacCH0_SetSpeed
+ 203          ********************************************************************************
+ 204          * Summary:
+ 205          *  Set DAC speed
+ 206          *
+ 207          * Parameters:
+ 208          *  power: Sets speed value
+ 209          *
+ 210          * Return:
+ 211          *  (void)
+ 212          *
+ 213          * Theory:
+ 214          *
+ 215          * Side Effects:
+ 216          *
+ 217          *******************************************************************************/
+ 218          void CapSense_IdacCH0_SetSpeed(uint8 speed) 
+ 219          {
+ 220   1          /* Clear power mask then write in new value */
+ 221   1          CapSense_IdacCH0_CR0 &= (uint8)(~CapSense_IdacCH0_HS_MASK);
+ 222   1          CapSense_IdacCH0_CR0 |=  ( speed & CapSense_IdacCH0_HS_MASK);
+ 223   1      }
+ 224          
+ 225          
+ 226          /*******************************************************************************
+ 227          * Function Name: CapSense_IdacCH0_SetPolarity
+ 228          ********************************************************************************
+ 229          * Summary:
+ 230          *  Sets IDAC to Sink or Source current.
+ 231          *  
+ 232          * Parameters:
+ 233          *  Polarity: Sets the IDAC to Sink or Source 
+ 234          *  0x00 - Source
+ 235          *  0x04 - Sink
+ 236          *
+ 237          * Return:
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 5   
+
+ 238          *  (void)
+ 239          *
+ 240          * Theory:
+ 241          *
+ 242          * Side Effects:
+ 243          *
+ 244          *******************************************************************************/
+ 245          #if(CapSense_IdacCH0_DEFAULT_POLARITY != CapSense_IdacCH0_HARDWARE_CONTROLLED)
+ 246              void CapSense_IdacCH0_SetPolarity(uint8 polarity) 
+ 247              {
+ 248   1              CapSense_IdacCH0_CR1 &= (uint8)(~CapSense_IdacCH0_IDIR_MASK);                /* clear polarity bit
+             - */
+ 249   1              CapSense_IdacCH0_CR1 |= (polarity & CapSense_IdacCH0_IDIR_MASK);             /* set new value */
+ 250   1          
+ 251   1              CapSense_IdacCH0_DacTrim();
+ 252   1          }
+ 253          #endif/*(CapSense_IdacCH0_DEFAULT_POLARITY != CapSense_IdacCH0_HARDWARE_CONTROLLED)*/
+ 254          
+ 255          
+ 256          /*******************************************************************************
+ 257          * Function Name: CapSense_IdacCH0_SetRange
+ 258          ********************************************************************************
+ 259          * Summary:
+ 260          *  Set current range
+ 261          *
+ 262          * Parameters:
+ 263          *  Range: Sets on of four valid ranges.
+ 264          *
+ 265          * Return:
+ 266          *  (void)
+ 267          *
+ 268          * Theory:
+ 269          *
+ 270          * Side Effects:
+ 271          *
+ 272          *******************************************************************************/
+ 273          void CapSense_IdacCH0_SetRange(uint8 range) 
+ 274          {
+ 275   1          CapSense_IdacCH0_CR0 &= (uint8)(~CapSense_IdacCH0_RANGE_MASK);       /* Clear existing mode */
+ 276   1          CapSense_IdacCH0_CR0 |= ( range & CapSense_IdacCH0_RANGE_MASK );     /*  Set Range  */
+ 277   1          CapSense_IdacCH0_DacTrim();
+ 278   1      }
+ 279          
+ 280          
+ 281          /*******************************************************************************
+ 282          * Function Name: CapSense_IdacCH0_SetValue
+ 283          ********************************************************************************
+ 284          * Summary:
+ 285          *  Set DAC value
+ 286          *
+ 287          * Parameters:
+ 288          *  value: Sets DAC value between 0 and 255.
+ 289          *
+ 290          * Return:
+ 291          *  (void)
+ 292          *
+ 293          * Theory:
+ 294          *
+ 295          * Side Effects:
+ 296          *
+ 297          *******************************************************************************/
+ 298          void CapSense_IdacCH0_SetValue(uint8 value) 
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 6   
+
+ 299          {
+ 300   1      
+ 301   1          #if (CY_PSOC5A)
+                      uint8 CapSense_IdacCH0_intrStatus = CyEnterCriticalSection();
+                  #endif /* CY_PSOC5A */
+ 304   1      
+ 305   1          CapSense_IdacCH0_Data = value;         /*  Set Value  */
+ 306   1          
+ 307   1          /* PSOC5A silicons require a double write */
+ 308   1          #if (CY_PSOC5A)
+                      CapSense_IdacCH0_Data = value;
+                      CyExitCriticalSection(CapSense_IdacCH0_intrStatus);
+                  #endif /* CY_PSOC5A */
+ 312   1      }
+ 313          
+ 314          
+ 315          /*******************************************************************************
+ 316          * Function Name: CapSense_IdacCH0_DacTrim
+ 317          ********************************************************************************
+ 318          * Summary:
+ 319          *  Set the trim value for the given range.
+ 320          *
+ 321          * Parameters:
+ 322          *  None
+ 323          *
+ 324          * Return:
+ 325          *  (void) 
+ 326          *
+ 327          * Theory:
+ 328          *  Trim values for the IDAC blocks are stored in the "Customer Table" area in 
+ 329          *  Row 1 of the Hidden Flash.  There are 8 bytes of trim data for each 
+ 330          *  IDAC block.
+ 331          *  The values are:
+ 332          *       I Gain offset, min range, Sourcing
+ 333          *       I Gain offset, min range, Sinking
+ 334          *       I Gain offset, med range, Sourcing
+ 335          *       I Gain offset, med range, Sinking
+ 336          *       I Gain offset, max range, Sourcing
+ 337          *       I Gain offset, max range, Sinking
+ 338          *       V Gain offset, 1V range
+ 339          *       V Gain offset, 4V range
+ 340          *
+ 341          * Side Effects:
+ 342          *
+ 343          *******************************************************************************/
+ 344          void CapSense_IdacCH0_DacTrim(void) 
+ 345          {
+ 346   1          uint8 mode;
+ 347   1      
+ 348   1          mode = ((CapSense_IdacCH0_CR0 & CapSense_IdacCH0_RANGE_MASK) >> 1u);
+ 349   1          
+ 350   1          if((CapSense_IdacCH0_IDIR_MASK & CapSense_IdacCH0_CR1) == CapSense_IdacCH0_IDIR_SINK)
+ 351   1          {
+ 352   2              mode++;
+ 353   2          }
+ 354   1      
+ 355   1          CapSense_IdacCH0_TR = CY_GET_XTND_REG8((uint8 *)(CapSense_IdacCH0_DAC_TRIM_BASE + mode));
+ 356   1      }
+ 357          
+ 358          
+ 359          /* [] END OF FILE */
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 7   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+             ; FUNCTION CapSense_IdacCH0_Init (BEGIN)
+                                           ; SOURCE LINE # 58
+                                           ; SOURCE LINE # 59
+                                           ; SOURCE LINE # 60
+0000 905824            MOV     DPTR,#05824H
+0003 7414              MOV     A,#014H
+0005 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 66
+0006 905825            MOV     DPTR,#05825H
+0009 E4                CLR     A
+000A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 73
+000B 905825            MOV     DPTR,#05825H
+000E E0                MOVX    A,@DPTR
+000F FF                MOV     R7,A
+0010 EF                MOV     A,R7
+0011 4404              ORL     A,#04H
+0013 FF                MOV     R7,A
+0014 EF                MOV     A,R7
+0015 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 77
+0016 905825            MOV     DPTR,#05825H
+0019 E0                MOVX    A,@DPTR
+001A FF                MOV     R7,A
+001B EF                MOV     A,R7
+001C 4402              ORL     A,#02H
+001E FF                MOV     R7,A
+001F EF                MOV     A,R7
+0020 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 86
+0021 7F00              MOV     R7,#00H
+0023 7E00              MOV     R6,#00H
+0025 120000      R     LCALL   _CapSense_IdacCH0_SetSpeed
+                                           ; SOURCE LINE # 89
+0028 120000      R     LCALL   CapSense_IdacCH0_DacTrim
+                                           ; SOURCE LINE # 91
+002B 22                RET     
+             ; FUNCTION CapSense_IdacCH0_Init (END)
+
+             ; FUNCTION CapSense_IdacCH0_Enable (BEGIN)
+                                           ; SOURCE LINE # 111
+                                           ; SOURCE LINE # 112
+                                           ; SOURCE LINE # 113
+0000 9043A8            MOV     DPTR,#043A8H
+0003 E0                MOVX    A,@DPTR
+0004 FF                MOV     R7,A
+0005 EF                MOV     A,R7
+0006 4402              ORL     A,#02H
+0008 FF                MOV     R7,A
+0009 EF                MOV     A,R7
+000A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 114
+000B 9043B8            MOV     DPTR,#043B8H
+000E E0                MOVX    A,@DPTR
+000F FF                MOV     R7,A
+0010 EF                MOV     A,R7
+0011 4402              ORL     A,#02H
+0013 FF                MOV     R7,A
+0014 EF                MOV     A,R7
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 8   
+
+0015 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 127
+0016 22                RET     
+             ; FUNCTION CapSense_IdacCH0_Enable (END)
+
+             ; FUNCTION CapSense_IdacCH0_Start (BEGIN)
+                                           ; SOURCE LINE # 147
+                                           ; SOURCE LINE # 148
+                                           ; SOURCE LINE # 150
+0000 900000      R     MOV     DPTR,#CapSense_IdacCH0_initVar
+0003 E0                MOVX    A,@DPTR
+0004 FF                MOV     R7,A
+0005 EF                MOV     A,R7
+0006 7009              JNZ     ?C0003
+                                           ; SOURCE LINE # 151
+                                           ; SOURCE LINE # 152
+0008 120000      R     LCALL   CapSense_IdacCH0_Init
+                                           ; SOURCE LINE # 154
+000B 900000      R     MOV     DPTR,#CapSense_IdacCH0_initVar
+000E 7401              MOV     A,#01H
+0010 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 155
+0011         ?C0003:
+                                           ; SOURCE LINE # 158
+0011 120000      R     LCALL   CapSense_IdacCH0_Enable
+                                           ; SOURCE LINE # 161
+0014 7F00              MOV     R7,#00H
+0016 120000      R     LCALL   _CapSense_IdacCH0_SetValue
+                                           ; SOURCE LINE # 163
+0019 22                RET     
+             ; FUNCTION CapSense_IdacCH0_Start (END)
+
+             ; FUNCTION CapSense_IdacCH0_Stop (BEGIN)
+                                           ; SOURCE LINE # 183
+                                           ; SOURCE LINE # 184
+                                           ; SOURCE LINE # 186
+0000 9043A8            MOV     DPTR,#043A8H
+0003 E0                MOVX    A,@DPTR
+0004 FF                MOV     R7,A
+0005 EF                MOV     A,R7
+0006 54FD              ANL     A,#0FDH
+0008 FF                MOV     R7,A
+0009 EF                MOV     A,R7
+000A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 187
+000B 9043B8            MOV     DPTR,#043B8H
+000E E0                MOVX    A,@DPTR
+000F FF                MOV     R7,A
+0010 EF                MOV     A,R7
+0011 54FD              ANL     A,#0FDH
+0013 FF                MOV     R7,A
+0014 EF                MOV     A,R7
+0015 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 198
+0016 22                RET     
+             ; FUNCTION CapSense_IdacCH0_Stop (END)
+
+             ; FUNCTION _CapSense_IdacCH0_SetSpeed (BEGIN)
+                                           ; SOURCE LINE # 218
+0000 900000      R     MOV     DPTR,#speed
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 9   
+
+                                           ; SOURCE LINE # 219
+                                           ; SOURCE LINE # 221
+0005 905824            MOV     DPTR,#05824H
+0008 E0                MOVX    A,@DPTR
+0009 FF                MOV     R7,A
+000A EF                MOV     A,R7
+000B 54FD              ANL     A,#0FDH
+000D FF                MOV     R7,A
+000E EF                MOV     A,R7
+000F F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 222
+0010 905824            MOV     DPTR,#05824H
+0013 C083              PUSH    DPH
+0015 C082              PUSH    DPL
+0017 E0                MOVX    A,@DPTR
+0018 FF                MOV     R7,A
+0019 900000      R     MOV     DPTR,#speed
+001C E0                MOVX    A,@DPTR
+001D FE                MOV     R6,A
+001E EE                MOV     A,R6
+001F 5402              ANL     A,#02H
+0021 FE                MOV     R6,A
+0022 EF                MOV     A,R7
+0023 4E                ORL     A,R6
+0024 FF                MOV     R7,A
+0025 D082              POP     DPL
+0027 D083              POP     DPH
+0029 EF                MOV     A,R7
+002A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 223
+002B 22                RET     
+             ; FUNCTION _CapSense_IdacCH0_SetSpeed (END)
+
+             ; FUNCTION _CapSense_IdacCH0_SetPolarity (BEGIN)
+                                           ; SOURCE LINE # 246
+0000 900000      R     MOV     DPTR,#polarity
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 247
+                                           ; SOURCE LINE # 248
+0005 905825            MOV     DPTR,#05825H
+0008 E0                MOVX    A,@DPTR
+0009 FF                MOV     R7,A
+000A EF                MOV     A,R7
+000B 54FB              ANL     A,#0FBH
+000D FF                MOV     R7,A
+000E EF                MOV     A,R7
+000F F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 249
+0010 905825            MOV     DPTR,#05825H
+0013 C083              PUSH    DPH
+0015 C082              PUSH    DPL
+0017 E0                MOVX    A,@DPTR
+0018 FF                MOV     R7,A
+0019 900000      R     MOV     DPTR,#polarity
+001C E0                MOVX    A,@DPTR
+001D FE                MOV     R6,A
+001E EE                MOV     A,R6
+001F 5404              ANL     A,#04H
+0021 FE                MOV     R6,A
+0022 EF                MOV     A,R7
+0023 4E                ORL     A,R6
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 10  
+
+0024 FF                MOV     R7,A
+0025 D082              POP     DPL
+0027 D083              POP     DPH
+0029 EF                MOV     A,R7
+002A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 251
+002B 120000      R     LCALL   CapSense_IdacCH0_DacTrim
+                                           ; SOURCE LINE # 252
+002E 22                RET     
+             ; FUNCTION _CapSense_IdacCH0_SetPolarity (END)
+
+             ; FUNCTION _CapSense_IdacCH0_SetRange (BEGIN)
+                                           ; SOURCE LINE # 273
+0000 900000      R     MOV     DPTR,#range
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 274
+                                           ; SOURCE LINE # 275
+0005 905824            MOV     DPTR,#05824H
+0008 E0                MOVX    A,@DPTR
+0009 FF                MOV     R7,A
+000A EF                MOV     A,R7
+000B 54F3              ANL     A,#0F3H
+000D FF                MOV     R7,A
+000E EF                MOV     A,R7
+000F F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 276
+0010 905824            MOV     DPTR,#05824H
+0013 C083              PUSH    DPH
+0015 C082              PUSH    DPL
+0017 E0                MOVX    A,@DPTR
+0018 FF                MOV     R7,A
+0019 900000      R     MOV     DPTR,#range
+001C E0                MOVX    A,@DPTR
+001D FE                MOV     R6,A
+001E EE                MOV     A,R6
+001F 540C              ANL     A,#0CH
+0021 FE                MOV     R6,A
+0022 EF                MOV     A,R7
+0023 4E                ORL     A,R6
+0024 FF                MOV     R7,A
+0025 D082              POP     DPL
+0027 D083              POP     DPH
+0029 EF                MOV     A,R7
+002A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 277
+002B 120000      R     LCALL   CapSense_IdacCH0_DacTrim
+                                           ; SOURCE LINE # 278
+002E 22                RET     
+             ; FUNCTION _CapSense_IdacCH0_SetRange (END)
+
+             ; FUNCTION _CapSense_IdacCH0_SetValue (BEGIN)
+                                           ; SOURCE LINE # 298
+0000 900000      R     MOV     DPTR,#value
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 299
+                                           ; SOURCE LINE # 305
+0005 900000      R     MOV     DPTR,#value
+0008 E0                MOVX    A,@DPTR
+0009 FF                MOV     R7,A
+000A 905B81            MOV     DPTR,#05B81H
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 11  
+
+000D EF                MOV     A,R7
+000E F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 312
+000F 22                RET     
+             ; FUNCTION _CapSense_IdacCH0_SetValue (END)
+
+             ; FUNCTION CapSense_IdacCH0_DacTrim (BEGIN)
+                                           ; SOURCE LINE # 344
+                                           ; SOURCE LINE # 345
+                                           ; SOURCE LINE # 348
+0000 905824            MOV     DPTR,#05824H
+0003 E0                MOVX    A,@DPTR
+0004 FF                MOV     R7,A
+0005 EF                MOV     A,R7
+0006 540C              ANL     A,#0CH
+0008 FF                MOV     R7,A
+0009 7E00              MOV     R6,#00H
+000B EE                MOV     A,R6
+000C C3                CLR     C
+000D 13                RRC     A
+000E FE                MOV     R6,A
+000F EF                MOV     A,R7
+0010 13                RRC     A
+0011 FF                MOV     R7,A
+0012 900000      R     MOV     DPTR,#mode
+0015 EF                MOV     A,R7
+0016 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 350
+0017 905825            MOV     DPTR,#05825H
+001A E0                MOVX    A,@DPTR
+001B FF                MOV     R7,A
+001C EF                MOV     A,R7
+001D 5404              ANL     A,#04H
+001F FF                MOV     R7,A
+0020 7E00              MOV     R6,#00H
+0022 EF                MOV     A,R7
+0023 6404              XRL     A,#04H
+0025 4E                ORL     A,R6
+0026 7006              JNZ     ?C0010
+                                           ; SOURCE LINE # 351
+                                           ; SOURCE LINE # 352
+0028 900000      R     MOV     DPTR,#mode
+002B E0                MOVX    A,@DPTR
+002C 04                INC     A
+002D F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 353
+002E         ?C0010:
+                                           ; SOURCE LINE # 355
+002E 900000      R     MOV     DPTR,#mode
+0031 E0                MOVX    A,@DPTR
+0032 FF                MOV     R7,A
+0033 E4                CLR     A
+0034 FC                MOV     R4,A
+0035 FD                MOV     R5,A
+0036 FE                MOV     R6,A
+0037 EF                MOV     A,R7
+0038 2430              ADD     A,#030H
+003A FF                MOV     R7,A
+003B EE                MOV     A,R6
+003C 3401              ADDC    A,#01H
+003E FE                MOV     R6,A
+003F ED                MOV     A,R5
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 12  
+
+0040 340C              ADDC    A,#0CH
+0042 FD                MOV     R5,A
+0043 EC                MOV     A,R4
+0044 3400              ADDC    A,#00H
+0046 FC                MOV     R4,A
+0047 A907              MOV     R1,AR7
+0049 AA06              MOV     R2,AR6
+004B AB05              MOV     R3,AR5
+004D 120000      E     LCALL   _cyread8
+0050 904609            MOV     DPTR,#04609H
+0053 EF                MOV     A,R7
+0054 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 356
+0055 22                RET     
+             ; FUNCTION CapSense_IdacCH0_DacTrim (END)
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    356    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      1       5
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

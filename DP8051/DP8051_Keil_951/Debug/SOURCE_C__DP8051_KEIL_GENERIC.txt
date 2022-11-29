@@ -1,0 +1,1 @@
+'C:\Users\Asus\Documents\PSoC Creator\Lab3.cydsn\main.c' -o .obj -T SOURCE_C__DP8051_KEIL_GENERIC -I 'C:\Users\Asus\Documents\PSoC Creator\Lab3.cydsn' -I 'C:\Users\Asus\Documents\PSoC Creator\Lab3.cydsn\Generated_Source\PSoC3' -f 'C:\Users\Asus\Documents\PSoC Creator\Lab3.cydsn\DP8051\DP8051_Keil_951\Debug\.deps\SOURCE_C__DP8051_KEIL_GENERIC.d'

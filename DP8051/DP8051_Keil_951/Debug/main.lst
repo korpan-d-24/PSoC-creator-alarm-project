@@ -1,0 +1,305 @@
+C51 COMPILER V9.51   MAIN                                                                  11/29/2022 16:49:59 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\DP8051\DP8051_Keil_951\Debug\main.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\import\keil\pk51\9.51\C51\BIN\c51.exe 
+                    -main.c NOIV LARGE MODDP2 OMF2 VB(1) NOIP INCDIR(.,Generated_Source\PSoC3) FF(3) DB DF(DEBUG) WL(2) PR(.\DP8051\DP8051_Ke
+                    -il_951\Debug/main.lst) CD OT(2,SIZE) OJ(.\DP8051\DP8051_Keil_951\Debug\main.obj)
+
+line level    source
+
+   1          #include "project.h"
+   2          
+   3          /* Needed for Bargraph */
+   4          extern uint8 const CYCODE LCD_customFonts[];
+   5          uint16 curPos = 0u;
+   6          uint16 maxPos = 16u;
+   7          int IsInfected = 0;
+   8          int Is = 5000;
+   9          int n = 0;
+  10          void CapSense_DisplayState(void)
+  11             {
+  12   1          /* Display BUTTON0 state */
+  13   1      
+  14   1          if (CapSense_CheckIsWidgetActive (CapSense_BUTTON0__BTN))
+  15   1          {
+  16   2         
+  17   2              Pin_1_Write(1u);
+  18   2          }
+  19   1          else
+  20   1          {
+  21   2              Pin_1_Write(0u);
+  22   2          }
+  23   1          /* Display BUTTON1 state */
+  24   1          if (CapSense_CheckIsWidgetActive(CapSense_BUTTON1__BTN))
+  25   1          {
+  26   2              Pin_2_Write(0u);
+  27   2              IsInfected = 1;
+  28   2              curPos = 0u;
+  29   2          }
+  30   1          else
+  31   1          {
+  32   2              IsInfected = 0;
+  33   2          }
+  34   1          /* Find Slider Position */
+  35   1          if(IsInfected == 0)
+  36   1          {
+  37   2              curPos++;//CapSense_GetCentroidPos(CapSense_LINEARSLIDER0__LS);//curPos + 1;//
+  38   2              if(curPos == 160u)
+  39   2              {
+  40   3                  Pin_2_Write(1u);
+  41   3              }
+  42   2              LCD_DrawHorizontalBG(0u, 0u, 16u, curPos >> 1);
+  43   2              CyDelay(100);
+  44   2          }
+  45   1          
+  46   1          
+  47   1      }
+  48          
+  49          int main(void)
+  50          {
+  51   1          CyGlobalIntEnable; /* Enable global interrupts. */
+  52   1      
+  53   1          /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+C51 COMPILER V9.51   MAIN                                                                  11/29/2022 16:49:59 PAGE 2   
+
+  54   1          LCD_Start();
+  55   1          CapSense_Start();
+  56   1          LCD_LoadCustomFonts(LCD_customFonts);
+  57   1      
+  58   1          LCD_Position(1u, 0u);
+  59   1          LCD_PrintString("Korpan");
+  60   1      
+  61   1          /* Initialize baselines */
+  62   1          CapSense_InitializeAllBaselines();
+  63   1      
+  64   1          
+  65   1          while(1u)
+  66   1          {
+  67   2              /* Check whether the scanning of all enabled widgets is completed. */
+  68   2              if(0u == CapSense_IsBusy())
+  69   2              {
+  70   3                  /* Update all baselines */
+  71   3                  CapSense_UpdateEnabledBaselines();
+  72   3      
+  73   3                  /* Start scanning all enabled sensors */
+  74   3                  CapSense_ScanEnabledWidgets();
+  75   3              }
+  76   2      
+  77   2              /* Display CapSense state using LED/LCD */
+  78   2              CapSense_DisplayState();
+  79   2          }
+  80   1      
+  81   1      
+  82   1          for(;;)
+  83   1          {
+  84   2              /* Place your application code here. */
+  85   2          }
+  86   1      }
+C51 COMPILER V9.51   MAIN                                                                  11/29/2022 16:49:59 PAGE 3   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+             ; FUNCTION CapSense_DisplayState (BEGIN)
+                                           ; SOURCE LINE # 10
+                                           ; SOURCE LINE # 11
+                                           ; SOURCE LINE # 14
+0000 7F01              MOV     R7,#01H
+0002 120000      E     LCALL   _CapSense_CheckIsWidgetActive
+0005 EF                MOV     A,R7
+0006 6007              JZ      ?C0001
+                                           ; SOURCE LINE # 15
+                                           ; SOURCE LINE # 17
+0008 7F01              MOV     R7,#01H
+000A 120000      E     LCALL   _Pin_1_Write
+                                           ; SOURCE LINE # 18
+000D 8005              SJMP    ?C0002
+000F         ?C0001:
+                                           ; SOURCE LINE # 20
+                                           ; SOURCE LINE # 21
+000F 7F00              MOV     R7,#00H
+0011 120000      E     LCALL   _Pin_1_Write
+                                           ; SOURCE LINE # 22
+0014         ?C0002:
+                                           ; SOURCE LINE # 24
+0014 7F02              MOV     R7,#02H
+0016 120000      E     LCALL   _CapSense_CheckIsWidgetActive
+0019 EF                MOV     A,R7
+001A 6018              JZ      ?C0003
+                                           ; SOURCE LINE # 25
+                                           ; SOURCE LINE # 26
+001C 7F00              MOV     R7,#00H
+001E 120000      E     LCALL   _Pin_2_Write
+                                           ; SOURCE LINE # 27
+0021 900000      R     MOV     DPTR,#IsInfected
+0024 E4                CLR     A
+0025 F0                MOVX    @DPTR,A
+0026 A3                INC     DPTR
+0027 7401              MOV     A,#01H
+0029 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 28
+002A 900000      R     MOV     DPTR,#curPos
+002D E4                CLR     A
+002E F0                MOVX    @DPTR,A
+002F A3                INC     DPTR
+0030 E4                CLR     A
+0031 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 29
+0032 8008              SJMP    ?C0004
+0034         ?C0003:
+                                           ; SOURCE LINE # 31
+                                           ; SOURCE LINE # 32
+0034 900000      R     MOV     DPTR,#IsInfected
+0037 E4                CLR     A
+0038 F0                MOVX    @DPTR,A
+0039 A3                INC     DPTR
+003A E4                CLR     A
+003B F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 33
+003C         ?C0004:
+                                           ; SOURCE LINE # 35
+003C 900000      R     MOV     DPTR,#IsInfected
+C51 COMPILER V9.51   MAIN                                                                  11/29/2022 16:49:59 PAGE 4   
+
+003F E0                MOVX    A,@DPTR
+0040 FE                MOV     R6,A
+0041 A3                INC     DPTR
+0042 E0                MOVX    A,@DPTR
+0043 FF                MOV     R7,A
+0044 EF                MOV     A,R7
+0045 4E                ORL     A,R6
+0046 7045              JNZ     ?C0007
+                                           ; SOURCE LINE # 36
+                                           ; SOURCE LINE # 37
+0048 900000      R     MOV     DPTR,#curPos
+004B E4                CLR     A
+004C 75F001            MOV     B,#01H
+004F 120000      E     LCALL   ?C?IILDX
+                                           ; SOURCE LINE # 38
+0052 900000      R     MOV     DPTR,#curPos
+0055 E0                MOVX    A,@DPTR
+0056 FE                MOV     R6,A
+0057 A3                INC     DPTR
+0058 E0                MOVX    A,@DPTR
+0059 FF                MOV     R7,A
+005A EF                MOV     A,R7
+005B 64A0              XRL     A,#0A0H
+005D 4E                ORL     A,R6
+005E 7005              JNZ     ?C0006
+                                           ; SOURCE LINE # 39
+                                           ; SOURCE LINE # 40
+0060 7F01              MOV     R7,#01H
+0062 120000      E     LCALL   _Pin_2_Write
+                                           ; SOURCE LINE # 41
+0065         ?C0006:
+                                           ; SOURCE LINE # 42
+0065 900000      R     MOV     DPTR,#curPos
+0068 E0                MOVX    A,@DPTR
+0069 FE                MOV     R6,A
+006A A3                INC     DPTR
+006B E0                MOVX    A,@DPTR
+006C FF                MOV     R7,A
+006D EE                MOV     A,R6
+006E C3                CLR     C
+006F 13                RRC     A
+0070 FE                MOV     R6,A
+0071 EF                MOV     A,R7
+0072 13                RRC     A
+0073 FF                MOV     R7,A
+0074 900000      E     MOV     DPTR,#?_LCD_DrawHorizontalBG?BYTE+03H
+0077 EF                MOV     A,R7
+0078 F0                MOVX    @DPTR,A
+0079 7B10              MOV     R3,#010H
+007B 7D00              MOV     R5,#00H
+007D 7F00              MOV     R7,#00H
+007F 120000      E     LCALL   _LCD_DrawHorizontalBG
+                                           ; SOURCE LINE # 43
+0082 7F64              MOV     R7,#064H
+0084 7E00              MOV     R6,#00H
+0086 7D00              MOV     R5,#00H
+0088 7C00              MOV     R4,#00H
+008A 120000      E     LCALL   _?CyDelay
+                                           ; SOURCE LINE # 44
+                                           ; SOURCE LINE # 47
+008D         ?C0007:
+008D 22                RET     
+C51 COMPILER V9.51   MAIN                                                                  11/29/2022 16:49:59 PAGE 5   
+
+             ; FUNCTION CapSense_DisplayState (END)
+
+             ; FUNCTION main (BEGIN)
+                                           ; SOURCE LINE # 49
+                                           ; SOURCE LINE # 50
+                                           ; SOURCE LINE # 51
+0000 D2AF              SETB    EA
+0002 9044F4            MOV     DPTR,#044F4H
+0005 74FD              MOV     A,#0FDH
+0007 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 54
+0008 120000      E     LCALL   LCD_Start
+                                           ; SOURCE LINE # 55
+000B 120000      E     LCALL   CapSense_Start
+                                           ; SOURCE LINE # 56
+000E 7BFF              MOV     R3,#0FFH
+0010 7A00        E     MOV     R2,#HIGH LCD_customFonts
+0012 7900        E     MOV     R1,#LOW LCD_customFonts
+0014 120000      E     LCALL   _LCD_LoadCustomFonts
+                                           ; SOURCE LINE # 58
+0017 7D00              MOV     R5,#00H
+0019 7F01              MOV     R7,#01H
+001B 120000      E     LCALL   _LCD_Position
+                                           ; SOURCE LINE # 59
+001E 7BFF              MOV     R3,#0FFH
+0020 7A00        R     MOV     R2,#HIGH ?SC_0
+0022 7900        R     MOV     R1,#LOW ?SC_0
+0024 120000      E     LCALL   _LCD_PrintString
+                                           ; SOURCE LINE # 62
+0027 120000      E     LCALL   CapSense_InitializeAllBaselines
+002A         ?C0008:
+                                           ; SOURCE LINE # 65
+                                           ; SOURCE LINE # 66
+                                           ; SOURCE LINE # 68
+002A 120000      E     LCALL   CapSense_IsBusy
+002D EF                MOV     A,R7
+002E 7006              JNZ     ?C0010
+                                           ; SOURCE LINE # 69
+                                           ; SOURCE LINE # 71
+0030 120000      E     LCALL   CapSense_UpdateEnabledBaselines
+                                           ; SOURCE LINE # 74
+0033 120000      E     LCALL   CapSense_ScanEnabledWidgets
+                                           ; SOURCE LINE # 75
+0036         ?C0010:
+                                           ; SOURCE LINE # 78
+0036 120000      R     LCALL   CapSense_DisplayState
+                                           ; SOURCE LINE # 79
+0039 80EF              SJMP    ?C0008
+                                           ; SOURCE LINE # 82
+003B         ?C0011:
+                                           ; SOURCE LINE # 83
+                                           ; SOURCE LINE # 85
+003B 80FE              SJMP    ?C0011
+003D 22                RET     
+             ; FUNCTION main (END)
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    204    ----
+   CONSTANT SIZE    =      7    ----
+   XDATA SIZE       =     10    ----
+C51 COMPILER V9.51   MAIN                                                                  11/29/2022 16:49:59 PAGE 6   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

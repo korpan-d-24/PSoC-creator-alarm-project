@@ -1,0 +1,2200 @@
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE CYFLASH
+OBJECT MODULE PLACED IN .\DP8051\DP8051_Keil_951\Debug\CyFlash.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\import\keil\pk51\9.51\C51\BIN\c51.exe 
+                    -Generated_Source\PSoC3\CyFlash.c NOIV LARGE MODDP2 OMF2 VB(1) NOIP INCDIR(.,Generated_Source\PSoC3) FF(3) DB DF(DEBUG) W
+                    -L(2) PR(.\DP8051\DP8051_Keil_951\Debug/CyFlash.lst) CD OT(2,SIZE) OJ(.\DP8051\DP8051_Keil_951\Debug\CyFlash.obj)
+
+line level    source
+
+   1          /***************************************************************************//**
+   2          * \file CyFlash.c
+   3          * \version 6.0
+   4          *
+   5          * \brief Provides an API for the FLASH/EEPROM.
+   6          *
+   7          * \note This code is endian agnostic.
+   8          *
+   9          * \note Documentation of the API's in this file is located in the System
+  10          * Reference Guide provided with PSoC Creator.
+  11          *
+  12          ********************************************************************************
+  13          * \copyright
+  14          * Copyright 2008-2018, Cypress Semiconductor Corporation. All rights reserved.
+  15          * You may use this file only in accordance with the license, terms, conditions,
+  16          * disclaimers, and limitations in the end user license agreement accompanying
+  17          * the software package with which this file was provided.
+  18          *******************************************************************************/
+  19          
+  20          #include "CyFlash.h"
+  21          
+  22          /*  The number of EEPROM arrays */
+  23          #define CY_FLASH_EEPROM_NUMBER_ARRAYS                 (1u)
+  24          
+  25          
+  26          /*******************************************************************************
+  27          * Holds the die temperature, updated by CySetTemp(). Used for flash writing.
+  28          * The first byte is the sign of the temperature (0 = negative, 1 = positive).
+  29          * The second byte is the magnitude.
+  30          *******************************************************************************/
+  31          uint8 dieTemperature[CY_FLASH_DIE_TEMP_DATA_SIZE];
+  32          
+  33          #if(CYDEV_ECC_ENABLE == 0)
+  34              static uint8 * rowBuffer = 0;
+  35          #endif  /* (CYDEV_ECC_ENABLE == 0) */
+  36          
+  37          
+  38          static cystatus CySetTempInt(void);
+  39          
+  40          
+  41          /*******************************************************************************
+  42          * Function Name: CyFlash_Start
+  43          ****************************************************************************//**
+  44          *
+  45          *  Enable the Flash.
+  46          *
+  47          *******************************************************************************/
+  48          void CyFlash_Start(void) 
+  49          {
+  50   1          uint8 interruptState;
+  51   1      
+  52   1          interruptState = CyEnterCriticalSection();
+  53   1      
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 2   
+
+  54   1      
+  55   1          /***************************************************************************
+  56   1          * Enable SPC clock. This also internally enables the 36MHz IMO, since this
+  57   1          * is required for the SPC to function.
+  58   1          ***************************************************************************/
+  59   1          CY_FLASH_PM_ACT_CFG0_REG    |= CY_FLASH_PM_ACT_CFG0_EN_CLK_SPC;
+  60   1          CY_FLASH_PM_ALTACT_CFG0_REG |= CY_FLASH_PM_ALTACT_CFG0_EN_CLK_SPC;
+  61   1      
+  62   1      
+  63   1          /***************************************************************************
+  64   1          * The wake count defines the number of Bus Clock cycles it takes for the
+  65   1          * flash or eeprom to wake up from a low power mode independent of the chip
+  66   1          * power mode. Wake up time for these blocks is 5 us.
+  67   1          * The granularity of this register is 2 Bus Clock cycles, so a value of 0x1E
+  68   1          * (30d) defines the wake up time as 60 cycles of the Bus Clock.
+  69   1          * This register needs to be written with a value dependent on the Bus Clock
+  70   1          * frequency so that the duration of the cycles is equal to or greater than
+  71   1          * the 5 us delay required.
+  72   1          ***************************************************************************/
+  73   1          CY_FLASH_SPC_FM_EE_WAKE_CNT_REG = CY_FLASH_SPC_FM_EE_WAKE_CNT_80MHZ;
+  74   1      
+  75   1      
+  76   1          /***************************************************************************
+  77   1          * Enable flash. Active flash macros consume current, but re-enabling a
+  78   1          * disabled flash macro takes 5us. If the CPU attempts to fetch out of the
+  79   1          * macro during that time, it will be stalled. This bit allows the flash to
+  80   1          * be enabled even if the CPU is disabled, which allows a quicker return to
+  81   1          * code execution.
+  82   1          ***************************************************************************/
+  83   1          CY_FLASH_PM_ACT_CFG12_REG    |= CY_FLASH_PM_ACT_CFG12_EN_FM;
+  84   1          CY_FLASH_PM_ALTACT_CFG12_REG |= CY_FLASH_PM_ALTACT_CFG12_EN_FM;
+  85   1      
+  86   1          while(0u == (CY_FLASH_SPC_FM_EE_CR_REG & CY_FLASH_EE_EE_AWAKE))
+  87   1          {
+  88   2              /* Non-zero status denotes that the EEPROM/Flash is awake & powered. */
+  89   2          }
+  90   1      
+  91   1          CyExitCriticalSection(interruptState);
+  92   1      }
+  93          
+  94          
+  95          /*******************************************************************************
+  96          * Function Name: CyFlash_Stop
+  97          ****************************************************************************//**
+  98          *
+  99          *  Disable the Flash.
+ 100          *
+ 101          * \sideeffect
+ 102          *  This setting is ignored as long as the CPU is currently running.  This will
+ 103          *  only take effect when the CPU is later disabled.
+ 104          *
+ 105          *******************************************************************************/
+ 106          void CyFlash_Stop(void) 
+ 107          {
+ 108   1          uint8 interruptState;
+ 109   1      
+ 110   1          interruptState = CyEnterCriticalSection();
+ 111   1      
+ 112   1          CY_FLASH_PM_ACT_CFG12_REG    &= ((uint8)(~CY_FLASH_PM_ACT_CFG12_EN_FM));
+ 113   1          CY_FLASH_PM_ALTACT_CFG12_REG &= ((uint8)(~CY_FLASH_PM_ALTACT_CFG12_EN_FM));
+ 114   1      
+ 115   1          CyExitCriticalSection(interruptState);
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 3   
+
+ 116   1      }
+ 117          
+ 118          
+ 119          /*******************************************************************************
+ 120          * Function Name: CyFlash_EraseRow
+ 121          ****************************************************************************//**
+ 122          *
+ 123          *  Erases a single row of flash. Reports success or reason for failure. 
+ 124          *  The API does not return until the erase operation is complete.
+ 125          *
+ 126          *  \param arrayID:    ID of the array to erase.
+ 127          *   The arrays in the part are sequential starting at the first ID for the
+ 128          *   Flash memory type. 
+ 129          *  \param rowAddress: Row address within the specified arrayId.
+ 130          *
+ 131          *  \return
+ 132          *  status:
+ 133          *   CYRET_SUCCESS if successful.
+ 134          *   CYRET_LOCKED if the SPC is already in use.
+ 135          *   CYRET_CANCELED if command not accepted
+ 136          *   CYRET_UNKNOWN if there was an SPC error.
+ 137          *   CYRET_BAD_PARAM if one or more invalid parameters
+ 138          *
+ 139          *******************************************************************************/
+ 140          cystatus CyFlash_EraseRow(uint8 arrayId, uint16 rowAddress)
+ 141          {
+ 142   1          cystatus status = CYRET_SUCCESS;
+ 143   1      
+ 144   1          if (arrayId > CY_SPC_LAST_FLASH_ARRAYID)
+ 145   1          {
+ 146   2              status = CYRET_BAD_PARAM;
+ 147   2          }
+ 148   1          else if(rowAddress > (CY_FLASH_NUMBER_ROWS/CY_FLASH_NUMBER_ARRAYS))
+ 149   1          {
+ 150   2              status = CYRET_BAD_PARAM;
+ 151   2          }        
+ 152   1          else
+ 153   1          {
+ 154   2              if(CySpcLock() == CYRET_SUCCESS)
+ 155   2              {
+ 156   3                  /* Erase flash row */
+ 157   3                  status = CySpcEraseRow(arrayId, rowAddress, dieTemperature[0u], dieTemperature[1u]);
+ 158   3                  
+ 159   3                  if(CYRET_STARTED == status)
+ 160   3                  {
+ 161   4                      while(CY_SPC_BUSY)
+ 162   4                      {
+ 163   5                          /* Wait for SPC to finish and get SPC status */
+ 164   5                          CyDelayUs(1u);
+ 165   5                      }
+ 166   4                      
+ 167   4                      /* Hide SPC status */
+ 168   4                      if(CY_SPC_STATUS_SUCCESS == CY_SPC_READ_STATUS)
+ 169   4                      {
+ 170   5                          status = CYRET_SUCCESS;
+ 171   5                      }
+ 172   4                      else
+ 173   4                      {
+ 174   5                          status = CYRET_UNKNOWN;
+ 175   5                      }
+ 176   4                  }
+ 177   3                      else
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 4   
+
+ 178   3                  {
+ 179   4                      status = CYRET_CANCELED;
+ 180   4                  }
+ 181   3                  CySpcUnlock();
+ 182   3              }
+ 183   2              else 
+ 184   2              {
+ 185   3                  status = CYRET_LOCKED;
+ 186   3              }
+ 187   2          }
+ 188   1          
+ 189   1          return(status);
+ 190   1      }
+ 191          
+ 192          
+ 193          /*******************************************************************************
+ 194          * Function Name: CySetTempInt
+ 195          ****************************************************************************//**
+ 196          *
+ 197          *  Sends a command to the SPC to read the die temperature. Sets a global value
+ 198          *  used by the Write function. This function must be called once before
+ 199          *  executing a series of Flash writing functions.
+ 200          *
+ 201          * \return
+ 202          *  status:
+ 203          *   CYRET_SUCCESS - if successful
+ 204          *   CYRET_LOCKED  - if Flash writing already in use
+ 205          *   CYRET_UNKNOWN - if there was an SPC error
+ 206          *
+ 207          *******************************************************************************/
+ 208          static cystatus CySetTempInt(void) 
+ 209          {
+ 210   1          cystatus status;
+ 211   1      
+ 212   1          /* Make sure SPC is powered */
+ 213   1          CySpcStart();
+ 214   1      
+ 215   1          /* Plan for failure. */
+ 216   1          status = CYRET_UNKNOWN;
+ 217   1      
+ 218   1          if(CySpcLock() == CYRET_SUCCESS)
+ 219   1          {
+ 220   2              /* Write the command. */
+ 221   2              if(CYRET_STARTED == CySpcGetTemp(CY_TEMP_NUMBER_OF_SAMPLES))
+ 222   2              {
+ 223   3                  do
+ 224   3                  {
+ 225   4                      if(CySpcReadData(dieTemperature, CY_FLASH_DIE_TEMP_DATA_SIZE) == CY_FLASH_DIE_TEMP_DATA_SI
+             -ZE)
+ 226   4                      {
+ 227   5                          status = CYRET_SUCCESS;
+ 228   5      
+ 229   5                          while(CY_SPC_BUSY)
+ 230   5                          {
+ 231   6                              /* Spin until idle. */
+ 232   6                              CyDelayUs(1u);
+ 233   6                          }
+ 234   5                          break;
+ 235   5                      }
+ 236   4      
+ 237   4                  } while(CY_SPC_BUSY);
+ 238   3              }
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 5   
+
+ 239   2      
+ 240   2              CySpcUnlock();
+ 241   2          }
+ 242   1          else
+ 243   1          {
+ 244   2              status = CYRET_LOCKED;
+ 245   2          }
+ 246   1      
+ 247   1          return (status);
+ 248   1      }
+ 249          
+ 250          
+ 251          /*******************************************************************************
+ 252          * Function Name: CyFlashGetSpcAlgorithm
+ 253          ****************************************************************************//**
+ 254          *
+ 255          *  Sends a command to the SPC to download code into RAM.
+ 256          *
+ 257          * \return
+ 258          *  status:
+ 259          *   CYRET_SUCCESS - if successful
+ 260          *   CYRET_LOCKED  - if Flash writing already in use
+ 261          *   CYRET_UNKNOWN - if there was an SPC error
+ 262          *
+ 263          *******************************************************************************/
+ 264          cystatus CyFlashGetSpcAlgorithm(void) 
+ 265          {
+ 266   1          cystatus status;
+ 267   1      
+ 268   1          /* Make sure SPC is powered */
+ 269   1          CySpcStart();
+ 270   1      
+ 271   1          if(CySpcLock() == CYRET_SUCCESS)
+ 272   1          {
+ 273   2              status = CySpcGetAlgorithm();
+ 274   2      
+ 275   2              if(CYRET_STARTED == status)
+ 276   2              {
+ 277   3                  while(CY_SPC_BUSY)
+ 278   3                  {
+ 279   4                      /* Spin until idle. */
+ 280   4                      CyDelayUs(1u);
+ 281   4                  }
+ 282   3      
+ 283   3                  if(CY_SPC_STATUS_SUCCESS == CY_SPC_READ_STATUS)
+ 284   3                  {
+ 285   4                      status = CYRET_SUCCESS;
+ 286   4                  }
+ 287   3              }
+ 288   2              CySpcUnlock();
+ 289   2          }
+ 290   1          else
+ 291   1          {
+ 292   2              status = CYRET_LOCKED;
+ 293   2          }
+ 294   1      
+ 295   1          return (status);
+ 296   1      }
+ 297          
+ 298          
+ 299          /*******************************************************************************
+ 300          * Function Name: CySetTemp
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 6   
+
+ 301          ****************************************************************************//**
+ 302          *
+ 303          *  This is a wraparound for CySetTempInt(). It is used to return the second
+ 304          *  successful read of the temperature value.
+ 305          *
+ 306          * \return
+ 307          *  status:
+ 308          *   CYRET_SUCCESS if successful.
+ 309          *   CYRET_LOCKED  if Flash writing already in use
+ 310          *   CYRET_UNKNOWN if there was an SPC error.
+ 311          *
+ 312          *  uint8 dieTemperature[2]:
+ 313          *   Holds the die temperature for the flash writing algorithm. The first byte is
+ 314          *   the sign of the temperature (0 = negative, 1 = positive). The second byte is
+ 315          *   the magnitude.
+ 316          *
+ 317          *******************************************************************************/
+ 318          cystatus CySetTemp(void) 
+ 319          {
+ 320   1          cystatus status = CyFlashGetSpcAlgorithm();
+ 321   1      
+ 322   1          if(status == CYRET_SUCCESS)
+ 323   1          {
+ 324   2              status = CySetTempInt();
+ 325   2          }
+ 326   1      
+ 327   1          return (status);
+ 328   1      }
+ 329          
+ 330          
+ 331          /*******************************************************************************
+ 332          * Function Name: CySetFlashEEBuffer
+ 333          ****************************************************************************//**
+ 334          *
+ 335          *  Sets the user supplied temporary buffer to store SPC data while performing
+ 336          *  Flash and EEPROM commands. This buffer is only necessary when the Flash ECC
+ 337          *  is disabled.
+ 338          *
+ 339          *  \param buffer:
+ 340          *   The address of a block of memory to store temporary memory. The size of the
+ 341          *   block of memory is CYDEV_FLS_ROW_SIZE + CYDEV_ECC_ROW_SIZE.
+ 342          *
+ 343          * \return
+ 344          *  status:
+ 345          *   CYRET_SUCCESS if successful.
+ 346          *   CYRET_BAD_PARAM if the buffer is NULL
+ 347          *
+ 348          *******************************************************************************/
+ 349          cystatus CySetFlashEEBuffer(uint8 * buffer) 
+ 350          {
+ 351   1          cystatus status = CYRET_SUCCESS;
+ 352   1      
+ 353   1          CySpcStart();
+ 354   1      
+ 355   1          #if(CYDEV_ECC_ENABLE == 0)
+ 356   1      
+ 357   1              if(NULL == buffer)
+ 358   1              {
+ 359   2                  rowBuffer = rowBuffer;
+ 360   2                  status = CYRET_BAD_PARAM;
+ 361   2              }
+ 362   1              else if(CySpcLock() != CYRET_SUCCESS)
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 7   
+
+ 363   1              {
+ 364   2                  rowBuffer = rowBuffer;
+ 365   2                  status = CYRET_LOCKED;
+ 366   2              }
+ 367   1              else
+ 368   1              {
+ 369   2                  rowBuffer = buffer;
+ 370   2                  CySpcUnlock();
+ 371   2              }
+ 372   1      
+ 373   1          #else
+              
+                      /* To suppress warning */
+                      buffer = buffer;
+              
+                  #endif  /* (CYDEV_ECC_ENABLE == 0u) */
+ 379   1      
+ 380   1          return(status);
+ 381   1      }
+ 382          
+ 383          
+ 384          /*******************************************************************************
+ 385          * Function Name: CyWriteRowData
+ 386          ****************************************************************************//**
+ 387          *
+ 388          *  Sends a command to the SPC to load and program a row of data in
+ 389          *  Flash or EEPROM.
+ 390          *
+ 391          *  \param arrayID:    ID of the array to write.
+ 392          *   The type of write, Flash or EEPROM, is determined from the array ID.
+ 393          *   The arrays in the part are sequential starting at the first ID for the
+ 394          *   specific memory type. The array ID for the Flash memory lasts from 0x00 to
+ 395          *   0x3F and for the EEPROM memory it lasts from 0x40 to 0x7F.
+ 396          *  \param rowAddress: rowAddress of flash row to program.
+ 397          *  \param rowData:    Array of bytes to write.
+ 398          *
+ 399          * \return
+ 400          *  status:
+ 401          *   CYRET_SUCCESS if successful.
+ 402          *   CYRET_LOCKED if the SPC is already in use.
+ 403          *   CYRET_CANCELED if command not accepted
+ 404          *   CYRET_UNKNOWN if there was an SPC error.
+ 405          *
+ 406          *******************************************************************************/
+ 407          cystatus CyWriteRowData(uint8 arrayId, uint16 rowAddress, const uint8 * rowData) 
+ 408          {
+ 409   1          uint16 rowSize;
+ 410   1          cystatus status;
+ 411   1      
+ 412   1          rowSize = (arrayId > CY_SPC_LAST_FLASH_ARRAYID) ? CYDEV_EEPROM_ROW_SIZE : CYDEV_FLS_ROW_SIZE;
+ 413   1          status = CyWriteRowFull(arrayId, rowAddress, rowData, rowSize);
+ 414   1      
+ 415   1          return(status);
+ 416   1      }
+ 417          
+ 418          
+ 419          /*******************************************************************
+ 420          * If "Enable Error Correcting Code (ECC)" and "Store Configuration
+ 421          * Data in ECC" DWR options are disabled, ECC section is available
+ 422          * for user data.
+ 423          *******************************************************************/
+ 424          #if ((CYDEV_ECC_ENABLE == 0u) && (CYDEV_CONFIGURATION_ECC == 0u))
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 8   
+
+              
+                  /*******************************************************************************
+                  * Function Name: CyWriteRowConfig
+                  ****************************************************************************//**
+                  *
+                  *  Sends a command to the SPC to load and program a row of config data in the
+                  *  Flash. This function is only valid for Flash array IDs (not for EEPROM).
+                  *
+                  *  \param arrayId:      ID of the array to write
+                  *   The arrays in the part are sequential starting at the first ID for the
+                  *   specific memory type. The array ID for the Flash memory lasts
+                  *   from 0x00 to 0x3F.
+                  *  \param rowAddress:   The address of the sector to erase.
+                  *  \param rowECC:       The array of bytes to write.
+                  *
+                  * \return
+                  *  status:
+                  *   CYRET_SUCCESS if successful.
+                  *   CYRET_LOCKED if the SPC is already in use.
+                  *   CYRET_CANCELED if command not accepted
+                  *   CYRET_UNKNOWN if there was an SPC error.
+                  *
+                  *******************************************************************************/
+                  cystatus CyWriteRowConfig(uint8 arrayId, uint16 rowAddress, const uint8 * rowECC)\
+                  
+                  {
+                      cystatus status;
+              
+                      status = CyWriteRowFull(arrayId, rowAddress, rowECC, CYDEV_ECC_ROW_SIZE);
+              
+                      return (status);
+                  }
+              
+              #endif  /* ((CYDEV_ECC_ENABLE == 0u) && (CYDEV_CONFIGURATION_ECC == 0u)) */
+ 459          
+ 460          
+ 461          
+ 462          /*******************************************************************************
+ 463          * Function Name: CyWriteRowFull
+ 464          ****************************************************************************//**
+ 465          *  Sends a command to the SPC to load and program a row of data in the Flash.
+ 466          *  rowData array is expected to contain Flash and ECC data if needed.
+ 467          *
+ 468          *  \param arrayId:    FLASH or EEPROM array id.
+ 469          *  \param rowData:    Pointer to a row of data to write.
+ 470          *  \param rowNumber:  Zero based number of the row.
+ 471          *  \param rowSize:    Size of the row.
+ 472          *
+ 473          * \return
+ 474          *  CYRET_SUCCESS if successful.
+ 475          *  CYRET_LOCKED if the SPC is already in use.
+ 476          *  CYRET_CANCELED if command not accepted
+ 477          *  CYRET_UNKNOWN if there was an SPC error.
+ 478          *
+ 479          *******************************************************************************/
+ 480          cystatus CyWriteRowFull(uint8 arrayId, uint16 rowNumber, const uint8* rowData, uint16 rowSize) \
+ 481                  
+ 482          {
+ 483   1          cystatus status = CYRET_SUCCESS;
+ 484   1      
+ 485   1          if((arrayId <=  CY_SPC_LAST_FLASH_ARRAYID) && (arrayId > (CY_FLASH_NUMBER_ARRAYS  + CY_SPC_FIRST_FLASH
+             -_ARRAYID)))
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 9   
+
+ 486   1          {
+ 487   2              status = CYRET_BAD_PARAM;
+ 488   2          }
+ 489   1      
+ 490   1          if(arrayId > CY_SPC_LAST_EE_ARRAYID)
+ 491   1          {
+ 492   2              status = CYRET_BAD_PARAM;
+ 493   2          }
+ 494   1      
+ 495   1          if((arrayId >= CY_SPC_FIRST_EE_ARRAYID) && (arrayId > (CY_FLASH_EEPROM_NUMBER_ARRAYS + CY_SPC_FIRST_EE
+             -_ARRAYID)))
+ 496   1          {
+ 497   2              status = CYRET_BAD_PARAM;
+ 498   2          }
+ 499   1      
+ 500   1          if(arrayId <=  CY_SPC_LAST_FLASH_ARRAYID)
+ 501   1          {
+ 502   2              /* Flash */
+ 503   2              if(rowNumber > (CY_FLASH_NUMBER_ROWS/CY_FLASH_NUMBER_ARRAYS))
+ 504   2              {
+ 505   3                  status = CYRET_BAD_PARAM;
+ 506   3              }
+ 507   2          }
+ 508   1          else
+ 509   1          {
+ 510   2              /* EEPROM */
+ 511   2              if(rowNumber > (CY_EEPROM_NUMBER_ROWS/CY_FLASH_EEPROM_NUMBER_ARRAYS))
+ 512   2              {
+ 513   3                  status = CYRET_BAD_PARAM;
+ 514   3              }
+ 515   2      
+ 516   2              if(CY_EEPROM_SIZEOF_ROW != rowSize)
+ 517   2              {
+ 518   3                  status = CYRET_BAD_PARAM;
+ 519   3              }
+ 520   2          }
+ 521   1      
+ 522   1          if(rowData == NULL)
+ 523   1          {
+ 524   2              status = CYRET_BAD_PARAM;
+ 525   2          }
+ 526   1      
+ 527   1      
+ 528   1          if(status == CYRET_SUCCESS)
+ 529   1          {
+ 530   2              if(CySpcLock() == CYRET_SUCCESS)
+ 531   2              {
+ 532   3                  /* Load row data into SPC internal latch */
+ 533   3                  status = CySpcLoadRowFull(arrayId, rowNumber, rowData, rowSize);
+ 534   3      
+ 535   3                  if(CYRET_STARTED == status)
+ 536   3                  {
+ 537   4                      while(CY_SPC_BUSY)
+ 538   4                      {
+ 539   5                          /* Wait for SPC to finish and get SPC status */
+ 540   5                          CyDelayUs(1u);
+ 541   5                      }
+ 542   4      
+ 543   4                      /* Hide SPC status */
+ 544   4                      if(CY_SPC_STATUS_SUCCESS == CY_SPC_READ_STATUS)
+ 545   4                      {
+ 546   5                          status = CYRET_SUCCESS;
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 10  
+
+ 547   5                      }
+ 548   4                      else
+ 549   4                      {
+ 550   5                          status = CYRET_UNKNOWN;
+ 551   5                      }
+ 552   4      
+ 553   4                      if(CYRET_SUCCESS == status)
+ 554   4                      {
+ 555   5                          /* Erase and program flash with data from SPC interval latch */
+ 556   5                          status = CySpcWriteRow(arrayId, rowNumber, dieTemperature[0u], dieTemperature[1u]);
+ 557   5      
+ 558   5                          if(CYRET_STARTED == status)
+ 559   5                          {
+ 560   6                              while(CY_SPC_BUSY)
+ 561   6                              {
+ 562   7                                  /* Wait for SPC to finish and get SPC status */
+ 563   7                                  CyDelayUs(1u);
+ 564   7                              }
+ 565   6      
+ 566   6                              /* Hide SPC status */
+ 567   6                              if(CY_SPC_STATUS_SUCCESS == CY_SPC_READ_STATUS)
+ 568   6                              {
+ 569   7                                  status = CYRET_SUCCESS;
+ 570   7                              }
+ 571   6                              else
+ 572   6                              {
+ 573   7                                  status = CYRET_UNKNOWN;
+ 574   7                              }
+ 575   6                          }
+ 576   5                      }
+ 577   4                  }
+ 578   3                  CySpcUnlock();
+ 579   3              }   /* if(CySpcLock() == CYRET_SUCCESS) */
+ 580   2              else
+ 581   2              {
+ 582   3                  status = CYRET_LOCKED;
+ 583   3              }
+ 584   2          }
+ 585   1      
+ 586   1          return(status);
+ 587   1      }
+ 588          
+ 589          
+ 590          /*******************************************************************************
+ 591          * Function Name: CyFlash_SetWaitCycles
+ 592          ****************************************************************************//**
+ 593          *
+ 594          *  Sets the number of clock cycles the cache will wait before it samples data
+ 595          *  coming back from the Flash. This function must be called before increasing
+ 596          *  the CPU clock frequency. It can optionally be called after lowering the CPU
+ 597          *  clock frequency in order to improve the CPU performance.
+ 598          *
+ 599          *  \param uint8 freq:
+ 600          *   Frequency of operation in Megahertz.
+ 601          *
+ 602          *******************************************************************************/
+ 603          void CyFlash_SetWaitCycles(uint8 freq) 
+ 604          {
+ 605   1          uint8 interruptState;
+ 606   1      
+ 607   1          /* Save current global interrupt enable and disable it */
+ 608   1          interruptState = CyEnterCriticalSection();
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 11  
+
+ 609   1      
+ 610   1          /***************************************************************************
+ 611   1          * The number of clock cycles the cache will wait before it samples data
+ 612   1          * coming back from the Flash must be equal or greater to to the CPU frequency
+ 613   1          * outlined in clock cycles.
+ 614   1          ***************************************************************************/
+ 615   1      
+ 616   1          if (freq < CY_FLASH_CACHE_WS_1_FREQ_MAX)
+ 617   1          {
+ 618   2              CY_FLASH_CONTROL_REG = (CY_FLASH_CONTROL_REG & (uint8)(~CY_FLASH_CACHE_WS_VALUE_MASK)) |
+ 619   2                                          CY_FLASH_CACHE_WS_1_VALUE_MASK;
+ 620   2          }
+ 621   1          else if (freq < CY_FLASH_CACHE_WS_2_FREQ_MAX)
+ 622   1          {
+ 623   2              CY_FLASH_CONTROL_REG = (CY_FLASH_CONTROL_REG & (uint8)(~CY_FLASH_CACHE_WS_VALUE_MASK)) |
+ 624   2                                          CY_FLASH_CACHE_WS_2_VALUE_MASK;
+ 625   2          }
+ 626   1          else if (freq < CY_FLASH_CACHE_WS_3_FREQ_MAX)
+ 627   1          {
+ 628   2              CY_FLASH_CONTROL_REG = (CY_FLASH_CONTROL_REG & (uint8)(~CY_FLASH_CACHE_WS_VALUE_MASK)) |
+ 629   2                                          CY_FLASH_CACHE_WS_3_VALUE_MASK;
+ 630   2          }
+ 631   1      #if (CY_PSOC5)
+                  else if (freq < CY_FLASH_CACHE_WS_4_FREQ_MAX)
+                  {
+                      CY_FLASH_CONTROL_REG = (CY_FLASH_CONTROL_REG & (uint8)(~CY_FLASH_CACHE_WS_VALUE_MASK)) |
+                                                  CY_FLASH_CACHE_WS_4_VALUE_MASK;
+                  }
+                  else if (freq <= CY_FLASH_CACHE_WS_5_FREQ_MAX)
+                  {
+                      CY_FLASH_CONTROL_REG = (CY_FLASH_CONTROL_REG & (uint8)(~CY_FLASH_CACHE_WS_VALUE_MASK)) |
+                                                  CY_FLASH_CACHE_WS_5_VALUE_MASK;
+                  }
+              #endif  /* (CY_PSOC5) */
+ 643   1          else
+ 644   1          {
+ 645   2              /* Halt CPU in debug mode if frequency is invalid */
+ 646   2              CYASSERT(0u != 0u);
+ 647   2          }
+ 648   1      
+ 649   1          /* Restore global interrupt enable state */
+ 650   1          CyExitCriticalSection(interruptState);
+ 651   1      }
+ 652          
+ 653          
+ 654          /*******************************************************************************
+ 655          * Function Name: CyEEPROM_Start
+ 656          ****************************************************************************//**
+ 657          *
+ 658          *  Enable the EEPROM.
+ 659          *
+ 660          *******************************************************************************/
+ 661          void CyEEPROM_Start(void) 
+ 662          {
+ 663   1          uint8 interruptState;
+ 664   1      
+ 665   1          interruptState = CyEnterCriticalSection();
+ 666   1      
+ 667   1      
+ 668   1          /***************************************************************************
+ 669   1          * Enable SPC clock. This also internally enables the 36MHz IMO, since this
+ 670   1          * is required for the SPC to function.
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 12  
+
+ 671   1          ***************************************************************************/
+ 672   1          CY_FLASH_PM_ACT_CFG0_REG    |= CY_FLASH_PM_ACT_CFG0_EN_CLK_SPC;
+ 673   1          CY_FLASH_PM_ALTACT_CFG0_REG |= CY_FLASH_PM_ALTACT_CFG0_EN_CLK_SPC;
+ 674   1      
+ 675   1      
+ 676   1          /***************************************************************************
+ 677   1          * The wake count defines the number of Bus Clock cycles it takes for the
+ 678   1          * flash or EEPROM to wake up from a low power mode independent of the chip
+ 679   1          * power mode. Wake up time for these blocks is 5 us.
+ 680   1          * The granularity of this register is 2 Bus Clock cycles, so a value of 0x1E
+ 681   1          * (30d) defines the wake up time as 60 cycles of the Bus Clock.
+ 682   1          * This register needs to be written with a value dependent on the Bus Clock
+ 683   1          * frequency so that the duration of the cycles is equal to or greater than
+ 684   1          * the 5 us delay required.
+ 685   1          ***************************************************************************/
+ 686   1          CY_FLASH_SPC_FM_EE_WAKE_CNT_REG = CY_FLASH_SPC_FM_EE_WAKE_CNT_80MHZ;
+ 687   1      
+ 688   1      
+ 689   1          /***************************************************************************
+ 690   1          * Enable EEPROM. Re-enabling an EEPROM macro takes 5us. During this time,
+ 691   1          * the EE will not acknowledge a PHUB request.
+ 692   1          ***************************************************************************/
+ 693   1          CY_FLASH_PM_ACT_CFG12_REG    |= CY_FLASH_PM_ACT_CFG12_EN_EE;
+ 694   1          CY_FLASH_PM_ALTACT_CFG12_REG |= CY_FLASH_PM_ALTACT_CFG12_EN_EE;
+ 695   1      
+ 696   1          while(0u == (CY_FLASH_SPC_FM_EE_CR_REG & CY_FLASH_EE_EE_AWAKE))
+ 697   1          {
+ 698   2              /* Non-zero status denotes that the EEPROM/Flash is awake & powered. */
+ 699   2          }
+ 700   1      
+ 701   1          CyExitCriticalSection(interruptState);
+ 702   1      }
+ 703          
+ 704          
+ 705          /*******************************************************************************
+ 706          * Function Name: CyEEPROM_Stop
+ 707          ****************************************************************************//**
+ 708          *
+ 709          *  Disable the EEPROM.
+ 710          *
+ 711          *******************************************************************************/
+ 712          void CyEEPROM_Stop (void) 
+ 713          {
+ 714   1          uint8 interruptState;
+ 715   1      
+ 716   1          interruptState = CyEnterCriticalSection();
+ 717   1      
+ 718   1          CY_FLASH_PM_ACT_CFG12_REG    &= ((uint8)(~CY_FLASH_PM_ACT_CFG12_EN_EE));
+ 719   1          CY_FLASH_PM_ALTACT_CFG12_REG &= ((uint8)(~CY_FLASH_PM_ALTACT_CFG12_EN_EE));
+ 720   1      
+ 721   1          CyExitCriticalSection(interruptState);
+ 722   1      }
+ 723          
+ 724          
+ 725          /*******************************************************************************
+ 726          * Function Name: CyEEPROM_ReadReserve
+ 727          ****************************************************************************//**
+ 728          *
+ 729          *  Request access to the EEPROM for reading and wait until access is available.
+ 730          *
+ 731          *******************************************************************************/
+ 732          void CyEEPROM_ReadReserve(void) 
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 13  
+
+ 733          {
+ 734   1          /* Make request for PHUB to have access */
+ 735   1          CY_FLASH_EE_SCR_REG |= CY_FLASH_EE_SCR_AHB_EE_REQ;
+ 736   1      
+ 737   1          while (0u == (CY_FLASH_EE_SCR_REG & CY_FLASH_EE_SCR_AHB_EE_ACK))
+ 738   1          {
+ 739   2              /* Wait for acknowledgment from PHUB */
+ 740   2          }
+ 741   1      }
+ 742          
+ 743          
+ 744          /*******************************************************************************
+ 745          * Function Name: CyEEPROM_ReadRelease
+ 746          ****************************************************************************//**
+ 747          *
+ 748          *  Release the read reservation of the EEPROM.
+ 749          *
+ 750          *******************************************************************************/
+ 751          void CyEEPROM_ReadRelease(void) 
+ 752          {
+ 753   1          CY_FLASH_EE_SCR_REG &= (uint8)(~CY_FLASH_EE_SCR_AHB_EE_REQ);
+ 754   1      }
+ 755          
+ 756          
+ 757          /* [] END OF FILE */
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 14  
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+             ; FUNCTION CyFlash_Start (BEGIN)
+                                           ; SOURCE LINE # 48
+                                           ; SOURCE LINE # 49
+                                           ; SOURCE LINE # 52
+0000 120000      E     LCALL   CyEnterCriticalSection
+0003 900000      R     MOV     DPTR,#interruptState
+0006 EF                MOV     A,R7
+0007 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 59
+0008 9043A0            MOV     DPTR,#043A0H
+000B E0                MOVX    A,@DPTR
+000C FF                MOV     R7,A
+000D EF                MOV     A,R7
+000E 4408              ORL     A,#08H
+0010 FF                MOV     R7,A
+0011 EF                MOV     A,R7
+0012 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 60
+0013 9043B0            MOV     DPTR,#043B0H
+0016 E0                MOVX    A,@DPTR
+0017 FF                MOV     R7,A
+0018 EF                MOV     A,R7
+0019 4408              ORL     A,#08H
+001B FF                MOV     R7,A
+001C EF                MOV     A,R7
+001D F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 73
+001E 904701            MOV     DPTR,#04701H
+0021 74C8              MOV     A,#0C8H
+0023 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 83
+0024 9043AC            MOV     DPTR,#043ACH
+0027 E0                MOVX    A,@DPTR
+0028 FF                MOV     R7,A
+0029 EF                MOV     A,R7
+002A 4401              ORL     A,#01H
+002C FF                MOV     R7,A
+002D EF                MOV     A,R7
+002E F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 84
+002F 9043BC            MOV     DPTR,#043BCH
+0032 E0                MOVX    A,@DPTR
+0033 FF                MOV     R7,A
+0034 EF                MOV     A,R7
+0035 4401              ORL     A,#01H
+0037 FF                MOV     R7,A
+0038 EF                MOV     A,R7
+0039 F0                MOVX    @DPTR,A
+003A         ?C0001:
+                                           ; SOURCE LINE # 86
+003A 904700            MOV     DPTR,#04700H
+003D E0                MOVX    A,@DPTR
+003E FF                MOV     R7,A
+003F EF                MOV     A,R7
+0040 5420              ANL     A,#020H
+0042 FF                MOV     R7,A
+0043 7E00              MOV     R6,#00H
+0045 EF                MOV     A,R7
+0046 4E                ORL     A,R6
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 15  
+
+0047 60F1              JZ      ?C0001
+                                           ; SOURCE LINE # 87
+                                           ; SOURCE LINE # 89
+0049         ?C0002:
+                                           ; SOURCE LINE # 91
+0049 900000      R     MOV     DPTR,#interruptState
+004C E0                MOVX    A,@DPTR
+004D FF                MOV     R7,A
+004E 120000      E     LCALL   _CyExitCriticalSection
+                                           ; SOURCE LINE # 92
+0051 22                RET     
+             ; FUNCTION CyFlash_Start (END)
+
+             ; FUNCTION CyFlash_Stop (BEGIN)
+                                           ; SOURCE LINE # 106
+                                           ; SOURCE LINE # 107
+                                           ; SOURCE LINE # 110
+0000 120000      E     LCALL   CyEnterCriticalSection
+0003 900000      R     MOV     DPTR,#interruptState
+0006 EF                MOV     A,R7
+0007 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 112
+0008 9043AC            MOV     DPTR,#043ACH
+000B E0                MOVX    A,@DPTR
+000C FF                MOV     R7,A
+000D EF                MOV     A,R7
+000E 54FE              ANL     A,#0FEH
+0010 FF                MOV     R7,A
+0011 EF                MOV     A,R7
+0012 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 113
+0013 9043BC            MOV     DPTR,#043BCH
+0016 E0                MOVX    A,@DPTR
+0017 FF                MOV     R7,A
+0018 EF                MOV     A,R7
+0019 54FE              ANL     A,#0FEH
+001B FF                MOV     R7,A
+001C EF                MOV     A,R7
+001D F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 115
+001E 900000      R     MOV     DPTR,#interruptState
+0021 E0                MOVX    A,@DPTR
+0022 FF                MOV     R7,A
+0023 120000      E     LCALL   _CyExitCriticalSection
+                                           ; SOURCE LINE # 116
+0026 22                RET     
+             ; FUNCTION CyFlash_Stop (END)
+
+             ; FUNCTION _CyFlash_EraseRow (BEGIN)
+                                           ; SOURCE LINE # 140
+0000 900000      R     MOV     DPTR,#arrayId
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+0005 900000      R     MOV     DPTR,#rowAddress
+0008 EC                MOV     A,R4
+0009 F0                MOVX    @DPTR,A
+000A A3                INC     DPTR
+000B ED                MOV     A,R5
+000C F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 141
+                                           ; SOURCE LINE # 142
+000D 900000      R     MOV     DPTR,#status
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 16  
+
+0010 E4                CLR     A
+0011 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 144
+0012 900000      R     MOV     DPTR,#arrayId
+0015 E0                MOVX    A,@DPTR
+0016 FF                MOV     R7,A
+0017 EF                MOV     A,R7
+0018 D3                SETB    C
+0019 943F              SUBB    A,#03FH
+001B 4009              JC      ?C0005
+                                           ; SOURCE LINE # 145
+                                           ; SOURCE LINE # 146
+001D 900000      R     MOV     DPTR,#status
+0020 7401              MOV     A,#01H
+0022 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 147
+0023 020000      R     LJMP    ?C0006
+0026         ?C0005:
+                                           ; SOURCE LINE # 148
+0026 900000      R     MOV     DPTR,#rowAddress
+0029 E0                MOVX    A,@DPTR
+002A FE                MOV     R6,A
+002B A3                INC     DPTR
+002C E0                MOVX    A,@DPTR
+002D FF                MOV     R7,A
+002E E4                CLR     A
+002F FC                MOV     R4,A
+0030 FD                MOV     R5,A
+0031 7B00              MOV     R3,#00H
+0033 7A01              MOV     R2,#01H
+0035 7900              MOV     R1,#00H
+0037 7800              MOV     R0,#00H
+0039 C3                CLR     C
+003A 120000      E     LCALL   ?C?ULCMP
+003D 5009              JNC     ?C0007
+                                           ; SOURCE LINE # 149
+                                           ; SOURCE LINE # 150
+003F 900000      R     MOV     DPTR,#status
+0042 7401              MOV     A,#01H
+0044 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 151
+0045 020000      R     LJMP    ?C0006
+0048         ?C0007:
+                                           ; SOURCE LINE # 153
+                                           ; SOURCE LINE # 154
+0048 120000      E     LCALL   CySpcLock
+004B EF                MOV     A,R7
+004C 6003              JZ      $ + 5H
+004E 020000      R     LJMP    ?C0009
+                                           ; SOURCE LINE # 155
+                                           ; SOURCE LINE # 157
+0051 900000      R     MOV     DPTR,#arrayId
+0054 E0                MOVX    A,@DPTR
+0055 FF                MOV     R7,A
+0056 900000      R     MOV     DPTR,#rowAddress
+0059 E0                MOVX    A,@DPTR
+005A FC                MOV     R4,A
+005B A3                INC     DPTR
+005C E0                MOVX    A,@DPTR
+005D FD                MOV     R5,A
+005E 900000      R     MOV     DPTR,#dieTemperature
+0061 E0                MOVX    A,@DPTR
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 17  
+
+0062 FB                MOV     R3,A
+0063 900000      R     MOV     DPTR,#dieTemperature+01H
+0066 E0                MOVX    A,@DPTR
+0067 FE                MOV     R6,A
+0068 900000      E     MOV     DPTR,#?_CySpcEraseRow?BYTE+04H
+006B EE                MOV     A,R6
+006C F0                MOVX    @DPTR,A
+006D 120000      E     LCALL   _CySpcEraseRow
+0070 900000      R     MOV     DPTR,#status
+0073 EF                MOV     A,R7
+0074 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 159
+0075 900000      R     MOV     DPTR,#status
+0078 E0                MOVX    A,@DPTR
+0079 FF                MOV     R7,A
+007A EF                MOV     A,R7
+007B 6407              XRL     A,#07H
+007D 7048              JNZ     ?C0010
+                                           ; SOURCE LINE # 160
+007F         ?C0011:
+                                           ; SOURCE LINE # 161
+007F 904722            MOV     DPTR,#04722H
+0082 E0                MOVX    A,@DPTR
+0083 FF                MOV     R7,A
+0084 EF                MOV     A,R7
+0085 5402              ANL     A,#02H
+0087 FF                MOV     R7,A
+0088 7E00              MOV     R6,#00H
+008A EF                MOV     A,R7
+008B 4E                ORL     A,R6
+008C 7009              JNZ     ?C0012
+                                           ; SOURCE LINE # 162
+                                           ; SOURCE LINE # 164
+008E 7F01              MOV     R7,#01H
+0090 7E00              MOV     R6,#00H
+0092 120000      E     LCALL   _CyDelayUs
+                                           ; SOURCE LINE # 165
+0095 80E8              SJMP    ?C0011
+0097         ?C0012:
+                                           ; SOURCE LINE # 168
+0097 904722            MOV     DPTR,#04722H
+009A E0                MOVX    A,@DPTR
+009B FF                MOV     R7,A
+009C EF                MOV     A,R7
+009D 5402              ANL     A,#02H
+009F FF                MOV     R7,A
+00A0 7E00              MOV     R6,#00H
+00A2 EF                MOV     A,R7
+00A3 4E                ORL     A,R6
+00A4 600D              JZ      ?C0014
+00A6 904722            MOV     DPTR,#04722H
+00A9 E0                MOVX    A,@DPTR
+00AA FF                MOV     R7,A
+00AB EF                MOV     A,R7
+00AC 13                RRC     A
+00AD 13                RRC     A
+00AE 543F              ANL     A,#03FH
+00B0 FF                MOV     R7,A
+00B1 8002              SJMP    ?C0015
+00B3         ?C0014:
+00B3 7FFF              MOV     R7,#0FFH
+00B5         ?C0015:
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 18  
+
+00B5 EF                MOV     A,R7
+00B6 7007              JNZ     ?C0013
+                                           ; SOURCE LINE # 169
+                                           ; SOURCE LINE # 170
+00B8 900000      R     MOV     DPTR,#status
+00BB E4                CLR     A
+00BC F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 171
+00BD 800E              SJMP    ?C0017
+00BF         ?C0013:
+                                           ; SOURCE LINE # 173
+                                           ; SOURCE LINE # 174
+00BF 900000      R     MOV     DPTR,#status
+00C2 74FF              MOV     A,#0FFH
+00C4 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 175
+                                           ; SOURCE LINE # 176
+00C5 8006              SJMP    ?C0017
+00C7         ?C0010:
+                                           ; SOURCE LINE # 178
+                                           ; SOURCE LINE # 179
+00C7 900000      R     MOV     DPTR,#status
+00CA 7409              MOV     A,#09H
+00CC F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 180
+00CD         ?C0017:
+                                           ; SOURCE LINE # 181
+00CD 120000      E     LCALL   CySpcUnlock
+                                           ; SOURCE LINE # 182
+00D0 8006              SJMP    ?C0006
+00D2         ?C0009:
+                                           ; SOURCE LINE # 184
+                                           ; SOURCE LINE # 185
+00D2 900000      R     MOV     DPTR,#status
+00D5 7404              MOV     A,#04H
+00D7 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 186
+                                           ; SOURCE LINE # 187
+00D8         ?C0006:
+                                           ; SOURCE LINE # 189
+00D8 900000      R     MOV     DPTR,#status
+00DB E0                MOVX    A,@DPTR
+00DC FF                MOV     R7,A
+                                           ; SOURCE LINE # 190
+00DD         ?C0019:
+00DD 22                RET     
+             ; FUNCTION _CyFlash_EraseRow (END)
+
+             ; FUNCTION CySetTempInt (BEGIN)
+                                           ; SOURCE LINE # 208
+                                           ; SOURCE LINE # 209
+                                           ; SOURCE LINE # 213
+0000 120000      E     LCALL   CySpcStart
+                                           ; SOURCE LINE # 216
+0003 900000      R     MOV     DPTR,#status
+0006 74FF              MOV     A,#0FFH
+0008 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 218
+0009 120000      E     LCALL   CySpcLock
+000C EF                MOV     A,R7
+000D 704A              JNZ     ?C0020
+                                           ; SOURCE LINE # 219
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 19  
+
+                                           ; SOURCE LINE # 221
+000F 7F01              MOV     R7,#01H
+0011 120000      E     LCALL   _CySpcGetTemp
+0014 EF                MOV     A,R7
+0015 6407              XRL     A,#07H
+0017 703B              JNZ     ?C0021
+                                           ; SOURCE LINE # 222
+0019         ?C0024:
+                                           ; SOURCE LINE # 224
+                                           ; SOURCE LINE # 225
+0019 7B01              MOV     R3,#01H
+001B 7A00        R     MOV     R2,#HIGH dieTemperature
+001D 7900        R     MOV     R1,#LOW dieTemperature
+001F 7D02              MOV     R5,#02H
+0021 120000      E     LCALL   _CySpcReadData
+0024 EF                MOV     A,R7
+0025 B4021D            CJNE    A,#02H,?C0022
+                                           ; SOURCE LINE # 226
+                                           ; SOURCE LINE # 227
+0028 900000      R     MOV     DPTR,#status
+002B E4                CLR     A
+002C F0                MOVX    @DPTR,A
+002D         ?C0026:
+                                           ; SOURCE LINE # 229
+002D 904722            MOV     DPTR,#04722H
+0030 E0                MOVX    A,@DPTR
+0031 FF                MOV     R7,A
+0032 EF                MOV     A,R7
+0033 5402              ANL     A,#02H
+0035 FF                MOV     R7,A
+0036 7E00              MOV     R6,#00H
+0038 EF                MOV     A,R7
+0039 4E                ORL     A,R6
+003A 7018              JNZ     ?C0021
+                                           ; SOURCE LINE # 230
+                                           ; SOURCE LINE # 232
+003C 7F01              MOV     R7,#01H
+003E 7E00              MOV     R6,#00H
+0040 120000      E     LCALL   _CyDelayUs
+                                           ; SOURCE LINE # 233
+0043 80E8              SJMP    ?C0026
+                                           ; SOURCE LINE # 234
+                                           ; SOURCE LINE # 235
+                                           ; SOURCE LINE # 237
+0045         ?C0022:
+0045 904722            MOV     DPTR,#04722H
+0048 E0                MOVX    A,@DPTR
+0049 FF                MOV     R7,A
+004A EF                MOV     A,R7
+004B 5402              ANL     A,#02H
+004D FF                MOV     R7,A
+004E 7E00              MOV     R6,#00H
+0050 EF                MOV     A,R7
+0051 4E                ORL     A,R6
+0052 60C5              JZ      ?C0024
+                                           ; SOURCE LINE # 238
+0054         ?C0021:
+                                           ; SOURCE LINE # 240
+0054 120000      E     LCALL   CySpcUnlock
+                                           ; SOURCE LINE # 241
+0057 8006              SJMP    ?C0028
+0059         ?C0020:
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 20  
+
+                                           ; SOURCE LINE # 243
+                                           ; SOURCE LINE # 244
+0059 900000      R     MOV     DPTR,#status
+005C 7404              MOV     A,#04H
+005E F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 245
+005F         ?C0028:
+                                           ; SOURCE LINE # 247
+005F 900000      R     MOV     DPTR,#status
+0062 E0                MOVX    A,@DPTR
+0063 FF                MOV     R7,A
+                                           ; SOURCE LINE # 248
+0064         ?C0029:
+0064 22                RET     
+             ; FUNCTION CySetTempInt (END)
+
+             ; FUNCTION CyFlashGetSpcAlgorithm (BEGIN)
+                                           ; SOURCE LINE # 264
+                                           ; SOURCE LINE # 265
+                                           ; SOURCE LINE # 269
+0000 120000      E     LCALL   CySpcStart
+                                           ; SOURCE LINE # 271
+0003 120000      E     LCALL   CySpcLock
+0006 EF                MOV     A,R7
+0007 7055              JNZ     ?C0030
+                                           ; SOURCE LINE # 272
+                                           ; SOURCE LINE # 273
+0009 120000      E     LCALL   CySpcGetAlgorithm
+000C 900000      R     MOV     DPTR,#status
+000F EF                MOV     A,R7
+0010 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 275
+0011 900000      R     MOV     DPTR,#status
+0014 E0                MOVX    A,@DPTR
+0015 FF                MOV     R7,A
+0016 EF                MOV     A,R7
+0017 6407              XRL     A,#07H
+0019 703E              JNZ     ?C0031
+                                           ; SOURCE LINE # 276
+001B         ?C0032:
+                                           ; SOURCE LINE # 277
+001B 904722            MOV     DPTR,#04722H
+001E E0                MOVX    A,@DPTR
+001F FF                MOV     R7,A
+0020 EF                MOV     A,R7
+0021 5402              ANL     A,#02H
+0023 FF                MOV     R7,A
+0024 7E00              MOV     R6,#00H
+0026 EF                MOV     A,R7
+0027 4E                ORL     A,R6
+0028 7009              JNZ     ?C0033
+                                           ; SOURCE LINE # 278
+                                           ; SOURCE LINE # 280
+002A 7F01              MOV     R7,#01H
+002C 7E00              MOV     R6,#00H
+002E 120000      E     LCALL   _CyDelayUs
+                                           ; SOURCE LINE # 281
+0031 80E8              SJMP    ?C0032
+0033         ?C0033:
+                                           ; SOURCE LINE # 283
+0033 904722            MOV     DPTR,#04722H
+0036 E0                MOVX    A,@DPTR
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 21  
+
+0037 FF                MOV     R7,A
+0038 EF                MOV     A,R7
+0039 5402              ANL     A,#02H
+003B FF                MOV     R7,A
+003C 7E00              MOV     R6,#00H
+003E EF                MOV     A,R7
+003F 4E                ORL     A,R6
+0040 600D              JZ      ?C0035
+0042 904722            MOV     DPTR,#04722H
+0045 E0                MOVX    A,@DPTR
+0046 FF                MOV     R7,A
+0047 EF                MOV     A,R7
+0048 13                RRC     A
+0049 13                RRC     A
+004A 543F              ANL     A,#03FH
+004C FF                MOV     R7,A
+004D 8002              SJMP    ?C0036
+004F         ?C0035:
+004F 7FFF              MOV     R7,#0FFH
+0051         ?C0036:
+0051 EF                MOV     A,R7
+0052 7005              JNZ     ?C0031
+                                           ; SOURCE LINE # 284
+                                           ; SOURCE LINE # 285
+0054 900000      R     MOV     DPTR,#status
+0057 E4                CLR     A
+0058 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 286
+                                           ; SOURCE LINE # 287
+0059         ?C0031:
+                                           ; SOURCE LINE # 288
+0059 120000      E     LCALL   CySpcUnlock
+                                           ; SOURCE LINE # 289
+005C 8006              SJMP    ?C0037
+005E         ?C0030:
+                                           ; SOURCE LINE # 291
+                                           ; SOURCE LINE # 292
+005E 900000      R     MOV     DPTR,#status
+0061 7404              MOV     A,#04H
+0063 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 293
+0064         ?C0037:
+                                           ; SOURCE LINE # 295
+0064 900000      R     MOV     DPTR,#status
+0067 E0                MOVX    A,@DPTR
+0068 FF                MOV     R7,A
+                                           ; SOURCE LINE # 296
+0069         ?C0038:
+0069 22                RET     
+             ; FUNCTION CyFlashGetSpcAlgorithm (END)
+
+             ; FUNCTION CySetTemp (BEGIN)
+                                           ; SOURCE LINE # 318
+                                           ; SOURCE LINE # 319
+                                           ; SOURCE LINE # 320
+0000 120000      R     LCALL   CyFlashGetSpcAlgorithm
+0003 900000      R     MOV     DPTR,#status
+0006 EF                MOV     A,R7
+0007 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 322
+0008 900000      R     MOV     DPTR,#status
+000B E0                MOVX    A,@DPTR
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 22  
+
+000C FF                MOV     R7,A
+000D EF                MOV     A,R7
+000E 7008              JNZ     ?C0039
+                                           ; SOURCE LINE # 323
+                                           ; SOURCE LINE # 324
+0010 120000      R     LCALL   CySetTempInt
+0013 900000      R     MOV     DPTR,#status
+0016 EF                MOV     A,R7
+0017 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 325
+0018         ?C0039:
+                                           ; SOURCE LINE # 327
+0018 900000      R     MOV     DPTR,#status
+001B E0                MOVX    A,@DPTR
+001C FF                MOV     R7,A
+                                           ; SOURCE LINE # 328
+001D         ?C0040:
+001D 22                RET     
+             ; FUNCTION CySetTemp (END)
+
+             ; FUNCTION _CySetFlashEEBuffer (BEGIN)
+                                           ; SOURCE LINE # 349
+0000 900000      R     MOV     DPTR,#buffer
+0003 120000      E     LCALL   ?C?PSTXDATA
+                                           ; SOURCE LINE # 350
+                                           ; SOURCE LINE # 351
+0006 900000      R     MOV     DPTR,#status
+0009 E4                CLR     A
+000A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 353
+000B 120000      E     LCALL   CySpcStart
+                                           ; SOURCE LINE # 357
+000E 7B00              MOV     R3,#00H
+0010 7A00              MOV     R2,#00H
+0012 7900              MOV     R1,#00H
+0014 C003              PUSH    AR3
+0016 C002              PUSH    AR2
+0018 C001              PUSH    AR1
+001A 900000      R     MOV     DPTR,#buffer
+001D 120000      E     LCALL   ?C?PLDXDATA
+0020 D082              POP     DPL
+0022 D083              POP     DPH
+0024 D0E0              POP     ACC
+0026 6B                XRL     A,R3
+0027 7008              JNZ     ?C0093
+0029 E9                MOV     A,R1
+002A 6582              XRL     A,DPL
+002C 7003              JNZ     ?C0093
+002E EA                MOV     A,R2
+002F 6583              XRL     A,DPH
+0031         ?C0093:
+0031 7014              JNZ     ?C0041
+                                           ; SOURCE LINE # 358
+                                           ; SOURCE LINE # 359
+0033 900000      R     MOV     DPTR,#rowBuffer
+0036 120000      E     LCALL   ?C?PLDXDATA
+0039 900000      R     MOV     DPTR,#rowBuffer
+003C 120000      E     LCALL   ?C?PSTXDATA
+                                           ; SOURCE LINE # 360
+003F 900000      R     MOV     DPTR,#status
+0042 7401              MOV     A,#01H
+0044 F0                MOVX    @DPTR,A
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 23  
+
+                                           ; SOURCE LINE # 361
+0045 8029              SJMP    ?C0042
+0047         ?C0041:
+                                           ; SOURCE LINE # 362
+0047 120000      E     LCALL   CySpcLock
+004A EF                MOV     A,R7
+004B 6014              JZ      ?C0043
+                                           ; SOURCE LINE # 363
+                                           ; SOURCE LINE # 364
+004D 900000      R     MOV     DPTR,#rowBuffer
+0050 120000      E     LCALL   ?C?PLDXDATA
+0053 900000      R     MOV     DPTR,#rowBuffer
+0056 120000      E     LCALL   ?C?PSTXDATA
+                                           ; SOURCE LINE # 365
+0059 900000      R     MOV     DPTR,#status
+005C 7404              MOV     A,#04H
+005E F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 366
+005F 800F              SJMP    ?C0042
+0061         ?C0043:
+                                           ; SOURCE LINE # 368
+                                           ; SOURCE LINE # 369
+0061 900000      R     MOV     DPTR,#buffer
+0064 120000      E     LCALL   ?C?PLDXDATA
+0067 900000      R     MOV     DPTR,#rowBuffer
+006A 120000      E     LCALL   ?C?PSTXDATA
+                                           ; SOURCE LINE # 370
+006D 120000      E     LCALL   CySpcUnlock
+                                           ; SOURCE LINE # 371
+0070         ?C0042:
+                                           ; SOURCE LINE # 380
+0070 900000      R     MOV     DPTR,#status
+0073 E0                MOVX    A,@DPTR
+0074 FF                MOV     R7,A
+                                           ; SOURCE LINE # 381
+0075         ?C0045:
+0075 22                RET     
+             ; FUNCTION _CySetFlashEEBuffer (END)
+
+             ; FUNCTION _CyWriteRowData (BEGIN)
+                                           ; SOURCE LINE # 407
+0000 900000      R     MOV     DPTR,#arrayId
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+0005 900000      R     MOV     DPTR,#rowAddress
+0008 EC                MOV     A,R4
+0009 F0                MOVX    @DPTR,A
+000A A3                INC     DPTR
+000B ED                MOV     A,R5
+000C F0                MOVX    @DPTR,A
+000D 900000      R     MOV     DPTR,#rowData
+0010 120000      E     LCALL   ?C?PSTXDATA
+                                           ; SOURCE LINE # 408
+                                           ; SOURCE LINE # 412
+0013 900000      R     MOV     DPTR,#arrayId
+0016 E0                MOVX    A,@DPTR
+0017 FF                MOV     R7,A
+0018 EF                MOV     A,R7
+0019 D3                SETB    C
+001A 943F              SUBB    A,#03FH
+001C 4006              JC      ?C0046
+001E 7E00              MOV     R6,#00H
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 24  
+
+0020 7F10              MOV     R7,#010H
+0022 8004              SJMP    ?C0047
+0024         ?C0046:
+0024 7E01              MOV     R6,#01H
+0026 7F00              MOV     R7,#00H
+0028         ?C0047:
+0028 900000      R     MOV     DPTR,#rowSize
+002B EE                MOV     A,R6
+002C F0                MOVX    @DPTR,A
+002D A3                INC     DPTR
+002E EF                MOV     A,R7
+002F F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 413
+0030 900000      R     MOV     DPTR,#arrayId
+0033 E0                MOVX    A,@DPTR
+0034 FF                MOV     R7,A
+0035 C007              PUSH    AR7
+0037 900000      R     MOV     DPTR,#rowAddress
+003A E0                MOVX    A,@DPTR
+003B FC                MOV     R4,A
+003C A3                INC     DPTR
+003D E0                MOVX    A,@DPTR
+003E FD                MOV     R5,A
+003F 900000      R     MOV     DPTR,#rowData
+0042 120000      E     LCALL   ?C?PLDXDATA
+0045 900000      R     MOV     DPTR,#rowSize
+0048 E0                MOVX    A,@DPTR
+0049 FE                MOV     R6,A
+004A A3                INC     DPTR
+004B E0                MOVX    A,@DPTR
+004C FF                MOV     R7,A
+004D 900000      R     MOV     DPTR,#?_CyWriteRowFull?BYTE+06H
+0050 EE                MOV     A,R6
+0051 F0                MOVX    @DPTR,A
+0052 A3                INC     DPTR
+0053 EF                MOV     A,R7
+0054 F0                MOVX    @DPTR,A
+0055 D007              POP     AR7
+0057 120000      R     LCALL   _CyWriteRowFull
+005A 900000      R     MOV     DPTR,#status
+005D EF                MOV     A,R7
+005E F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 415
+005F 900000      R     MOV     DPTR,#status
+0062 E0                MOVX    A,@DPTR
+0063 FF                MOV     R7,A
+                                           ; SOURCE LINE # 416
+0064         ?C0048:
+0064 22                RET     
+             ; FUNCTION _CyWriteRowData (END)
+
+             ; FUNCTION _CyWriteRowFull (BEGIN)
+                                           ; SOURCE LINE # 480
+0000 900000      R     MOV     DPTR,#arrayId
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+0005 900000      R     MOV     DPTR,#rowNumber
+0008 EC                MOV     A,R4
+0009 F0                MOVX    @DPTR,A
+000A A3                INC     DPTR
+000B ED                MOV     A,R5
+000C F0                MOVX    @DPTR,A
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 25  
+
+000D 900000      R     MOV     DPTR,#rowData
+0010 120000      E     LCALL   ?C?PSTXDATA
+                                           ; SOURCE LINE # 482
+                                           ; SOURCE LINE # 483
+0013 900000      R     MOV     DPTR,#status
+0016 E4                CLR     A
+0017 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 485
+0018 900000      R     MOV     DPTR,#arrayId
+001B E0                MOVX    A,@DPTR
+001C FF                MOV     R7,A
+001D EF                MOV     A,R7
+001E D3                SETB    C
+001F 943F              SUBB    A,#03FH
+0021 5011              JNC     ?C0049
+0023 900000      R     MOV     DPTR,#arrayId
+0026 E0                MOVX    A,@DPTR
+0027 FF                MOV     R7,A
+0028 EF                MOV     A,R7
+0029 D3                SETB    C
+002A 9401              SUBB    A,#01H
+002C 4006              JC      ?C0049
+                                           ; SOURCE LINE # 486
+                                           ; SOURCE LINE # 487
+002E 900000      R     MOV     DPTR,#status
+0031 7401              MOV     A,#01H
+0033 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 488
+0034         ?C0049:
+                                           ; SOURCE LINE # 490
+0034 900000      R     MOV     DPTR,#arrayId
+0037 E0                MOVX    A,@DPTR
+0038 FF                MOV     R7,A
+0039 EF                MOV     A,R7
+003A D3                SETB    C
+003B 947F              SUBB    A,#07FH
+003D 4006              JC      ?C0050
+                                           ; SOURCE LINE # 491
+                                           ; SOURCE LINE # 492
+003F 900000      R     MOV     DPTR,#status
+0042 7401              MOV     A,#01H
+0044 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 493
+0045         ?C0050:
+                                           ; SOURCE LINE # 495
+0045 900000      R     MOV     DPTR,#arrayId
+0048 E0                MOVX    A,@DPTR
+0049 FF                MOV     R7,A
+004A EF                MOV     A,R7
+004B C3                CLR     C
+004C 9440              SUBB    A,#040H
+004E 4011              JC      ?C0051
+0050 900000      R     MOV     DPTR,#arrayId
+0053 E0                MOVX    A,@DPTR
+0054 FF                MOV     R7,A
+0055 EF                MOV     A,R7
+0056 D3                SETB    C
+0057 9441              SUBB    A,#041H
+0059 4006              JC      ?C0051
+                                           ; SOURCE LINE # 496
+                                           ; SOURCE LINE # 497
+005B 900000      R     MOV     DPTR,#status
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 26  
+
+005E 7401              MOV     A,#01H
+0060 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 498
+0061         ?C0051:
+                                           ; SOURCE LINE # 500
+0061 900000      R     MOV     DPTR,#arrayId
+0064 E0                MOVX    A,@DPTR
+0065 FF                MOV     R7,A
+0066 EF                MOV     A,R7
+0067 D3                SETB    C
+0068 943F              SUBB    A,#03FH
+006A 5021              JNC     ?C0052
+                                           ; SOURCE LINE # 501
+                                           ; SOURCE LINE # 503
+006C 900000      R     MOV     DPTR,#rowNumber
+006F E0                MOVX    A,@DPTR
+0070 FE                MOV     R6,A
+0071 A3                INC     DPTR
+0072 E0                MOVX    A,@DPTR
+0073 FF                MOV     R7,A
+0074 E4                CLR     A
+0075 FC                MOV     R4,A
+0076 FD                MOV     R5,A
+0077 7B00              MOV     R3,#00H
+0079 7A01              MOV     R2,#01H
+007B 7900              MOV     R1,#00H
+007D 7800              MOV     R0,#00H
+007F C3                CLR     C
+0080 120000      E     LCALL   ?C?ULCMP
+0083 5033              JNC     ?C0054
+                                           ; SOURCE LINE # 504
+                                           ; SOURCE LINE # 505
+0085 900000      R     MOV     DPTR,#status
+0088 7401              MOV     A,#01H
+008A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 506
+                                           ; SOURCE LINE # 507
+008B 802B              SJMP    ?C0054
+008D         ?C0052:
+                                           ; SOURCE LINE # 509
+                                           ; SOURCE LINE # 511
+008D 900000      R     MOV     DPTR,#rowNumber
+0090 E0                MOVX    A,@DPTR
+0091 FE                MOV     R6,A
+0092 A3                INC     DPTR
+0093 E0                MOVX    A,@DPTR
+0094 FF                MOV     R7,A
+0095 D3                SETB    C
+0096 EF                MOV     A,R7
+0097 9480              SUBB    A,#080H
+0099 EE                MOV     A,R6
+009A 9400              SUBB    A,#00H
+009C 4006              JC      ?C0055
+                                           ; SOURCE LINE # 512
+                                           ; SOURCE LINE # 513
+009E 900000      R     MOV     DPTR,#status
+00A1 7401              MOV     A,#01H
+00A3 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 514
+00A4         ?C0055:
+                                           ; SOURCE LINE # 516
+00A4 900000      R     MOV     DPTR,#rowSize
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 27  
+
+00A7 E0                MOVX    A,@DPTR
+00A8 FE                MOV     R6,A
+00A9 A3                INC     DPTR
+00AA E0                MOVX    A,@DPTR
+00AB FF                MOV     R7,A
+00AC EF                MOV     A,R7
+00AD 6410              XRL     A,#010H
+00AF 4E                ORL     A,R6
+00B0 6006              JZ      ?C0054
+                                           ; SOURCE LINE # 517
+                                           ; SOURCE LINE # 518
+00B2 900000      R     MOV     DPTR,#status
+00B5 7401              MOV     A,#01H
+00B7 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 519
+                                           ; SOURCE LINE # 520
+00B8         ?C0054:
+                                           ; SOURCE LINE # 522
+00B8 7B00              MOV     R3,#00H
+00BA 7A00              MOV     R2,#00H
+00BC 7900              MOV     R1,#00H
+00BE C003              PUSH    AR3
+00C0 C002              PUSH    AR2
+00C2 C001              PUSH    AR1
+00C4 900000      R     MOV     DPTR,#rowData
+00C7 120000      E     LCALL   ?C?PLDXDATA
+00CA D082              POP     DPL
+00CC D083              POP     DPH
+00CE D0E0              POP     ACC
+00D0 6B                XRL     A,R3
+00D1 7008              JNZ     ?C0094
+00D3 E9                MOV     A,R1
+00D4 6582              XRL     A,DPL
+00D6 7003              JNZ     ?C0094
+00D8 EA                MOV     A,R2
+00D9 6583              XRL     A,DPH
+00DB         ?C0094:
+00DB 7006              JNZ     ?C0057
+                                           ; SOURCE LINE # 523
+                                           ; SOURCE LINE # 524
+00DD 900000      R     MOV     DPTR,#status
+00E0 7401              MOV     A,#01H
+00E2 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 525
+00E3         ?C0057:
+                                           ; SOURCE LINE # 528
+00E3 900000      R     MOV     DPTR,#status
+00E6 E0                MOVX    A,@DPTR
+00E7 FF                MOV     R7,A
+00E8 EF                MOV     A,R7
+00E9 6003              JZ      $ + 5H
+00EB 020000      R     LJMP    ?C0058
+                                           ; SOURCE LINE # 529
+                                           ; SOURCE LINE # 530
+00EE 120000      E     LCALL   CySpcLock
+00F1 EF                MOV     A,R7
+00F2 6003              JZ      $ + 5H
+00F4 020000      R     LJMP    ?C0059
+                                           ; SOURCE LINE # 531
+                                           ; SOURCE LINE # 533
+00F7 900000      R     MOV     DPTR,#arrayId
+00FA E0                MOVX    A,@DPTR
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 28  
+
+00FB FF                MOV     R7,A
+00FC C007              PUSH    AR7
+00FE 900000      R     MOV     DPTR,#rowNumber
+0101 E0                MOVX    A,@DPTR
+0102 FC                MOV     R4,A
+0103 A3                INC     DPTR
+0104 E0                MOVX    A,@DPTR
+0105 FD                MOV     R5,A
+0106 900000      R     MOV     DPTR,#rowData
+0109 120000      E     LCALL   ?C?PLDXDATA
+010C 900000      R     MOV     DPTR,#rowSize
+010F E0                MOVX    A,@DPTR
+0110 FE                MOV     R6,A
+0111 A3                INC     DPTR
+0112 E0                MOVX    A,@DPTR
+0113 FF                MOV     R7,A
+0114 900000      E     MOV     DPTR,#?_CySpcLoadRowFull?BYTE+06H
+0117 EE                MOV     A,R6
+0118 F0                MOVX    @DPTR,A
+0119 A3                INC     DPTR
+011A EF                MOV     A,R7
+011B F0                MOVX    @DPTR,A
+011C D007              POP     AR7
+011E 120000      E     LCALL   _CySpcLoadRowFull
+0121 900000      R     MOV     DPTR,#status
+0124 EF                MOV     A,R7
+0125 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 535
+0126 900000      R     MOV     DPTR,#status
+0129 E0                MOVX    A,@DPTR
+012A FF                MOV     R7,A
+012B EF                MOV     A,R7
+012C 6407              XRL     A,#07H
+012E 6003              JZ      $ + 5H
+0130 020000      R     LJMP    ?C0060
+                                           ; SOURCE LINE # 536
+0133         ?C0061:
+                                           ; SOURCE LINE # 537
+0133 904722            MOV     DPTR,#04722H
+0136 E0                MOVX    A,@DPTR
+0137 FF                MOV     R7,A
+0138 EF                MOV     A,R7
+0139 5402              ANL     A,#02H
+013B FF                MOV     R7,A
+013C 7E00              MOV     R6,#00H
+013E EF                MOV     A,R7
+013F 4E                ORL     A,R6
+0140 7009              JNZ     ?C0062
+                                           ; SOURCE LINE # 538
+                                           ; SOURCE LINE # 540
+0142 7F01              MOV     R7,#01H
+0144 7E00              MOV     R6,#00H
+0146 120000      E     LCALL   _CyDelayUs
+                                           ; SOURCE LINE # 541
+0149 80E8              SJMP    ?C0061
+014B         ?C0062:
+                                           ; SOURCE LINE # 544
+014B 904722            MOV     DPTR,#04722H
+014E E0                MOVX    A,@DPTR
+014F FF                MOV     R7,A
+0150 EF                MOV     A,R7
+0151 5402              ANL     A,#02H
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 29  
+
+0153 FF                MOV     R7,A
+0154 7E00              MOV     R6,#00H
+0156 EF                MOV     A,R7
+0157 4E                ORL     A,R6
+0158 600D              JZ      ?C0064
+015A 904722            MOV     DPTR,#04722H
+015D E0                MOVX    A,@DPTR
+015E FF                MOV     R7,A
+015F EF                MOV     A,R7
+0160 13                RRC     A
+0161 13                RRC     A
+0162 543F              ANL     A,#03FH
+0164 FF                MOV     R7,A
+0165 8002              SJMP    ?C0065
+0167         ?C0064:
+0167 7FFF              MOV     R7,#0FFH
+0169         ?C0065:
+0169 EF                MOV     A,R7
+016A 7007              JNZ     ?C0063
+                                           ; SOURCE LINE # 545
+                                           ; SOURCE LINE # 546
+016C 900000      R     MOV     DPTR,#status
+016F E4                CLR     A
+0170 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 547
+0171 8006              SJMP    ?C0066
+0173         ?C0063:
+                                           ; SOURCE LINE # 549
+                                           ; SOURCE LINE # 550
+0173 900000      R     MOV     DPTR,#status
+0176 74FF              MOV     A,#0FFH
+0178 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 551
+0179         ?C0066:
+                                           ; SOURCE LINE # 553
+0179 900000      R     MOV     DPTR,#status
+017C E0                MOVX    A,@DPTR
+017D FF                MOV     R7,A
+017E EF                MOV     A,R7
+017F 7074              JNZ     ?C0060
+                                           ; SOURCE LINE # 554
+                                           ; SOURCE LINE # 556
+0181 900000      R     MOV     DPTR,#arrayId
+0184 E0                MOVX    A,@DPTR
+0185 FF                MOV     R7,A
+0186 900000      R     MOV     DPTR,#rowNumber
+0189 E0                MOVX    A,@DPTR
+018A FC                MOV     R4,A
+018B A3                INC     DPTR
+018C E0                MOVX    A,@DPTR
+018D FD                MOV     R5,A
+018E 900000      R     MOV     DPTR,#dieTemperature
+0191 E0                MOVX    A,@DPTR
+0192 FB                MOV     R3,A
+0193 900000      R     MOV     DPTR,#dieTemperature+01H
+0196 E0                MOVX    A,@DPTR
+0197 FE                MOV     R6,A
+0198 900000      E     MOV     DPTR,#?_CySpcWriteRow?BYTE+04H
+019B EE                MOV     A,R6
+019C F0                MOVX    @DPTR,A
+019D 120000      E     LCALL   _CySpcWriteRow
+01A0 900000      R     MOV     DPTR,#status
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 30  
+
+01A3 EF                MOV     A,R7
+01A4 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 558
+01A5 900000      R     MOV     DPTR,#status
+01A8 E0                MOVX    A,@DPTR
+01A9 FF                MOV     R7,A
+01AA EF                MOV     A,R7
+01AB 6407              XRL     A,#07H
+01AD 7046              JNZ     ?C0060
+                                           ; SOURCE LINE # 559
+01AF         ?C0069:
+                                           ; SOURCE LINE # 560
+01AF 904722            MOV     DPTR,#04722H
+01B2 E0                MOVX    A,@DPTR
+01B3 FF                MOV     R7,A
+01B4 EF                MOV     A,R7
+01B5 5402              ANL     A,#02H
+01B7 FF                MOV     R7,A
+01B8 7E00              MOV     R6,#00H
+01BA EF                MOV     A,R7
+01BB 4E                ORL     A,R6
+01BC 7009              JNZ     ?C0070
+                                           ; SOURCE LINE # 561
+                                           ; SOURCE LINE # 563
+01BE 7F01              MOV     R7,#01H
+01C0 7E00              MOV     R6,#00H
+01C2 120000      E     LCALL   _CyDelayUs
+                                           ; SOURCE LINE # 564
+01C5 80E8              SJMP    ?C0069
+01C7         ?C0070:
+                                           ; SOURCE LINE # 567
+01C7 904722            MOV     DPTR,#04722H
+01CA E0                MOVX    A,@DPTR
+01CB FF                MOV     R7,A
+01CC EF                MOV     A,R7
+01CD 5402              ANL     A,#02H
+01CF FF                MOV     R7,A
+01D0 7E00              MOV     R6,#00H
+01D2 EF                MOV     A,R7
+01D3 4E                ORL     A,R6
+01D4 600D              JZ      ?C0072
+01D6 904722            MOV     DPTR,#04722H
+01D9 E0                MOVX    A,@DPTR
+01DA FF                MOV     R7,A
+01DB EF                MOV     A,R7
+01DC 13                RRC     A
+01DD 13                RRC     A
+01DE 543F              ANL     A,#03FH
+01E0 FF                MOV     R7,A
+01E1 8002              SJMP    ?C0073
+01E3         ?C0072:
+01E3 7FFF              MOV     R7,#0FFH
+01E5         ?C0073:
+01E5 EF                MOV     A,R7
+01E6 7007              JNZ     ?C0071
+                                           ; SOURCE LINE # 568
+                                           ; SOURCE LINE # 569
+01E8 900000      R     MOV     DPTR,#status
+01EB E4                CLR     A
+01EC F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 570
+01ED 8006              SJMP    ?C0060
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 31  
+
+01EF         ?C0071:
+                                           ; SOURCE LINE # 572
+                                           ; SOURCE LINE # 573
+01EF 900000      R     MOV     DPTR,#status
+01F2 74FF              MOV     A,#0FFH
+01F4 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 574
+                                           ; SOURCE LINE # 575
+                                           ; SOURCE LINE # 576
+                                           ; SOURCE LINE # 577
+01F5         ?C0060:
+                                           ; SOURCE LINE # 578
+01F5 120000      E     LCALL   CySpcUnlock
+                                           ; SOURCE LINE # 579
+01F8 8006              SJMP    ?C0058
+01FA         ?C0059:
+                                           ; SOURCE LINE # 581
+                                           ; SOURCE LINE # 582
+01FA 900000      R     MOV     DPTR,#status
+01FD 7404              MOV     A,#04H
+01FF F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 583
+                                           ; SOURCE LINE # 584
+0200         ?C0058:
+                                           ; SOURCE LINE # 586
+0200 900000      R     MOV     DPTR,#status
+0203 E0                MOVX    A,@DPTR
+0204 FF                MOV     R7,A
+                                           ; SOURCE LINE # 587
+0205         ?C0076:
+0205 22                RET     
+             ; FUNCTION _CyWriteRowFull (END)
+
+             ; FUNCTION _CyFlash_SetWaitCycles (BEGIN)
+                                           ; SOURCE LINE # 603
+0000 900000      R     MOV     DPTR,#freq
+0003 EF                MOV     A,R7
+0004 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 604
+                                           ; SOURCE LINE # 608
+0005 120000      E     LCALL   CyEnterCriticalSection
+0008 900000      R     MOV     DPTR,#interruptState
+000B EF                MOV     A,R7
+000C F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 616
+000D 900000      R     MOV     DPTR,#freq
+0010 E0                MOVX    A,@DPTR
+0011 FF                MOV     R7,A
+0012 EF                MOV     A,R7
+0013 C3                CLR     C
+0014 9416              SUBB    A,#016H
+0016 5014              JNC     ?C0077
+                                           ; SOURCE LINE # 617
+                                           ; SOURCE LINE # 618
+0018 904800            MOV     DPTR,#04800H
+001B E0                MOVX    A,@DPTR
+001C FF                MOV     R7,A
+001D EF                MOV     A,R7
+001E 543F              ANL     A,#03FH
+0020 FF                MOV     R7,A
+0021 EF                MOV     A,R7
+0022 4440              ORL     A,#040H
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 32  
+
+0024 FF                MOV     R7,A
+0025 904800            MOV     DPTR,#04800H
+0028 EF                MOV     A,R7
+0029 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 620
+002A 8043              SJMP    ?C0078
+002C         ?C0077:
+                                           ; SOURCE LINE # 621
+002C 900000      R     MOV     DPTR,#freq
+002F E0                MOVX    A,@DPTR
+0030 FF                MOV     R7,A
+0031 EF                MOV     A,R7
+0032 C3                CLR     C
+0033 942C              SUBB    A,#02CH
+0035 5014              JNC     ?C0079
+                                           ; SOURCE LINE # 622
+                                           ; SOURCE LINE # 623
+0037 904800            MOV     DPTR,#04800H
+003A E0                MOVX    A,@DPTR
+003B FF                MOV     R7,A
+003C EF                MOV     A,R7
+003D 543F              ANL     A,#03FH
+003F FF                MOV     R7,A
+0040 EF                MOV     A,R7
+0041 4480              ORL     A,#080H
+0043 FF                MOV     R7,A
+0044 904800            MOV     DPTR,#04800H
+0047 EF                MOV     A,R7
+0048 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 625
+0049 8024              SJMP    ?C0078
+004B         ?C0079:
+                                           ; SOURCE LINE # 626
+004B 900000      R     MOV     DPTR,#freq
+004E E0                MOVX    A,@DPTR
+004F FF                MOV     R7,A
+0050 EF                MOV     A,R7
+0051 C3                CLR     C
+0052 9443              SUBB    A,#043H
+0054 5014              JNC     ?C0081
+                                           ; SOURCE LINE # 627
+                                           ; SOURCE LINE # 628
+0056 904800            MOV     DPTR,#04800H
+0059 E0                MOVX    A,@DPTR
+005A FF                MOV     R7,A
+005B EF                MOV     A,R7
+005C 543F              ANL     A,#03FH
+005E FF                MOV     R7,A
+005F EF                MOV     A,R7
+0060 44C0              ORL     A,#0C0H
+0062 FF                MOV     R7,A
+0063 904800            MOV     DPTR,#04800H
+0066 EF                MOV     A,R7
+0067 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 630
+0068 8005              SJMP    ?C0078
+006A         ?C0081:
+                                           ; SOURCE LINE # 644
+                                           ; SOURCE LINE # 646
+006A 7F00              MOV     R7,#00H
+006C 120000      E     LCALL   _?CyHalt
+                                           ; SOURCE LINE # 647
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 33  
+
+006F         ?C0078:
+                                           ; SOURCE LINE # 650
+006F 900000      R     MOV     DPTR,#interruptState
+0072 E0                MOVX    A,@DPTR
+0073 FF                MOV     R7,A
+0074 120000      E     LCALL   _CyExitCriticalSection
+                                           ; SOURCE LINE # 651
+0077 22                RET     
+             ; FUNCTION _CyFlash_SetWaitCycles (END)
+
+             ; FUNCTION CyEEPROM_Start (BEGIN)
+                                           ; SOURCE LINE # 661
+                                           ; SOURCE LINE # 662
+                                           ; SOURCE LINE # 665
+0000 120000      E     LCALL   CyEnterCriticalSection
+0003 900000      R     MOV     DPTR,#interruptState
+0006 EF                MOV     A,R7
+0007 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 672
+0008 9043A0            MOV     DPTR,#043A0H
+000B E0                MOVX    A,@DPTR
+000C FF                MOV     R7,A
+000D EF                MOV     A,R7
+000E 4408              ORL     A,#08H
+0010 FF                MOV     R7,A
+0011 EF                MOV     A,R7
+0012 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 673
+0013 9043B0            MOV     DPTR,#043B0H
+0016 E0                MOVX    A,@DPTR
+0017 FF                MOV     R7,A
+0018 EF                MOV     A,R7
+0019 4408              ORL     A,#08H
+001B FF                MOV     R7,A
+001C EF                MOV     A,R7
+001D F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 686
+001E 904701            MOV     DPTR,#04701H
+0021 74C8              MOV     A,#0C8H
+0023 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 693
+0024 9043AC            MOV     DPTR,#043ACH
+0027 E0                MOVX    A,@DPTR
+0028 FF                MOV     R7,A
+0029 EF                MOV     A,R7
+002A 4410              ORL     A,#010H
+002C FF                MOV     R7,A
+002D EF                MOV     A,R7
+002E F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 694
+002F 9043BC            MOV     DPTR,#043BCH
+0032 E0                MOVX    A,@DPTR
+0033 FF                MOV     R7,A
+0034 EF                MOV     A,R7
+0035 4410              ORL     A,#010H
+0037 FF                MOV     R7,A
+0038 EF                MOV     A,R7
+0039 F0                MOVX    @DPTR,A
+003A         ?C0085:
+                                           ; SOURCE LINE # 696
+003A 904700            MOV     DPTR,#04700H
+003D E0                MOVX    A,@DPTR
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 34  
+
+003E FF                MOV     R7,A
+003F EF                MOV     A,R7
+0040 5420              ANL     A,#020H
+0042 FF                MOV     R7,A
+0043 7E00              MOV     R6,#00H
+0045 EF                MOV     A,R7
+0046 4E                ORL     A,R6
+0047 60F1              JZ      ?C0085
+                                           ; SOURCE LINE # 697
+                                           ; SOURCE LINE # 699
+0049         ?C0086:
+                                           ; SOURCE LINE # 701
+0049 900000      R     MOV     DPTR,#interruptState
+004C E0                MOVX    A,@DPTR
+004D FF                MOV     R7,A
+004E 120000      E     LCALL   _CyExitCriticalSection
+                                           ; SOURCE LINE # 702
+0051 22                RET     
+             ; FUNCTION CyEEPROM_Start (END)
+
+             ; FUNCTION CyEEPROM_Stop (BEGIN)
+                                           ; SOURCE LINE # 712
+                                           ; SOURCE LINE # 713
+                                           ; SOURCE LINE # 716
+0000 120000      E     LCALL   CyEnterCriticalSection
+0003 900000      R     MOV     DPTR,#interruptState
+0006 EF                MOV     A,R7
+0007 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 718
+0008 9043AC            MOV     DPTR,#043ACH
+000B E0                MOVX    A,@DPTR
+000C FF                MOV     R7,A
+000D EF                MOV     A,R7
+000E 54EF              ANL     A,#0EFH
+0010 FF                MOV     R7,A
+0011 EF                MOV     A,R7
+0012 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 719
+0013 9043BC            MOV     DPTR,#043BCH
+0016 E0                MOVX    A,@DPTR
+0017 FF                MOV     R7,A
+0018 EF                MOV     A,R7
+0019 54EF              ANL     A,#0EFH
+001B FF                MOV     R7,A
+001C EF                MOV     A,R7
+001D F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 721
+001E 900000      R     MOV     DPTR,#interruptState
+0021 E0                MOVX    A,@DPTR
+0022 FF                MOV     R7,A
+0023 120000      E     LCALL   _CyExitCriticalSection
+                                           ; SOURCE LINE # 722
+0026 22                RET     
+             ; FUNCTION CyEEPROM_Stop (END)
+
+             ; FUNCTION CyEEPROM_ReadReserve (BEGIN)
+                                           ; SOURCE LINE # 732
+                                           ; SOURCE LINE # 733
+                                           ; SOURCE LINE # 735
+0000 904702            MOV     DPTR,#04702H
+0003 E0                MOVX    A,@DPTR
+0004 FF                MOV     R7,A
+C51 COMPILER V9.51   CYFLASH                                                               11/29/2022 16:00:57 PAGE 35  
+
+0005 EF                MOV     A,R7
+0006 4401              ORL     A,#01H
+0008 FF                MOV     R7,A
+0009 EF                MOV     A,R7
+000A F0                MOVX    @DPTR,A
+000B         ?C0089:
+                                           ; SOURCE LINE # 737
+000B 904702            MOV     DPTR,#04702H
+000E E0                MOVX    A,@DPTR
+000F FF                MOV     R7,A
+0010 EF                MOV     A,R7
+0011 5402              ANL     A,#02H
+0013 FF                MOV     R7,A
+0014 7E00              MOV     R6,#00H
+0016 EF                MOV     A,R7
+0017 4E                ORL     A,R6
+0018 60F1              JZ      ?C0089
+                                           ; SOURCE LINE # 738
+                                           ; SOURCE LINE # 740
+001A         ?C0090:
+                                           ; SOURCE LINE # 741
+001A         ?C0091:
+001A 22                RET     
+             ; FUNCTION CyEEPROM_ReadReserve (END)
+
+             ; FUNCTION CyEEPROM_ReadRelease (BEGIN)
+                                           ; SOURCE LINE # 751
+                                           ; SOURCE LINE # 752
+                                           ; SOURCE LINE # 753
+0000 904702            MOV     DPTR,#04702H
+0003 E0                MOVX    A,@DPTR
+0004 FF                MOV     R7,A
+0005 EF                MOV     A,R7
+0006 54FE              ANL     A,#0FEH
+0008 FF                MOV     R7,A
+0009 EF                MOV     A,R7
+000A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 754
+000B 22                RET     
+             ; FUNCTION CyEEPROM_ReadRelease (END)
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1597    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      5      35
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
