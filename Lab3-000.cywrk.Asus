@@ -18,7 +18,7 @@
 <v>Output</v>
 </TreeKeys>
 <TreeStates>
-<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="Lab3-000">
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="Lab3-000\Lab3\Generated_Source\PSoC3\Pin_2\Pin_2.c">
 <ExpandedNodeIds>
 <v>Lab3-000</v>
 <v>Lab3-000\Lab3</v>
@@ -39,6 +39,7 @@
 <v>Lab3-000\Lab3\Source Files\main.c</v>
 <v>Lab3-000\Lab3\Generated_Source</v>
 <v>Lab3-000\Lab3\Generated_Source\PSoC3</v>
+<v>Lab3-000\Lab3\Generated_Source\PSoC3\Pin_2</v>
 </ExpandedNodeIds>
 <VisibleNodeIds>
 <v>Lab3-000</v>
@@ -71,12 +72,12 @@
 <v>Lab3-000\Lab3\Generated_Source\PSoC3\LCD_LCDPort</v>
 <v>Lab3-000\Lab3\Generated_Source\PSoC3\Pin_1</v>
 <v>Lab3-000\Lab3\Generated_Source\PSoC3\Pin_2</v>
+<v>Lab3-000\Lab3\Generated_Source\PSoC3\Pin_2\Pin_2.c</v>
+<v>Lab3-000\Lab3\Generated_Source\PSoC3\Pin_2\Pin_2.h</v>
+<v>Lab3-000\Lab3\Generated_Source\PSoC3\Pin_2\Pin_2_aliases.h</v>
 <v>Lab3-000\Lab3\Generated_Source\PSoC3\cycodeshareexport.ld</v>
 <v>Lab3-000\Lab3\Generated_Source\PSoC3\cycodeshareimport.ld</v>
 <v>Lab3-000\Lab3\Generated_Source\PSoC3\cycodeshareimport.scat</v>
-<v>Lab3-000\Lab3\Generated_Source\PSoC3\cydevice.h</v>
-<v>Lab3-000\Lab3\Generated_Source\PSoC3\cydevice_trm.h</v>
-<v>Lab3-000\Lab3\Generated_Source\PSoC3\cydevicekeil.inc</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
@@ -142,40 +143,6 @@
 <VisibleNodeIds>
 <v>Lab3-000</v>
 <v>Lab3-000\Lab3</v>
-<v>Lab3-000\Lab3\DP8051</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_AMuxCH0.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_CompCH0.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_CompCH0_PM.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_CSHL.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_IdacCH0.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_IdacCH0_PM.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_INT.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_IntClock.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_Pins.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_PM.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_SMS_Wrapper.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CapSense_TunerHelper.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\cy_em_eeprom.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CyBootAsmKeil.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CyDmac.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\cyfitter_cfg.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CyFlash.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CyLib.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\cymem.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\cyPm.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\CySpc.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\cyutils.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\KeilStart.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\LCD.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\LCD_BarGraph.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\LCD_LCDPort.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\LCD_PM.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\main.lst</v>
-<v>Lab3-000\Lab3\DP8051\DP8051_Keil_951\Debug\Listing Files\Pin_1.lst</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 </TreeStates>

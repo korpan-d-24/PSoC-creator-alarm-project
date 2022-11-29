@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 1   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE_PM
@@ -62,7 +62,7 @@ line level    source
   50          *  mode and none-retention registers.
   51          *
   52          * Reentrant:
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 2   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 2   
 
   53          *  Yes.
   54          *
@@ -126,7 +126,7 @@ line level    source
  112   2          }
  113   1          
  114   1          CapSense_SaveConfig();
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 3   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 3   
 
  115   1      }
  116          
@@ -190,7 +190,7 @@ line level    source
  174   1              /* Raw Counter */
  175   1              CapSense_RAW_CH0_PERIOD_HI_REG    = CapSense_MEASURE_FULL_RANGE_LOW;        /* F1 register */
  176   1              CapSense_RAW_CH0_PERIOD_LO_REG    = CapSense_MEASURE_FULL_RANGE_LOW;        /* F0 register */
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 4   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 4   
 
  177   1          
  178   1          #endif  /* (CapSense_IMPLEMENTATION_CH0 == CapSense_MEASURE_IMPLEMENTATION_FF) */ 
@@ -254,7 +254,7 @@ line level    source
  236          *  mode and none-retention registers.
  237          *
  238          *******************************************************************************/
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 5   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 5   
 
  239          void CapSense_Wakeup(void) 
  240          {
@@ -269,7 +269,7 @@ line level    source
  249          
  250          
  251          /* [] END OF FILE */
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 6   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 6   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -333,7 +333,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 153
 0000 7B02              MOV     R3,#02H
 0002 7A64              MOV     R2,#064H
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 7   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 7   
 
 0004 794A              MOV     R1,#04AH
 0006 7DFF              MOV     R5,#0FFH
@@ -397,7 +397,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    117    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =      2    ----
-C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 16:00:59 PAGE 8   
+C51 COMPILER V9.51   CAPSENSE_PM                                                           11/29/2022 20:10:21 PAGE 8   
 
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----

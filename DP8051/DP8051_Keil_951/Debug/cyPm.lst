@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 1   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CYPM
@@ -62,7 +62,7 @@ line level    source
   51          *
   52          *  This function is called in preparation for entering sleep or hibernate low
   53          *  power modes. Saves all the states of the clocking system that do not persist
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 2   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 2   
 
   54          *  during sleep/hibernate or that need to be altered in preparation for
   55          *  sleep/hibernate. Shutdowns all the digital and analog clock dividers for the
@@ -126,7 +126,7 @@ line level    source
  113   3              case CY_PM_CLKDIST_PLL_SRC_XTAL:
  114   3                  CyMasterClk_SetSource(CY_MASTER_SOURCE_XTAL);
  115   3                  break;
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 3   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 3   
 
  116   3      
  117   3              case CY_PM_CLKDIST_PLL_SRC_DSI:
@@ -190,7 +190,7 @@ line level    source
  174   2              cyPmClockBackup.imoClkSrc = CY_IMO_SOURCE_IMO;
  175   2          }
  176   1      
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 4   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 4   
 
  177   1          /* Save clk_imo source */
  178   1          cyPmClockBackup.clkImoSrc = CY_PM_CLKDIST_CR_REG & CY_PM_CLKDIST_IMO_OUT_MASK;
@@ -254,7 +254,7 @@ line level    source
  236   1          ***************************************************************************/
  237   1          if(0u != (CY_PM_CLKDIST_DELAY_REG & CY_PM_CLKDIST_DELAY_EN))
  238   1          {
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 5   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 5   
 
  239   2              cyPmClockBackup.clkDistDelay = CY_PM_ENABLED;
  240   2          }
@@ -318,7 +318,7 @@ line level    source
  298   2              ***********************************************************************/
  299   2      
  300   2              /* Enable XMHZ XTAL with no wait */
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 6   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 6   
 
  301   2              (void) CyXTAL_Start(CY_PM_XTAL_MHZ_NO_WAIT);
  302   2      
@@ -382,7 +382,7 @@ line level    source
  360   2              CyIMO_SetFreq(CY_IMO_FREQ_USB);
  361   2          }
  362   1          else
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 7   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 7   
 
  363   1          {
  364   2              /* Restore IMO frequency */
@@ -446,7 +446,7 @@ line level    source
  422   2              {
  423   3                  CyDelayUs((uint32)1u);
  424   3      
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 8   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 8   
 
  425   3                  /* Accept PLL is OK after two consecutive polls indicate PLL lock */
  426   3                  if((0u != (CY_PM_FASTCLK_PLL_SR_REG & CY_PM_FASTCLK_PLL_LOCKED)) &&
@@ -510,7 +510,7 @@ line level    source
  484   1          CY_PM_ACT_CFG1_REG = cyPmClockBackup.enClkA;
  485   1          CY_PM_ACT_CFG2_REG = cyPmClockBackup.enClkD;
  486   1      }
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 9   
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 9   
 
  487          
  488          
@@ -574,7 +574,7 @@ line level    source
  546          *  the device will be in Active mode, but the CPU will remain halted waiting for
  547          *  an interrupt. If an interrupt occurs from something other than a wakeup
  548          *  source, then the CPU will restart with the device in Alternate Active mode
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 10  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 10  
 
  549          *  until a wakeup event occurs.
  550          *
@@ -638,7 +638,7 @@ line level    source
  608          *
  609          *  When CTW, FTW or One PPS is used as a wakeup source, the CyPmReadStatus()
  610          *  function must be called upon wakeup with a corresponding parameter. Please
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 11  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 11  
 
  611          *  refer to the CyPmReadStatus() API in the System Reference Guide for more
  612          *  information.
@@ -702,7 +702,7 @@ line level    source
  670   1      
  671   1          #endif /* (CY_PSOC3) */
  672   1      
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 12  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 12  
 
  673   1      
  674   1          /* Save and set new wake up configuration */
@@ -766,7 +766,7 @@ line level    source
  731          *  wakeupTime argument.  Once the wakeup condition is satisfied, then all saved
  732          *  state is restored and the function returns in the Active state.
  733          *
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 13  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 13  
 
  734          *  Note that if the wakeupTime is made with a different value, the period before
  735          *  the wakeup occurs can be significantly shorter than the specified time.  If
@@ -830,7 +830,7 @@ line level    source
  793          *  is placed into. As an example for a Comparator instance named MyComp the
  794          *  \param value to OR into the mask is: MyComp_ctComp__CMP_MASK.
  795          *
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 14  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 14  
 
  796          *  When CTW or One PPS is used as a wakeup source, the CyPmReadStatus()
  797          *  function must be called upon wakeup with corresponding parameter. Please
@@ -894,7 +894,7 @@ line level    source
  855   1          * PSoC3 < TO6:
  856   1          * - Hardware buzz must be disabled before the sleep mode entry.
  857   1          * - Voltage supervision (HVI/LVI) requires hardware buzz, so they must
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 15  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 15  
 
  858   1          *   be also disabled.
  859   1          *
@@ -958,7 +958,7 @@ line level    source
                   #endif /* (CY_PSOC5) */
  918   1      
  919   1      
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 16  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 16  
 
  920   1          CyPmHibSlpSaveSet();
  921   1      
@@ -1022,7 +1022,7 @@ line level    source
  979   2              cyPmBackup.imoActFreq12Mhz = CY_PM_ENABLED;
  980   2          }
  981   1          else
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 17  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 17  
 
  982   1          {
  983   2              /* IMO frequency is not 12 MHz */
@@ -1086,7 +1086,7 @@ line level    source
 1040   3                      if (CY_PM_DISABLED == cyPmBackup.hardwareBuzz)
 1041   3                      {
 1042   4                          CY_PM_PWRSYS_WAKE_TR2_REG &= (uint8)(~CY_PM_PWRSYS_WAKE_TR2_EN_BUZZ);
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 18  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 18  
 
 1043   4                      }
 1044   3                  }
@@ -1150,7 +1150,7 @@ line level    source
 1102          * Function Name: CyPmHibernateEx
 1103          ****************************************************************************//**
 1104          *
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 19  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 19  
 
 1105          *  Puts the part into the Hibernate state.
 1106          *
@@ -1214,7 +1214,7 @@ line level    source
 1164   1              * The Hibernate/Sleep regulator has a settling time after a reset.
 1165   1              * During this time, the system ignores requests to enter the Sleep and
 1166   1              * Hibernate modes. The holdoff delay is measured using the rising edges of
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 20  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 20  
 
 1167   1              * the 1 kHz ILO.
 1168   1              ***********************************************************************/
@@ -1278,7 +1278,7 @@ line level    source
 1225   1      
 1226   1          /* Two recommended NOPs to get into mode. */
 1227   1          CY_NOP;
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 21  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 21  
 
 1228   1          CY_NOP;
 1229   1      
@@ -1342,7 +1342,7 @@ line level    source
 1286          {
 1287   1          static uint8 interruptStatus;
 1288   1          uint8 interruptState;
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 22  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 22  
 
 1289   1          uint8 tmpStatus;
 1290   1      
@@ -1406,7 +1406,7 @@ line level    source
 1348   1                                      CY_PM_DISABLED : CY_PM_ENABLED;
 1349   1      
 1350   1          /* Save current 100kHz ILO enable state. Disabled automatically. */
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 23  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 23  
 
 1351   1          cyPmBackup.ilo100kEnable = (0u == (CY_PM_SLOWCLK_ILO_CR0_REG & CY_PM_ILO_CR0_EN_100K)) ?
 1352   1                                      CY_PM_DISABLED : CY_PM_ENABLED;
@@ -1470,7 +1470,7 @@ line level    source
 1410          *  - Restores the sleep regulator settings
 1411          *
 1412          *******************************************************************************/
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 24  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 24  
 
 1413          static void CyPmHibRestore(void) 
 1414          {
@@ -1534,7 +1534,7 @@ line level    source
 1472          *******************************************************************************/
 1473          void CyPmCtwSetInterval(uint8 ctwInterval) 
 1474          {
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 25  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 25  
 
 1475   1          /* Disable CTW interrupt enable */
 1476   1          CY_PM_TW_CFG2_REG &= ((uint8)(~CY_PM_CTW_IE));
@@ -1598,7 +1598,7 @@ line level    source
 1534          
 1535          /*******************************************************************************
 1536          * Function Name: CyPmFtwSetInterval
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 26  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 26  
 
 1537          ****************************************************************************//**
 1538          *
@@ -1662,7 +1662,7 @@ line level    source
 1596          * Reentrant:
 1597          *  No
 1598          *
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 27  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 27  
 
 1599          *******************************************************************************/
 1600          static void CyPmHibSlpSaveSet(void) 
@@ -1726,7 +1726,7 @@ line level    source
 1658   1      
 1659   1          CY_SET_REG8(CYREG_SC3_SW0 , 0u);
 1660   1          CY_SET_REG8(CYREG_SC3_SW2 , 0u);
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 28  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 28  
 
 1661   1          CY_SET_REG8(CYREG_SC3_SW3 , 0u);
 1662   1          CY_SET_REG8(CYREG_SC3_SW4 , 0u);
@@ -1790,7 +1790,7 @@ line level    source
 1720          *  - Restores the enable state of the Serial Wire Viewer (SWV) (PSoC 3)
 1721          *  - Restores the  boost reference selection
 1722          *
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 29  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 29  
 
 1723          *******************************************************************************/
 1724          static void CyPmHibSlpRestore(void) 
@@ -1854,7 +1854,7 @@ line level    source
 1782          
 1783          
 1784          /*******************************************************************************
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 30  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 30  
 
 1785          * Function Name: CyPmHviLviSaveDisable
 1786          ****************************************************************************//**
@@ -1918,7 +1918,7 @@ line level    source
 1844          *  Restores the analog and digital LVI and HVI configuration.
 1845          *
 1846          * Reentrant:
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 31  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 31  
 
 1847          *  No
 1848          *
@@ -1944,7 +1944,7 @@ line level    source
 1868          
 1869          
 1870          /* [] END OF FILE */
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 32  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 32  
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -2008,7 +2008,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0047 5407              ANL     A,#07H
 0049 FF                MOV     R7,A
 004A 900000      R     MOV     DPTR,#cyPmClockBackup+03H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 33  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 33  
 
 004D EF                MOV     A,R7
 004E F0                MOVX    @DPTR,A
@@ -2072,7 +2072,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0095 FF                MOV     R7,A
 0096 EF                MOV     A,R7
 0097 5403              ANL     A,#03H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 34  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 34  
 
 0099 FF                MOV     R7,A
 009A EF                MOV     A,R7
@@ -2136,7 +2136,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00DA 120000      E     LCALL   CyPLL_OUT_Stop
                                            ; SOURCE LINE # 133
 00DD 8005              SJMP    ?C0011
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 35  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 35  
 
 00DF         ?C0010:
                                            ; SOURCE LINE # 135
@@ -2200,7 +2200,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0124 FF                MOV     R7,A
 0125 EF                MOV     A,R7
 0126 5440              ANL     A,#040H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 36  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 36  
 
 0128 FF                MOV     R7,A
 0129 7E00              MOV     R6,#00H
@@ -2264,7 +2264,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 016D 5410              ANL     A,#010H
 016F FF                MOV     R7,A
 0170 7E00              MOV     R6,#00H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 37  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 37  
 
 0172 EF                MOV     A,R7
 0173 4E                ORL     A,R6
@@ -2328,7 +2328,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01B7 FF                MOV     R7,A
 01B8 904006            MOV     DPTR,#04006H
 01BB E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 38  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 38  
 
 01BC FD                MOV     R5,A
 01BD 7C00              MOV     R4,#00H
@@ -2392,7 +2392,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0202 904200            MOV     DPTR,#04200H
 0205 E0                MOVX    A,@DPTR
 0206 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 39  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 39  
 
 0207 EF                MOV     A,R7
 0208 5407              ANL     A,#07H
@@ -2456,7 +2456,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0250         ?C0025:
                                            ; SOURCE LINE # 242
                                            ; SOURCE LINE # 243
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 40  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 40  
 
 0250 900000      R     MOV     DPTR,#cyPmClockBackup+0FH
 0253 E4                CLR     A
@@ -2520,7 +2520,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 003C 900000      R     MOV     DPTR,#cyPmImoFreqReg2Mhz
 003F 93                MOVC    A,@A+DPTR
 0040 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 41  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 41  
 
 0041 E4                CLR     A
 0042 FC                MOV     R4,A
@@ -2584,7 +2584,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 310
 0092 904005            MOV     DPTR,#04005H
 0095 E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 42  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 42  
 
 0096 FF                MOV     R7,A
 0097 EF                MOV     A,R7
@@ -2648,7 +2648,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00E7 900000      R     MOV     DPTR,#status
 00EA E4                CLR     A
 00EB F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 43  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 43  
 
                                            ; SOURCE LINE # 316
 00EC 800D              SJMP    ?C0031
@@ -2712,7 +2712,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0131 900000      R     MOV     DPTR,#cyPmClockBackup+04H
 0134 E0                MOVX    A,@DPTR
 0135 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 44  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 44  
 
 0136 EF                MOV     A,R7
 0137 5440              ANL     A,#040H
@@ -2776,7 +2776,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0180 904200            MOV     DPTR,#04200H
 0183 E0                MOVX    A,@DPTR
 0184 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 45  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 45  
 
 0185 EF                MOV     A,R7
 0186 54BF              ANL     A,#0BFH
@@ -2840,7 +2840,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01CF 6F                XRL     A,R7
 01D0 7002              JNZ     ?C0137
 01D2 EC                MOV     A,R4
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 46  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 46  
 
 01D3 6E                XRL     A,R6
 01D4         ?C0137:
@@ -2904,7 +2904,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 021E D3                SETB    C
 021F EF                MOV     A,R7
 0220 9400              SUBB    A,#00H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 47  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 47  
 
 0222 EE                MOV     A,R6
 0223 9400              SUBB    A,#00H
@@ -2968,7 +2968,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 026D EF                MOV     A,R7
 026E B4011E            CJNE    A,#01H,?C0051
 0271         ?C0052:
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 48  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 48  
 
                                            ; SOURCE LINE # 453
                                            ; SOURCE LINE # 455
@@ -3032,7 +3032,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 02BA EF                MOV     A,R7
 02BB F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 473
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 49  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 49  
 
 02BC 900000      R     MOV     DPTR,#clkBusDivTmp
 02BF E0                MOVX    A,@DPTR
@@ -3096,7 +3096,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0304 FF                MOV     R7,A
 0305 900000      R     MOV     DPTR,#cyPmClockBackup+05H
 0308 E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 50  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 50  
 
 0309 FE                MOV     R6,A
 030A EF                MOV     A,R7
@@ -3160,7 +3160,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0029 D3                SETB    C
 002A EF                MOV     A,R7
 002B 940E              SUBB    A,#0EH
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 51  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 51  
 
 002D EE                MOV     A,R6
 002E 9401              SUBB    A,#01H
@@ -3224,7 +3224,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 655
 0077 900000      R     MOV     DPTR,#wakeupTime
 007A E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 52  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 52  
 
 007B FE                MOV     R6,A
 007C A3                INC     DPTR
@@ -3288,7 +3288,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00BE 904398            MOV     DPTR,#04398H
 00C1 E0                MOVX    A,@DPTR
 00C2 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 53  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 53  
 
 00C3 900000      R     MOV     DPTR,#cyPmBackup+07H
 00C6 EF                MOV     A,R7
@@ -3352,7 +3352,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0110 EE                MOV     A,R6
 0111 C4                SWAP    A
 0112 540F              ANL     A,#0FH
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 54  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 54  
 
 0114 FF                MOV     R7,A
 0115 7E00              MOV     R6,#00H
@@ -3416,7 +3416,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
 0005 900000      R     MOV     DPTR,#wakeupSource
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 55  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 55  
 
 0008 EC                MOV     A,R4
 0009 F0                MOVX    @DPTR,A
@@ -3480,7 +3480,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 004D FF                MOV     R7,A
 004E 7E00              MOV     R6,#00H
 0050 EF                MOV     A,R7
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 56  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 56  
 
 0051 4E                ORL     A,R6
 0052 7003              JNZ     ?C0066
@@ -3544,7 +3544,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0098 FF                MOV     R7,A
 0099 EF                MOV     A,R7
 009A 4401              ORL     A,#01H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 57  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 57  
 
 009C FF                MOV     R7,A
 009D EF                MOV     A,R7
@@ -3608,7 +3608,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 936
 00DF 900000      R     MOV     DPTR,#wakeupTime
 00E2 E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 58  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 58  
 
 00E3 FF                MOV     R7,A
 00E4 EF                MOV     A,R7
@@ -3672,7 +3672,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 012D F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 956
 012E 900000      R     MOV     DPTR,#wakeupSource
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 59  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 59  
 
 0131 E0                MOVX    A,@DPTR
 0132 FE                MOV     R6,A
@@ -3736,7 +3736,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 017C F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 987
 017D 904200            MOV     DPTR,#04200H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 60  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 60  
 
 0180 E0                MOVX    A,@DPTR
 0181 FF                MOV     R7,A
@@ -3800,7 +3800,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01C7 FE                MOV     R6,A
 01C8 EF                MOV     A,R7
 01C9 4E                ORL     A,R6
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 61  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 61  
 
 01CA FF                MOV     R7,A
 01CB 904200            MOV     DPTR,#04200H
@@ -3864,7 +3864,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 020E FF                MOV     R7,A
 020F 904399            MOV     DPTR,#04399H
 0212 EF                MOV     A,R7
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 62  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 62  
 
 0213 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1053
@@ -3928,7 +3928,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0024 EF                MOV     A,R7
 0025 541F              ANL     A,#01FH
 0027 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 63  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 63  
 
 0028 EF                MOV     A,R7
 0029 F0                MOVX    @DPTR,A
@@ -3992,7 +3992,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0070 A3                INC     DPTR
 0071 E0                MOVX    A,@DPTR
 0072 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 64  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 64  
 
 0073 EF                MOV     A,R7
 0074 540F              ANL     A,#0FH
@@ -4056,7 +4056,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00BF F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1217
 00C0         ?C0087:
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 65  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 65  
 
                                            ; SOURCE LINE # 1221
 00C0 904393            MOV     DPTR,#04393H
@@ -4120,7 +4120,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0107 900000      R     MOV     DPTR,#cyPmBackup+08H
 010A E0                MOVX    A,@DPTR
 010B FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 66  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 66  
 
 010C 904399            MOV     DPTR,#04399H
 010F EF                MOV     A,R7
@@ -4184,7 +4184,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0035 E0                MOVX    A,@DPTR
 0036 FE                MOV     R6,A
 0037 EE                MOV     A,R6
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 67  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 67  
 
 0038 F4                CPL     A
 0039 FE                MOV     R6,A
@@ -4248,7 +4248,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 002A 5402              ANL     A,#02H
 002C FF                MOV     R7,A
 002D 7E00              MOV     R6,#00H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 68  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 68  
 
 002F EF                MOV     A,R7
 0030 4E                ORL     A,R6
@@ -4312,7 +4312,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 1364
 0079 900000      R     MOV     DPTR,#cyPmBackup+03H
 007C 7401              MOV     A,#01H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 69  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 69  
 
 007E F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1365
@@ -4376,7 +4376,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 001B 120000      E     LCALL   CyILO_Start100K
                                            ; SOURCE LINE # 1433
 001E         ?C0099:
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 70  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 70  
 
                                            ; SOURCE LINE # 1436
 001E 900000      R     MOV     DPTR,#cyPmBackup
@@ -4440,7 +4440,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0013 904382            MOV     DPTR,#04382H
 0016 E0                MOVX    A,@DPTR
 0017 FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 71  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 71  
 
 0018 EF                MOV     A,R7
 0019 5404              ANL     A,#04H
@@ -4504,7 +4504,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 1497
                                            ; SOURCE LINE # 1499
 005F 900000      R     MOV     DPTR,#ctwInterval
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 72  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 72  
 
 0062 E0                MOVX    A,@DPTR
 0063 FF                MOV     R7,A
@@ -4568,7 +4568,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 1532
 0028 22                RET     
              ; FUNCTION CyPmOppsSet (END)
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 73  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 73  
 
 
              ; FUNCTION _CyPmFtwSetInterval (BEGIN)
@@ -4632,7 +4632,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0048 E0                MOVX    A,@DPTR
 0049 FF                MOV     R7,A
 004A EF                MOV     A,R7
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 74  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 74  
 
 004B 4401              ORL     A,#01H
 004D FF                MOV     R7,A
@@ -4696,7 +4696,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0012 EF                MOV     A,R7
 0013 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1605
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 75  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 75  
 
 0014 905A03            MOV     DPTR,#05A03H
 0017 E0                MOVX    A,@DPTR
@@ -4760,7 +4760,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0069 900000      R     MOV     DPTR,#cyPmBackup+016H
 006C EF                MOV     A,R7
 006D F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 76  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 76  
 
                                            ; SOURCE LINE # 1615
 006E 905A16            MOV     DPTR,#05A16H
@@ -4824,7 +4824,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00C2 FF                MOV     R7,A
 00C3 900000      R     MOV     DPTR,#cyPmBackup+01FH
 00C6 EF                MOV     A,R7
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 77  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 77  
 
 00C7 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1625
@@ -4888,7 +4888,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 011B E4                CLR     A
 011C F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1636
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 78  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 78  
 
 011D 905A02            MOV     DPTR,#05A02H
 0120 E4                CLR     A
@@ -4952,7 +4952,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 1653
 0168 905A23            MOV     DPTR,#05A23H
 016B E4                CLR     A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 79  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 79  
 
 016C F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1654
@@ -5016,7 +5016,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01B6 7401              MOV     A,#01H
 01B8 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1679
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 80  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 80  
 
 01B9 90500B            MOV     DPTR,#0500BH
 01BC E0                MOVX    A,@DPTR
@@ -5080,7 +5080,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0203 E0                MOVX    A,@DPTR
 0204 FF                MOV     R7,A
 0205 EF                MOV     A,R7
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 81  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 81  
 
 0206 54F7              ANL     A,#0F7H
 0208 FF                MOV     R7,A
@@ -5144,7 +5144,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0036 FF                MOV     R7,A
 0037 905A08            MOV     DPTR,#05A08H
 003A EF                MOV     A,R7
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 82  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 82  
 
 003B F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1733
@@ -5208,7 +5208,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 008F E0                MOVX    A,@DPTR
 0090 FF                MOV     R7,A
 0091 905A20            MOV     DPTR,#05A20H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 83  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 83  
 
 0094 EF                MOV     A,R7
 0095 F0                MOVX    @DPTR,A
@@ -5272,7 +5272,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00E6 900000      R     MOV     DPTR,#cyPmBackup+023H
 00E9 E0                MOVX    A,@DPTR
 00EA FF                MOV     R7,A
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 84  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 84  
 
 00EB 905A33            MOV     DPTR,#05A33H
 00EE EF                MOV     A,R7
@@ -5336,7 +5336,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 013D 4404              ORL     A,#04H
 013F FF                MOV     R7,A
 0140 EF                MOV     A,R7
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 85  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 85  
 
 0141 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1771
@@ -5400,7 +5400,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0029 5440              ANL     A,#040H
 002B FF                MOV     R7,A
 002C 7E00              MOV     R6,#00H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 86  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 86  
 
 002E EF                MOV     A,R7
 002F 4E                ORL     A,R6
@@ -5464,7 +5464,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0077 4E                ORL     A,R6
 0078 7004              JNZ     ?C0127
 007A 7F00              MOV     R7,#00H
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 87  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 87  
 
 007C 8002              SJMP    ?C0128
 007E         ?C0127:
@@ -5528,7 +5528,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0006 B4010D            CJNE    A,#01H,?C0133
                                            ; SOURCE LINE # 1854
                                            ; SOURCE LINE # 1855
-C51 COMPILER V9.51   CYPM                                                                  11/29/2022 16:00:57 PAGE 88  
+C51 COMPILER V9.51   CYPM                                                                  11/29/2022 20:10:20 PAGE 88  
 
 0009 900000      R     MOV     DPTR,#cyPmBackup+02DH
 000C E0                MOVX    A,@DPTR

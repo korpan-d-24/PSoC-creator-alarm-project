@@ -2,7 +2,7 @@
 --	Conversion of Lab3.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Tue Nov 29 16:00:41 2022
+--	Tue Nov 29 20:10:10 2022
 --
 
 USE cypress.cypress.all;

@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 1   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE_CSHL
@@ -62,7 +62,7 @@ line level    source
   50          };
   51          
   52          const uint8 CYCODE CapSense_noiseThreshold[] = {
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 2   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 2   
 
   53              42u, 45u, 33u, 
   54          };
@@ -126,7 +126,7 @@ line level    source
  112          *  CapSense_sensorBaselineLow[] - used to store fraction byte of 
  113          *  baseline value.
  114          *  CapSense_sensorSignal[]      - used to store diffence between 
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 3   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 3   
 
  115          *  current value of raw data and previous value of baseline.
  116          *  CapSense_debounceCounter[]   - used to store current debounce 
@@ -190,7 +190,7 @@ line level    source
  173   1          #endif  /* ((CapSense_RAW_FILTER_MASK & CapSense_MEDIAN_FILTER) | \
  174   1                  *   (CapSense_RAW_FILTER_MASK & CapSense_AVERAGING_FILTER))
  175   1                  */
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 4   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 4   
 
  176   1          
  177   1          #if (CapSense_TOTAL_GENERICS_COUNT)
@@ -254,7 +254,7 @@ line level    source
  235          
  236          
  237          /*******************************************************************************
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 5   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 5   
 
  238          * Function Name: CapSense_InitializeAllBaselines
  239          ********************************************************************************
@@ -318,7 +318,7 @@ line level    source
  297   1          CapSense_ScanEnabledWidgets();
  298   1          while(CapSense_IsBusy() != 0u)
  299   1          {
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 6   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 6   
 
  300   2              /* Wait while busy */
  301   2          }
@@ -382,7 +382,7 @@ line level    source
  359          {
  360   1          uint32 calc;
  361   1          uint16 tempRaw;
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 7   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 7   
 
  362   1          uint16 filteredRawData;
  363   1          uint8 widget = CapSense_widgetNumber[sensor];
@@ -446,7 +446,7 @@ line level    source
  421   2              tempRaw = filteredRawData - CapSense_sensorBaseline[sensor];
  422   2              widget = 1u;    /* Positive difference - Calculate the Signal */
  423   2          }
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 8   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 8   
 
  424   1          else
  425   1          {
@@ -510,7 +510,7 @@ line level    source
  483   3                  }
  484   2              #else
                           CapSense_sensorSignal[sensor] = ((uint16) tempRaw);
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 9   
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 9   
 
                       #endif  /* (CapSense_SIGNAL_SIZE == CapSense_SIGNAL_SIZE_UINT8) */
  487   2          }
@@ -574,7 +574,7 @@ line level    source
  545   2          }
  546   1      }
  547          
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 10  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 10  
 
  548          
  549          /*******************************************************************************
@@ -638,7 +638,7 @@ line level    source
  607   1          {
  608   2              debounceIndex = widget - (CapSense_END_OF_TOUCH_PAD_INDEX + 1);
  609   2          }
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 11  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 11  
 
  610   1      
  611   1          
@@ -702,7 +702,7 @@ line level    source
  669                                           
  670          {
  671   1          uint8 rawIndex = CapSense_rawDataIndex[widget];
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 12  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 12  
 
  672   1          uint8 numberOfSensors = CapSense_numberOfSensors[widget] + rawIndex;
  673   1          uint8 state = 0u;
@@ -766,7 +766,7 @@ line level    source
  731          /*******************************************************************************
  732          * Function Name: CapSense_EnableWidget
  733          ********************************************************************************
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 13  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 13  
 
  734          *
  735          * Summary:
@@ -830,7 +830,7 @@ line level    source
  793          *
  794          * Global Variables:
  795          *  CapSense_sensorEnableMask[] - used to store the sensor scanning 
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 14  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 14  
 
  796          *  state.
  797          *  CapSense_sensorEnableMask[0] contains the masked bits for sensors 
@@ -894,7 +894,7 @@ line level    source
                       uint8 CapSense_FindMaximum(uint8 offset, uint8 count, uint8 fingerThreshold, const uint8 CYCODE *d
              -iplex)
                                                              
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 15  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 15  
 
                   #else 
  858                  uint8 CapSense_FindMaximum(uint8 offset, uint8 count, uint8 fingerThreshold)
@@ -958,7 +958,7 @@ line level    source
                                   curPos = diplex[i];
                                   if(i == count)
                                   {
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 16  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 16  
 
                                       break;
                                   }            
@@ -1022,7 +1022,7 @@ line level    source
  978   4                              maximum = i;
  979   4                              temp = startOfSlider[i];
  980   4                          }
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 17  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 17  
 
  981   3                      }
  982   2                  }    
@@ -1086,7 +1086,7 @@ line level    source
 1040   1                  #if (CapSense_TOTAL_RADIAL_SLIDERS_COUNT > 0u)                
                               /* Copy Signal for found centriod */
                               CapSense_centroid[CapSense_POS] = startOfSlider[maximum];
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 18  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 18  
 
                                
                               /* Check borders for ROTARY Slider */
@@ -1150,7 +1150,7 @@ line level    source
                               #else
 1103   1                          CapSense_centroid[CapSense_POS] = startOfSlider[maximum];
 1104   1                      #endif /* (CapSense_IS_DIPLEX_SLIDER) */
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 19  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 19  
 
 1105   1                          
 1106   1                      /* Check borders for LINEAR Slider */
@@ -1214,7 +1214,7 @@ line level    source
 1163   1      
 1164   1              #if(CapSense_TOTAL_RADIAL_SLIDERS_COUNT > 0u)
                           /* Only required for RADIAL Slider */
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 20  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 20  
 
                           if(denominator < 0)
                           {
@@ -1278,7 +1278,7 @@ line level    source
 1225   1              #if (0u != CapSense_LINEAR_SLIDERS_POS_FILTERS_MASK)
                           uint8 posIndex;
                           uint8 firstTimeIndex = CapSense_posFiltersData[widget];
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 21  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 21  
 
                           uint8 posFiltersMask = CapSense_posFiltersMask[widget];  
                       #endif /* (0u != CapSense_LINEAR_SLIDERS_POS_FILTERS_MASK) */
@@ -1342,7 +1342,7 @@ line level    source
                                               CapSense_posFiltersData[posIndex + 1u] = (uint8) position;
                                           }
                                       #endif /* ((0u != (CapSense_MEDIAN_FILTER & \
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 22  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 22  
 
                                              *           CapSense_LINEAR_SLIDERS_POS_FILTERS_MASK)) || \
                                              *   (0u != (CapSense_AVERAGING_FILTER & \
@@ -1406,7 +1406,7 @@ line level    source
              -ex]);
                                               CapSense_posFiltersData[posIndex] = (uint8) position;
                                           }                                
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 23  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 23  
 
                                       #endif /* (0u != (CapSense_IIR4_FILTER & \
                                              *          CapSense_LINEAR_SLIDERS_POS_FILTERS_MASK))
@@ -1470,7 +1470,7 @@ line level    source
                   * Side Effects:
                   *  If any sensor within the slider widget is active, the function returns values
                   *  from zero to the API resolution value set in the CapSense customizer. If no
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 24  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 24  
 
                   *  sensors are active, the function returns 0xFFFF.
                   *  There are no checks of widget type argument provided to this function.
@@ -1534,7 +1534,7 @@ line level    source
                                       CapSense_posFiltersData[posIndex] = (uint8) position;
                                       #if ((0u != (CapSense_MEDIAN_FILTER & \
                                                    CapSense_RADIAL_SLIDERS_POS_FILTERS_MASK)) || \
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 25  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 25  
 
                                            (0u != (CapSense_AVERAGING_FILTER & \
                                                    CapSense_RADIAL_SLIDERS_POS_FILTERS_MASK)))
@@ -1598,7 +1598,7 @@ line level    source
                                           }
                                       #endif /* (0u != (CapSense_IIR2_FILTER & 
                                              *          CapSense_RADIAL_SLIDERS_POS_FILTERS_MASK))
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 26  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 26  
 
                                              */
               
@@ -1662,7 +1662,7 @@ line level    source
                   *  The position filter is applied to the result if enabled.
                   *  This function is available only if a touch pad is defined by the CapSense
                   *  customizer.
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 27  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 27  
 
                   *
                   * Parameters:
@@ -1726,7 +1726,7 @@ line level    source
               
                           /* Find Maximum within Y centroid */
                           #if (CapSense_IS_DIPLEX_SLIDER)
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 28  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 28  
 
                               maxY = CapSense_FindMaximum(offset, count, CapSense_fingerThreshold[widget + 1u], 0u);
                           #else
@@ -1790,7 +1790,7 @@ line level    source
                                               {
                                                   tempPos = posX;
                                                   posX = (uint8) CapSense_MedianFilter(posX,
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 29  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 29  
 
                                                                                     CapSense_posFiltersData[posXIndex],
                                                                                     CapSense_posFiltersData[posXIndex + 
@@ -1854,7 +1854,7 @@ line level    source
                                                   CapSense_posFiltersData[posXIndex] = posX;
                                                   
                                                   posY = (uint8) CapSense_IIR2Filter(posY, 
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 30  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 30  
 
                                                                                           CapSense_posFiltersData[posYIn
              -dex]);
@@ -1918,7 +1918,7 @@ line level    source
                                   CapSense_posFiltersData[firstTimeIndex] = 0u;
                               }
                           }
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 31  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 31  
 
                       #endif /* (0u != CapSense_TOUCH_PADS_POS_FILTERS_MASK) */
                       
@@ -1982,7 +1982,7 @@ line level    source
                   *  The averaging filter looks at the three most recent samples of position and
                   *  reports the averaging value.
                   *
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 32  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 32  
 
                   * Parameters:
                   *  x1:  Current value.
@@ -2046,7 +2046,7 @@ line level    source
                   *
                   * Summary:
                   *  IIR1/4 filter function. IIR1/4 = 1/4current + 3/4previous.
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 33  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 33  
 
                   *
                   * Parameters:
@@ -2110,7 +2110,7 @@ line level    source
                   }
               #endif /* ( (CapSense_RAW_FILTER_MASK & CapSense_JITTER_FILTER) | \
                      *    (CapSense_POS_FILTERS_MASK & CapSense_JITTER_FILTER) )
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 34  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 34  
 
                      */
 2007          
@@ -2174,7 +2174,7 @@ line level    source
                       tmp += (((uint32)x2 << 4u) - ((uint32)x2));
                       tmp >>= 4u;
                       
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 35  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 35  
 
                       return ((uint16) tmp);
                   }
@@ -2238,7 +2238,7 @@ line level    source
                                   row_ind = i;
                                   row_sig_max = CapSense_sensorSignal[i];
                               }
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 36  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 36  
 
                           }
               
@@ -2256,7 +2256,7 @@ line level    source
               #endif /* (CapSense_TOTAL_MATRIX_BUTTONS_COUNT) */
 2144          
 2145          /* [] END OF FILE */
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 37  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 37  
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -2320,7 +2320,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 004C 3400        R     ADDC    A,#HIGH CapSense_sensorBaselineLow
 004E F583              MOV     DPH,A
 0050 E4                CLR     A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 38  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 38  
 
 0051 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 149
@@ -2384,7 +2384,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 210
 000D 120000      E     LCALL   CapSense_IsBusy
 0010 EF                MOV     A,R7
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 39  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 39  
 
 0011 70FA              JNZ     ?C0003
                                            ; SOURCE LINE # 211
@@ -2448,7 +2448,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0009 900000      R     MOV     DPTR,#i
 000C E4                CLR     A
 000D F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 40  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 40  
 
 000E         ?C0012:
 000E 900000      R     MOV     DPTR,#i
@@ -2512,7 +2512,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 005C FF                MOV     R7,A
 005D EF                MOV     A,R7
 005E 7016              JNZ     ?C0015
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 41  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 41  
 
                                            ; SOURCE LINE # 310
                                            ; SOURCE LINE # 311
@@ -2576,7 +2576,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 001F FF                MOV     R7,A
 0020 900000      R     MOV     DPTR,#noiseThreshold
 0023 EF                MOV     A,R7
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 42  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 42  
 
 0024 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 372
@@ -2640,7 +2640,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0072 F582              MOV     DPL,A
 0074 E4                CLR     A
 0075 3400        R     ADDC    A,#HIGH CapSense_sensorBaseline
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 43  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 43  
 
 0077 F583              MOV     DPH,A
 0079 E0                MOVX    A,@DPTR
@@ -2704,7 +2704,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00BF EE                MOV     A,R6
 00C0 9C                SUBB    A,R4
 00C1 FE                MOV     R6,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 44  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 44  
 
 00C2 900000      R     MOV     DPTR,#tempRaw
 00C5 EE                MOV     A,R6
@@ -2768,7 +2768,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 010F F582              MOV     DPL,A
 0111 E4                CLR     A
 0112 3400        R     ADDC    A,#HIGH CapSense_lowBaselineResetCnt
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 45  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 45  
 
 0114 F583              MOV     DPH,A
 0116 E4                CLR     A
@@ -2832,7 +2832,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0160 6003              JZ      $ + 5H
 0162 020000      R     LJMP    ?C0022
 0165         ?C0024:
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 46  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 46  
 
                                            ; SOURCE LINE # 449
                                            ; SOURCE LINE # 452
@@ -2896,7 +2896,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01C4 120000      E     LCALL   ?C?LSTXDATA
                                            ; SOURCE LINE # 459
 01C7 900000      R     MOV     DPTR,#calc
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 47  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 47  
 
 01CA 120000      E     LCALL   ?C?LLDXDATA
 01CD C004              PUSH    AR4
@@ -2960,7 +2960,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0231 2E                ADD     A,R6
 0232 F582              MOV     DPL,A
 0234 E4                CLR     A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 48  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 48  
 
 0235 3400        R     ADDC    A,#HIGH CapSense_sensorBaselineLow
 0237 F583              MOV     DPH,A
@@ -3024,7 +3024,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 027F FF                MOV     R7,A
 0280 7400        R     MOV     A,#LOW CapSense_sensorSignal
 0282 2F                ADD     A,R7
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 49  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 49  
 
 0283 F582              MOV     DPL,A
 0285 E4                CLR     A
@@ -3088,7 +3088,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0005 900000      R     MOV     DPTR,#i
 0008 E0                MOVX    A,@DPTR
 0009 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 50  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 50  
 
 000A EF                MOV     A,R7
 000B C3                CLR     C
@@ -3152,7 +3152,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 543
 0057 900000      R     MOV     DPTR,#i
 005A E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 51  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 51  
 
 005B FF                MOV     R7,A
 005C 120000      R     LCALL   _CapSense_UpdateSensorBaseline
@@ -3216,7 +3216,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0036 900000      E     MOV     DPTR,#CapSense_widgetNumber
 0039 93                MOVC    A,@A+DPTR
 003A FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 52  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 52  
 
 003B 900000      R     MOV     DPTR,#widget
 003E EF                MOV     A,R7
@@ -3280,7 +3280,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0090 7401              MOV     A,#01H
 0092 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 605
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 53  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 53  
 
 0093 800D              SJMP    ?C0036
 0095         ?C0035:
@@ -3344,7 +3344,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00DE C3                CLR     C
 00DF 9F                SUBB    A,R7
 00E0 4003              JC      $ + 5H
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 54  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 54  
 
 00E2 020000      R     LJMP    ?C0039
                                            ; SOURCE LINE # 617
@@ -3408,7 +3408,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0131 900000      R     MOV     DPTR,#sensor
 0134 E0                MOVX    A,@DPTR
 0135 FE                MOV     R6,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 55  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 55  
 
 0136 7400        R     MOV     A,#LOW CapSense_sensorSignal
 0138 2E                ADD     A,R6
@@ -3472,7 +3472,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0185 FF                MOV     R7,A
 0186 7400        R     MOV     A,#LOW CapSense_debounceCounter
 0188 2F                ADD     A,R7
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 56  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 56  
 
 0189 F582              MOV     DPL,A
 018B E4                CLR     A
@@ -3536,7 +3536,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
              ; FUNCTION _CapSense_CheckIsWidgetActive (BEGIN)
                                            ; SOURCE LINE # 668
 0000 900000      R     MOV     DPTR,#widget
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 57  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 57  
 
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
@@ -3600,7 +3600,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 004C E0                MOVX    A,@DPTR
 004D FF                MOV     R7,A
 004E 900000      R     MOV     DPTR,#rawIndex
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 58  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 58  
 
 0051 E0                MOVX    A,@DPTR
 0052 FE                MOV     R6,A
@@ -3664,7 +3664,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0032 FF                MOV     R7,A
                                            ; SOURCE LINE # 728
 0033         ?C0055:
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 59  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 59  
 
 0033 22                RET     
              ; FUNCTION CapSense_CheckIsAnyWidgetActive (END)
@@ -3728,7 +3728,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0047 7401              MOV     A,#01H
 0049 A807              MOV     R0,AR7
 004B 08                INC     R0
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 60  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 60  
 
 004C 8002              SJMP    ?C0090
 004E         ?C0089:
@@ -3792,7 +3792,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0004 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 810
                                            ; SOURCE LINE # 813
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 61  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 61  
 
 0005 900000      R     MOV     DPTR,#widget
 0008 E0                MOVX    A,@DPTR
@@ -3856,7 +3856,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0053 900000      R     MOV     DPTR,#enMask
 0056 EF                MOV     A,R7
 0057 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 62  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 62  
 
                                            ; SOURCE LINE # 822
 0058 900000      R     MOV     DPTR,#pos
@@ -3920,7 +3920,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 861
                                            ; SOURCE LINE # 872
 000F 900000      R     MOV     DPTR,#maximum
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 63  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 63  
 
 0012 74FF              MOV     A,#0FFH
 0014 F0                MOVX    @DPTR,A
@@ -3984,7 +3984,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0065 120000      E     LCALL   ?C?PLDXDATA
 0068 900000      R     MOV     DPTR,#i
 006B E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 64  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 64  
 
 006C FF                MOV     R7,A
 006D E9                MOV     A,R1
@@ -4048,7 +4048,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
              ; FUNCTION _CapSense_CalcCentroid (BEGIN)
                                            ; SOURCE LINE # 1014
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 65  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 65  
 
 0000 900000      R     MOV     DPTR,#maximum
 0003 EF                MOV     A,R7
@@ -4112,7 +4112,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 004E 900000      R     MOV     DPTR,#posNext
 0051 EF                MOV     A,R7
 0052 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 66  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 66  
 
                                            ; SOURCE LINE # 1103
 0053 900000      R     MOV     DPTR,#startOfSlider
@@ -4176,7 +4176,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00A5 900000      R     MOV     DPTR,#maximum
 00A8 E0                MOVX    A,@DPTR
 00A9 FD                MOV     R5,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 67  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 67  
 
 00AA 7C00              MOV     R4,#00H
 00AC EF                MOV     A,R7
@@ -4240,7 +4240,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00FF FA                MOV     R2,A
 0100 120000      E     LCALL   ?C?CLDPTR
 0103 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 68  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 68  
 
 0104 900000      R     MOV     DPTR,#CapSense_centroid+02H
 0107 EF                MOV     A,R7
@@ -4304,7 +4304,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 014A 900000      R     MOV     DPTR,#CapSense_centroid+02H
 014D E0                MOVX    A,@DPTR
 014E FE                MOV     R6,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 69  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 69  
 
 014F EE                MOV     A,R6
 0150 D3                SETB    C
@@ -4368,7 +4368,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 019A FF                MOV     R7,A
 019B E4                CLR     A
 019C FC                MOV     R4,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 70  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 70  
 
 019D FD                MOV     R5,A
 019E FE                MOV     R6,A
@@ -4432,7 +4432,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0212 A3                INC     DPTR
 0213 E0                MOVX    A,@DPTR
 0214 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 71  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 71  
 
 0215 EE                MOV     A,R6
 0216 33                RLC     A
@@ -4496,7 +4496,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 001B 900000      R     MOV     DPTR,#CapSense_numberOfSensors
 001E 93                MOVC    A,@A+DPTR
 001F FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 72  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 72  
 
 0020 900000      R     MOV     DPTR,#count
 0023 EF                MOV     A,R7
@@ -4560,7 +4560,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0079 E0                MOVX    A,@DPTR
 007A FB                MOV     R3,A
 007B 900000      R     MOV     DPTR,#widget
-C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 16:00:58 PAGE 73  
+C51 COMPILER V9.51   CAPSENSE_CSHL                                                         11/29/2022 20:10:20 PAGE 73  
 
 007E E0                MOVX    A,@DPTR
 007F FE                MOV     R6,A

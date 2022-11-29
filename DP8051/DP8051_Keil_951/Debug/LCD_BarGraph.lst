@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 1   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE LCD_BARGRAPH
@@ -62,7 +62,7 @@ line level    source
   50          *
   51          * Parameters:
   52          *  customData:  pointer to a constant array of 64 bytes representing 8 custom
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 2   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 2   
 
   53          *               font characters.
   54          * Return:
@@ -126,7 +126,7 @@ line level    source
  112   1      
  113   1              /* Number of full characters to draw */
  114   1              fullChars = value / LCD_CHARACTER_WIDTH;
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 3   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 3   
 
  115   1      
  116   1              /* Number of remaining pixels to draw */
@@ -190,7 +190,7 @@ line level    source
                   {
                       /* 8-bit Counter */
                       uint8 count8 = 0u;
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 4   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 4   
 
                       /* Current Row Tracker */
                       int8 currentRow;
@@ -254,7 +254,7 @@ line level    source
                                   currentRow --;
                               }
                           }
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 5   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 5   
 
                       }
                   }
@@ -263,7 +263,7 @@ line level    source
  243          
  244          
  245          /* [] END OF FILE */
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 6   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 6   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -327,7 +327,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0000 900000      R     MOV     DPTR,#row
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 7   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 7   
 
 0005 900000      R     MOV     DPTR,#column
 0008 ED                MOV     A,R5
@@ -391,7 +391,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 129
 005D 900000      R     MOV     DPTR,#count8
 0060 E4                CLR     A
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 8   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 8   
 
 0061 F0                MOVX    @DPTR,A
 0062         ?C0006:
@@ -455,7 +455,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00AF 9E                SUBB    A,R6
 00B0 5038              JNC     ?C0014
                                            ; SOURCE LINE # 140
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 9   
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 9   
 
                                            ; SOURCE LINE # 142
 00B2 900000      R     MOV     DPTR,#count8
@@ -519,7 +519,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    EDATA SIZE       =   ----    ----
    HDATA SIZE       =   ----    ----
    XDATA CONST SIZE =   ----    ----
-C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 16:00:56 PAGE 10  
+C51 COMPILER V9.51   LCD_BARGRAPH                                                          11/29/2022 20:10:19 PAGE 10  
 
    FAR CONST SIZE   =   ----    ----
 END OF MODULE INFORMATION.

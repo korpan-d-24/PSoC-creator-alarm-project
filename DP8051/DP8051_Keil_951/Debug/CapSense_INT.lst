@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 1   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE_INT
@@ -62,7 +62,7 @@ line level    source
   50              * Global Variables:
   51              *  CapSense_csv - used to provide status and mode of scanning process.
   52              *   Mode - single scan or scan of all enabled sensors.
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 2   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 2   
 
   53              *   Status - scan in progress or ready for new scan.
   54              *  CapSense_sensorIndex - used to store sensor scanning sensor number.
@@ -126,7 +126,7 @@ line level    source
                   *  This ISR is executed when measure window is closed. The measure window 
                   *  depends on scan resolution parameter of sensor. 
                   *  The ISR has two modes: 
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 3   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 3   
 
                   *   1. Scans single sensor or pair of sensors and stores measure result.
                   *   2. Stores results of current measure when complete scan of sensors pair or 
@@ -190,7 +190,7 @@ line level    source
                               }
                           }
                       }
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 4   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 4   
 
                       else
                       {
@@ -254,7 +254,7 @@ line level    source
                       
                       CapSense_CONTROL_REG &= (uint8)~CapSense_CTRL_WINDOW_EN__CH1;
                       CapSense_PostScanCh1(CapSense_sensorIndex + CapSense_TOTAL_SENSOR_COUNT__CH0);
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 5   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 5   
 
                       
                       if((CapSense_CONTROL_REG & CapSense_CTRL_WINDOW_EN__CH0) == 0u)
@@ -298,7 +298,7 @@ line level    source
  278          
  279          
  280          /* [] END OF FILE */
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 6   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 6   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -362,7 +362,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0056 FF                MOV     R7,A
 0057 120000      E     LCALL   _?CapSense_FindNextSensor
 005A 900000      E     MOV     DPTR,#CapSense_sensorIndex
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 7   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 7   
 
 005D EF                MOV     A,R7
 005E F0                MOVX    @DPTR,A
@@ -426,7 +426,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
-C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 16:00:59 PAGE 8   
+C51 COMPILER V9.51   CAPSENSE_INT                                                          11/29/2022 20:10:20 PAGE 8   
 
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

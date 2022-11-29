@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 16:01:01 PAGE 1   
+C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 20:10:22 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE_AMUXCH0
@@ -62,7 +62,7 @@ line level    source
   50          * Parameters:
   51          *  void
   52          *
-C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 16:01:01 PAGE 2   
+C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 20:10:22 PAGE 2   
 
   53          * Return:
   54          *  void
@@ -126,7 +126,7 @@ line level    source
  112          *
  113          * Parameters:
  114          *  channel:  The channel to connect to the common terminal.
-C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 16:01:01 PAGE 3   
+C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 20:10:22 PAGE 3   
 
  115          *
  116          * Return:
@@ -190,7 +190,7 @@ line level    source
                   
               #endif  /* End (CapSense_AMuxCH0_MUXTYPE == CapSense_AMuxCH0_MUX_DIFF) */
  176          
-C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 16:01:01 PAGE 4   
+C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 20:10:22 PAGE 4   
 
  177          
  178          /*******************************************************************************
@@ -226,7 +226,7 @@ line level    source
  208          
  209          
  210          /* [] END OF FILE */
-C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 16:01:01 PAGE 5   
+C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 20:10:22 PAGE 5   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -290,7 +290,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0029 22                RET     
              ; FUNCTION _?CapSense_AMuxCH0_Select (END)
 
-C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 16:01:01 PAGE 6   
+C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 20:10:22 PAGE 6   
 
              ; FUNCTION _?CapSense_AMuxCH0_FastSelect (BEGIN)
                                            ; SOURCE LINE # 120
@@ -354,7 +354,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 197
                                            ; SOURCE LINE # 198
 001C 850083      E     MOV     DPH,?C_XBP
-C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 16:01:01 PAGE 7   
+C51 COMPILER V9.51   CAPSENSE_AMUXCH0                                                      11/29/2022 20:10:22 PAGE 7   
 
 001F 850082      E     MOV     DPL,?C_XBP+01H
 0022 E0                MOVX    A,@DPTR

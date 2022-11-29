@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 1   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE
@@ -62,7 +62,7 @@ line level    source
   51              (uint8 CYXDATA *)CapSense_PortCH0__LinearSlider0_e4__LS__PC, 
   52              (uint8 CYXDATA *)CapSense_PortCH0__Button0__BTN__PC, 
   53              (uint8 CYXDATA *)CapSense_PortCH0__Button1__BTN__PC, 
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 2   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 2   
 
   54          };
   55          
@@ -126,7 +126,7 @@ line level    source
  111          *  Inits default CapSense configuration provided with customizer that defines 
  112          *  mode of component operations and resets all sensors to an inactive state.
  113          *
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 3   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 3   
 
  114          * Parameters:
  115          *  None
@@ -190,7 +190,7 @@ line level    source
  173   1              /* Write polynomial */
  174   1              CY_SET_REG16(CapSense_POLYNOM_PTR, CapSense_PRS16_DEFAULT_POLYNOM);
  175   1              /* Write FIFO with seed */
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 4   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 4   
 
  176   1              CY_SET_REG16(CapSense_SEED_COPY_PTR, CapSense_MEASURE_FULL_RANGE);
  177   1                      
@@ -254,7 +254,7 @@ line level    source
                           
                           /* Raw Counter */
                           CapSense_RAW_CH1_CONTROL_REG      = CapSense_MEASURE_CTRL_ENABLE;
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 5   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 5   
 
                           CapSense_RAW_CH1_CONTROL2_REG    |= CapSense_MEASURE_CTRL_PULSEWIDTH;
                           CY_SET_REG16(CapSense_RAW_CH1_PERIOD_PTR, CapSense_MEASURE_FULL_RANGE);
@@ -318,7 +318,7 @@ line level    source
  297   1          CapSense_CONTROL_REG |= CapSense_CTRL_WINDOW_EN__CH0;
  298   1          #if (CapSense_DESIGN_TYPE == CapSense_TWO_CHANNELS_DESIGN)
                       CapSense_CONTROL_REG |= CapSense_CTRL_WINDOW_EN__CH1;
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 6   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 6   
 
                   #endif  /* CapSense_DESIGN_TYPE */
  301   1          
@@ -382,7 +382,7 @@ line level    source
                   #else
                       /* Do nothing = config without prescaler */
                   #endif  /* (CapSense_PRESCALER_OPTIONS == CapSense_PRESCALER_UDB) */
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 7   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 7   
 
  362   1          
  363   1          /* Enable ScanSpeed */
@@ -446,7 +446,7 @@ line level    source
                       CapSense_VdacRefCH0_Enable();
                       CapSense_VdacRefCH0_SetValue(CapSense_VdacRefCH0_DEFAULT_DATA);
                       #if (CapSense_DESIGN_TYPE == CapSense_TWO_CHANNELS_DESIGN)
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 8   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 8   
 
                           CapSense_VdacRefCH1_Enable();
                           CapSense_VdacRefCH1_SetValue(CapSense_VdacRefCH1_DEFAULT_DATA);
@@ -510,7 +510,7 @@ line level    source
  483          *
  484          * Global Variables:
  485          *  CapSense_initVar - used to check initial configuration, modified on 
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 9   
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 9   
 
  486          *  first function call.
  487          *  CapSense_lowLevelTuningDone - used to notify the Tuner GUI that 
@@ -574,7 +574,7 @@ line level    source
                   #endif  /* CapSense_DESIGN_TYPE */
  546   1          
  547   1          /* Clear all sensors */
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 10  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 10  
 
  548   1          CapSense_ClearSensors();
  549   1          
@@ -638,7 +638,7 @@ line level    source
  607   1              CapSense_IdacCH0_Stop();
  608   1          #endif  /* CapSense_CURRENT_SOURCE */
  609   1          
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 11  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 11  
 
  610   1          #if (CapSense_DESIGN_TYPE == CapSense_TWO_CHANNELS_DESIGN) 
                       CapSense_CompCH1_Stop();
@@ -702,7 +702,7 @@ line level    source
  669              * Note: 
  670              *  This function has effect on current scanning scanning and should not
  671              *  be used outisde of component.
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 12  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 12  
 
  672              *
  673              *******************************************************************************/
@@ -766,7 +766,7 @@ line level    source
                       uint8 newRegValue;
                       uint8 indexCh0 = snsIndex;
                       uint8 indexCh1 = snsIndex + CapSense_TOTAL_SENSOR_COUNT__CH0;
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 13  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 13  
 
                       
                       /* Find enabled sensor on channel 0 */
@@ -830,7 +830,7 @@ line level    source
                           snsIndex = indexCh1;
                           
                           newRegValue = CapSense_CONTROL_REG;
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 14  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 14  
 
                           newRegValue |= CapSense_CTRL_WINDOW_EN__CH1;
                           newRegValue &= ~CapSense_CTRL_WINDOW_EN__CH0;
@@ -894,7 +894,7 @@ line level    source
                              *   (CapSense_TUNING_METHOD == CapSense_AUTO_TUNING))
                              */
  857   1      
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 15  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 15  
 
  858   1          #else
                       if(slot < CapSense_TOTAL_SENSOR_COUNT__CH0)
@@ -958,7 +958,7 @@ line level    source
  916          *  on each channel. If two channels are configured, two sensors may be scanned 
  917          *  at the same time. After scanning is complete the isr copies the measured 
  918          *  sensor raw data to the global array. Use of the isr ensures this function 
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 16  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 16  
 
  919          *  is non-blocking. Each sensor has a unique number within the sensor array. 
  920          *  This number is assigned by the CapSense customizer in sequence.
@@ -1022,7 +1022,7 @@ line level    source
                           CapSense_PreScan(sensor);
                       }
                       
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 17  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 17  
 
                   #endif  /* CapSense_DESIGN_TYPE */
  982   1      }
@@ -1086,7 +1086,7 @@ line level    source
                          (CapSense_sensorIndex < CapSense_TOTAL_SENSOR_COUNT__CH1))
                       {
                           CapSense_csv |= CapSense_SW_STS_BUSY;
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 18  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 18  
 
                           CapSense_PreScan(CapSense_sensorIndex);
                       }
@@ -1150,7 +1150,7 @@ line level    source
 1102          * Function Name: CapSense_ClearSensors
 1103          ********************************************************************************
 1104          *
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 19  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 19  
 
 1105          * Summary:
 1106          *  Resets all sensors to the non-sampling state by sequentially disconnecting
@@ -1214,7 +1214,7 @@ line level    source
                       {
                           /* Enable sensor (signle) */
                           CapSense_EnableSensor(slot);
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 20  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 20  
 
                       }
                       else
@@ -1278,7 +1278,7 @@ line level    source
                           index = &CapSense_indexTable[snsType];
                           snsNumber = CapSense_maskTable[slot];
                                       
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 21  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 21  
 
                           for (j=0u; j < snsNumber; j++)
                           {
@@ -1342,7 +1342,7 @@ line level    source
 1288   1          /* Connect to AMUX */
 1289   1          #if (CapSense_DESIGN_TYPE == CapSense_ONE_CHANNEL_DESIGN)
 1290   1              #if (CapSense_IS_COMPLEX_SCANSLOTS)
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 22  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 22  
 
                           CapSense_AMuxCH0_Connect(CapSense_amuxIndex[sensor]);
                       #else
@@ -1406,7 +1406,7 @@ line level    source
 1350          *******************************************************************************/
 1351          void CapSense_DisableSensor(uint8 sensor) CYREENTRANT
 1352          {
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 23  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 23  
 
 1353   1          uint8 port = CapSense_portTable[sensor];
 1354   1          uint8 mask = CapSense_maskTable[sensor];
@@ -1470,7 +1470,7 @@ line level    source
 1412   1      }
 1413          
 1414          
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 24  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 24  
 
 1415          /*******************************************************************************
 1416          * Function Name: CapSense_PreScan
@@ -1534,7 +1534,7 @@ line level    source
                       #else
                           /* Connect DSI output to Rb */
                           *CapSense_rbTable[CapSense_extRbCh0Cur] |= CapSense_BYP_MASK;
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 25  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 25  
 
                           
                           /* Enable Sensor */
@@ -1598,7 +1598,7 @@ line level    source
                               
                               /* Enable Sensor */
                               CapSense_EnableScanSlot(sensor);
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 26  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 26  
 
                               
                           #elif (CapSense_CURRENT_SOURCE == CapSense_IDAC_SINK)
@@ -1662,7 +1662,7 @@ line level    source
 1598              *
 1599              * Reentrant:
 1600              *  No
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 27  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 27  
 
 1601              *
 1602              *******************************************************************************/
@@ -1726,7 +1726,7 @@ line level    source
                   * Global Variables:
                   *  CapSense_sensorRaw[] - used to store sensors raw data.
                   *
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 28  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 28  
 
                   * Reentrant:
                   *  No
@@ -1790,7 +1790,7 @@ line level    source
                   *  sensor:  Sensor number.
                   *
                   * Return:
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 29  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 29  
 
                   *  None
                   *
@@ -1854,7 +1854,7 @@ line level    source
                   *
                   * Summary:
                   *  Sets all Rbleed resistor to High-Z mode. The first Rbleed resistor is active
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 30  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 30  
 
                   *  while next measure.
                   *  This function is available only if Current Source is External Resistor.
@@ -1918,7 +1918,7 @@ line level    source
                           {
                               CapSense_extRbCh0Cur = rbleed;
                           }
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 31  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 31  
 
                           else
                           {
@@ -1982,7 +1982,7 @@ line level    source
 1908   1                  prescaler = CapSense_PRESCALER_PERIOD_REG;
 1909   1                  
 1910   1              #elif (CapSense_PRESCALER_OPTIONS == CapSense_PRESCALER_FF)
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 32  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 32  
 
                           prescaler = (uint8) CY_GET_REG16(CapSense_PRESCALER_PERIOD_PTR);
                           
@@ -2046,14 +2046,14 @@ line level    source
 1970   1              else
 1971   1              {
 1972   2                  CapSense_CONTROL_REG |= 0x10u;
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 33  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 33  
 
 1973   2              }
 1974   1          }
 1975          #endif /* (CapSense_PRS_OPTIONS) */
 1976          
 1977          /* [] END OF FILE */
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 34  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 34  
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -2117,7 +2117,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0051 900000      R     MOV     DPTR,#enableInterrupts
 0054 EF                MOV     A,R7
 0055 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 35  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 35  
 
                                            ; SOURCE LINE # 213
 0056 90649C            MOV     DPTR,#0649CH
@@ -2181,7 +2181,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00AB 120000      E     LCALL   _CyIntSetPriority
                                            ; SOURCE LINE # 275
 00AE 120000      E     LCALL   CapSense_AMuxCH0_Init
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 36  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 36  
 
                                            ; SOURCE LINE # 276
 00B1 7F07              MOV     R7,#07H
@@ -2245,7 +2245,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 001C 9043BB            MOV     DPTR,#043BBH
 001F E0                MOVX    A,@DPTR
 0020 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 37  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 37  
 
 0021 EF                MOV     A,R7
 0022 4410              ORL     A,#010H
@@ -2309,7 +2309,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000E 7401              MOV     A,#01H
 0010 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 505
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 38  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 38  
 
 0011         ?C0003:
                                            ; SOURCE LINE # 506
@@ -2373,7 +2373,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 003E 9043BB            MOV     DPTR,#043BBH
 0041 E0                MOVX    A,@DPTR
 0042 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 39  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 39  
 
 0043 EF                MOV     A,R7
 0044 54EF              ANL     A,#0EFH
@@ -2437,7 +2437,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0034 13                RRC     A
 0035 13                RRC     A
 0036 541F              ANL     A,#01FH
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 40  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 40  
 
 0038 FF                MOV     R7,A
 0039 850083      E     MOV     DPH,?C_XBP
@@ -2501,7 +2501,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 008E A3                INC     DPTR
 008F E0                MOVX    A,@DPTR
 0090 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 41  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 41  
 
                                            ; SOURCE LINE # 694
 0091         ?C0010:
@@ -2565,7 +2565,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0055 2F                ADD     A,R7
 0056 F582              MOV     DPL,A
 0058 E4                CLR     A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 42  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 42  
 
 0059 3400        R     ADDC    A,#HIGH CapSense_analogSwitchDivider
 005B F583              MOV     DPH,A
@@ -2629,7 +2629,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0017 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1028
 0018 900000      R     MOV     DPTR,#CapSense_sensorIndex
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 43  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 43  
 
 001B E0                MOVX    A,@DPTR
 001C FF                MOV     R7,A
@@ -2693,7 +2693,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0005 900000      R     MOV     DPTR,#sensor
 0008 E0                MOVX    A,@DPTR
 0009 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 44  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 44  
 
 000A EF                MOV     A,R7
 000B 25E0              ADD     A,ACC
@@ -2757,7 +2757,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0011 850082      E     MOV     DPL,?C_XBP+01H
 0014 A3                INC     DPTR
 0015 A3                INC     DPTR
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 45  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 45  
 
 0016 E0                MOVX    A,@DPTR
 0017 FF                MOV     R7,A
@@ -2821,7 +2821,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 006F 850083      E     MOV     DPH,?C_XBP
 0072 850082      E     MOV     DPL,?C_XBP+01H
 0075 7407              MOV     A,#07H
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 46  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 46  
 
 0077 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 1285
@@ -2885,7 +2885,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0008 90FFFE            MOV     DPTR,#0FFFEH
 000B 120000      E     LCALL   ?C?ADDXBP
                                            ; SOURCE LINE # 1353
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 47  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 47  
 
 000E 850083      E     MOV     DPH,?C_XBP
 0011 850082      E     MOV     DPL,?C_XBP+01H
@@ -2949,7 +2949,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 006A 25E0              ADD     A,ACC
 006C 2400        R     ADD     A,#LOW CapSense_csTable
 006E F582              MOV     DPL,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 48  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 48  
 
 0070 E4                CLR     A
 0071 3400        R     ADDC    A,#HIGH CapSense_csTable
@@ -3013,7 +3013,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
              ; FUNCTION _?CapSense_PreScan (BEGIN)
                                            ; SOURCE LINE # 1435
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 49  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 49  
 
 0000 90FFFF            MOV     DPTR,#0FFFFH
 0003 120000      E     LCALL   ?C?ADDXBP
@@ -3077,7 +3077,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000D EF                MOV     A,R7
 000E 54FC              ANL     A,#0FCH
 0010 FF                MOV     R7,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 50  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 50  
 
 0011 EF                MOV     A,R7
 0012 F0                MOVX    @DPTR,A
@@ -3141,7 +3141,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0067 A3                INC     DPTR
 0068 EF                MOV     A,R7
 0069 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 51  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 51  
 
                                            ; SOURCE LINE # 1615
 006A 850083      E     MOV     DPH,?C_XBP
@@ -3205,7 +3205,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00C0 900001            MOV     DPTR,#01H
 00C3 120000      E     LCALL   ?C?ADDXBP
 00C6 22                RET     
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 52  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 52  
 
              ; FUNCTION _?CapSense_PostScan (END)
 
@@ -3269,7 +3269,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0000 900000      R     MOV     DPTR,#scanSpeed
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 53  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 53  
 
                                            ; SOURCE LINE # 1937
                                            ; SOURCE LINE # 1938
@@ -3333,7 +3333,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
-C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 16:00:58 PAGE 54  
+C51 COMPILER V9.51   CAPSENSE                                                              11/29/2022 20:10:20 PAGE 54  
 
    BIT SIZE         =   ----    ----
    EDATA SIZE       =   ----    ----

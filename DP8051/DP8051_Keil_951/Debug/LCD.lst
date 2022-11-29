@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 1   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE LCD
@@ -62,7 +62,7 @@ line level    source
   51          * Reentrant:
   52          *  No.
   53          *
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 2   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 2   
 
   54          *******************************************************************************/
   55          void LCD_Init(void) 
@@ -126,7 +126,7 @@ line level    source
  113          ********************************************************************************
  114          *
  115          * Summary:
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 3   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 3   
 
  116          *  Performs initialization required for the components normal work.
  117          *  This function initializes the LCD hardware module as follows:
@@ -190,7 +190,7 @@ line level    source
  175          
  176          /*******************************************************************************
  177          *  Function Name: LCD_Position
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 4   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 4   
 
  178          ********************************************************************************
  179          *
@@ -254,7 +254,7 @@ line level    source
  237   1      
  238   1          /* Until null is reached, print next character */
  239   1          while((char8) '\0' != current)
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 5   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 5   
 
  240   1          {
  241   2              LCD_WriteData((uint8)current);
@@ -318,7 +318,7 @@ line level    source
  299          
  300          /*******************************************************************************
  301          *  Function Name: LCD_WriteControl
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 6   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 6   
 
  302          ********************************************************************************
  303          *
@@ -382,7 +382,7 @@ line level    source
                       
                       /* Mask off data pins to clear old values out */
                       value = LCD_PORT_PC_REG & ((uint32) (~ LCD_DM_DATA_MASK));
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 7   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 7   
 
                       /* Load in high Z values for data pins, others unchanged */
                       LCD_PORT_PC_REG = value | LCD_HIGH_Z_DATA_DM;
@@ -446,7 +446,7 @@ line level    source
  423   2              /* Set enable low */
  424   2              LCD_PORT_DR_REG &= ((uint8)(~LCD_E));
  425   2      
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 8   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 8   
 
  426   2              /* If LCD is not ready make a delay */
  427   2              if (value == 0u)
@@ -510,7 +510,7 @@ line level    source
  485          *******************************************************************************/
  486          static void LCD_WrDatNib(uint8 nibble) 
  487          {
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 9   
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 9   
 
  488   1          /* RS should be low to select data register */
  489   1          LCD_PORT_DR_REG |= LCD_RS;
@@ -574,7 +574,7 @@ line level    source
  547   1      
  548   1          LCD_PORT_DR_REG &= ((uint8)(~LCD_E));
  549   1      }
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 10  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 10  
 
  550          
  551          
@@ -638,7 +638,7 @@ line level    source
  609              *  None.
  610              *
  611              *******************************************************************************/
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 11  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 11  
 
  612              void LCD_PrintInt32(uint32 value) 
  613              {
@@ -702,7 +702,7 @@ line level    source
  671   1              number[digIndex] = (char8) '\0';
  672   1              digIndex--;
  673   1              
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 12  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 12  
 
  674   1              /* Load these in reverse order */
  675   1              while(value >= LCD_TEN)
@@ -734,7 +734,7 @@ line level    source
  701          
  702          
  703          /* [] END OF FILE */
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 13  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 13  
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -798,7 +798,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 005C 120000      R     LCALL   _LCD_WriteControl
                                            ; SOURCE LINE # 72
 005F 7F01              MOV     R7,#01H
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 14  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 14  
 
 0061 120000      R     LCALL   _LCD_WriteControl
                                            ; SOURCE LINE # 73
@@ -862,7 +862,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
              ; FUNCTION LCD_Stop (BEGIN)
                                            ; SOURCE LINE # 168
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 15  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 15  
 
                                            ; SOURCE LINE # 169
                                            ; SOURCE LINE # 171
@@ -926,7 +926,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0039 120000      R     LCALL   _LCD_WriteControl
                                            ; SOURCE LINE # 205
 003C 22                RET     
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 16  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 16  
 
                                            ; SOURCE LINE # 206
 003D         ?C0009:
@@ -990,7 +990,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0027 FF                MOV     R7,A
 0028 120000      R     LCALL   _LCD_WriteData
                                            ; SOURCE LINE # 242
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 17  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 17  
 
 002B 900000      R     MOV     DPTR,#string
 002E 120000      E     LCALL   ?C?PLDXDATA
@@ -1054,7 +1054,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0012 900000      R     MOV     DPTR,#nibble
 0015 EF                MOV     A,R7
 0016 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 18  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 18  
 
                                            ; SOURCE LINE # 292
 0017 900000      R     MOV     DPTR,#nibble
@@ -1118,7 +1118,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 002D 900000      R     MOV     DPTR,#nibble
 0030 E0                MOVX    A,@DPTR
 0031 FF                MOV     R7,A
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 19  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 19  
 
 0032 120000      R     LCALL   _LCD_WrCntrlNib
                                            ; SOURCE LINE # 328
@@ -1182,7 +1182,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 004B EF                MOV     A,R7
 004C F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 382
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 20  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 20  
 
 004D 905124            MOV     DPTR,#05124H
 0050 E0                MOVX    A,@DPTR
@@ -1246,7 +1246,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 009D F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 409
 009E 905120            MOV     DPTR,#05120H
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 21  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 21  
 
 00A1 E0                MOVX    A,@DPTR
 00A2 FF                MOV     R7,A
@@ -1310,7 +1310,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00F0 7BFF              MOV     R3,#0FFH
 00F2 7AFF              MOV     R2,#0FFH
 00F4 79FF              MOV     R1,#0FFH
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 22  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 22  
 
 00F6 78FF              MOV     R0,#0FFH
 00F8 120000      E     LCALL   ?C?LADD
@@ -1374,7 +1374,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 014D E0                MOVX    A,@DPTR
 014E FF                MOV     R7,A
 014F EF                MOV     A,R7
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 23  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 23  
 
 0150 440F              ORL     A,#0FH
 0152 FF                MOV     R7,A
@@ -1438,7 +1438,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0025 E0                MOVX    A,@DPTR
 0026 FF                MOV     R7,A
 0027 EF                MOV     A,R7
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 24  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 24  
 
 0028 54F0              ANL     A,#0F0H
 002A FF                MOV     R7,A
@@ -1502,7 +1502,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0015 EF                MOV     A,R7
 0016 54F0              ANL     A,#0F0H
 0018 FF                MOV     R7,A
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 25  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 25  
 
 0019 EF                MOV     A,R7
 001A F0                MOVX    @DPTR,A
@@ -1566,7 +1566,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 001B E0                MOVX    A,@DPTR
 001C FF                MOV     R7,A
 001D EF                MOV     A,R7
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 26  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 26  
 
 001E 540F              ANL     A,#0FH
 0020 FF                MOV     R7,A
@@ -1630,7 +1630,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0010 FF                MOV     R7,A
 0011 EF                MOV     A,R7
 0012 601C              JZ      ?C0031
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 27  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 27  
 
                                            ; SOURCE LINE # 617
                                            ; SOURCE LINE # 621
@@ -1694,7 +1694,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 680
 0032 7B0A              MOV     R3,#0AH
 0034 7A00              MOV     R2,#00H
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 28  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 28  
 
 0036 7900              MOV     R1,#00H
 0038 7800              MOV     R0,#00H
@@ -1758,7 +1758,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00A0 AF03              MOV     R7,AR3
 00A2 EF                MOV     A,R7
 00A3 2430              ADD     A,#030H
-C51 COMPILER V9.51   LCD                                                                   11/29/2022 16:00:56 PAGE 29  
+C51 COMPILER V9.51   LCD                                                                   11/29/2022 20:10:19 PAGE 29  
 
 00A5 FF                MOV     R7,A
 00A6 900000      R     MOV     DPTR,#tmpDigit

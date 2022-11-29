@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 16:01:01 PAGE 1   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 20:10:22 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE_IDACCH0_PM
@@ -62,7 +62,7 @@ line level    source
   50          *
   51          * Summary:
   52          *  Restores the current user configuration.
-C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 16:01:01 PAGE 2   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 20:10:22 PAGE 2   
 
   53          *
   54          * Parameters:
@@ -126,7 +126,7 @@ line level    source
  112          
  113          
  114          /*******************************************************************************
-C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 16:01:01 PAGE 3   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 20:10:22 PAGE 3   
 
  115          * Function Name: CapSense_IdacCH0_Wakeup
  116          ********************************************************************************
@@ -161,7 +161,7 @@ line level    source
  145          
  146          
  147          /* [] END OF FILE */
-C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 16:01:01 PAGE 4   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 20:10:22 PAGE 4   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -225,7 +225,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 64
                                            ; SOURCE LINE # 65
 0017 905A8F            MOV     DPTR,#05A8FH
-C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 16:01:01 PAGE 5   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 20:10:22 PAGE 5   
 
 001A E0                MOVX    A,@DPTR
 001B FF                MOV     R7,A
@@ -289,7 +289,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0003 E0                MOVX    A,@DPTR
 0004 FF                MOV     R7,A
 0005 EF                MOV     A,R7
-C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 16:01:01 PAGE 6   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 20:10:22 PAGE 6   
 
 0006 5402              ANL     A,#02H
 0008 FF                MOV     R7,A
@@ -353,7 +353,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =      2    ----
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 16:01:01 PAGE 7   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0_PM                                                   11/29/2022 20:10:22 PAGE 7   
 
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 1   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CAPSENSE_IDACCH0
@@ -62,7 +62,7 @@ line level    source
   50          * Return:
   51          *  (void)
   52          *
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 2   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 2   
 
   53          * Theory:
   54          *
@@ -126,7 +126,7 @@ line level    source
  112          {
  113   1          CapSense_IdacCH0_PWRMGR |= CapSense_IdacCH0_ACT_PWR_EN;
  114   1          CapSense_IdacCH0_STBY_PWRMGR |= CapSense_IdacCH0_STBY_PWR_EN;
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 3   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 3   
 
  115   1      
  116   1          /* This is to restore the value of register CR0 which is saved 
@@ -190,7 +190,7 @@ line level    source
  174          *
  175          * Return:
  176          *  (void)
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 4   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 4   
 
  177          *
  178          * Theory:
@@ -254,7 +254,7 @@ line level    source
  235          *  0x04 - Sink
  236          *
  237          * Return:
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 5   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 5   
 
  238          *  (void)
  239          *
@@ -318,7 +318,7 @@ line level    source
  296          *
  297          *******************************************************************************/
  298          void CapSense_IdacCH0_SetValue(uint8 value) 
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 6   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 6   
 
  299          {
  300   1      
@@ -381,7 +381,7 @@ line level    source
  357          
  358          
  359          /* [] END OF FILE */
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 7   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 7   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -445,7 +445,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0011 4402              ORL     A,#02H
 0013 FF                MOV     R7,A
 0014 EF                MOV     A,R7
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 8   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 8   
 
 0015 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 127
@@ -509,7 +509,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0000 900000      R     MOV     DPTR,#speed
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 9   
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 9   
 
                                            ; SOURCE LINE # 219
                                            ; SOURCE LINE # 221
@@ -573,7 +573,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0021 FE                MOV     R6,A
 0022 EF                MOV     A,R7
 0023 4E                ORL     A,R6
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 10  
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 10  
 
 0024 FF                MOV     R7,A
 0025 D082              POP     DPL
@@ -637,7 +637,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0008 E0                MOVX    A,@DPTR
 0009 FF                MOV     R7,A
 000A 905B81            MOV     DPTR,#05B81H
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 11  
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 11  
 
 000D EF                MOV     A,R7
 000E F0                MOVX    @DPTR,A
@@ -701,7 +701,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 003C 3401              ADDC    A,#01H
 003E FE                MOV     R6,A
 003F ED                MOV     A,R5
-C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 16:01:01 PAGE 12  
+C51 COMPILER V9.51   CAPSENSE_IDACCH0                                                      11/29/2022 20:10:22 PAGE 12  
 
 0040 340C              ADDC    A,#0CH
 0042 FD                MOV     R5,A

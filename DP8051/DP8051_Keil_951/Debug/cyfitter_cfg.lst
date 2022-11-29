@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 1   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE CYFITTER_CFG
@@ -62,7 +62,7 @@ line level    source
   50          /* Clock startup error codes                                                   */
   51          #define CYCLOCKSTART_NO_ERROR    0u
   52          #define CYCLOCKSTART_XTAL_ERROR  1u
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 2   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 2   
 
   53          #define CYCLOCKSTART_32KHZ_ERROR 2u
   54          #define CYCLOCKSTART_PLL_ERROR   3u
@@ -126,7 +126,7 @@ line level    source
  112          /* IOPINS0_6 Address: CYREG_PRT6_DM0 Size (bytes): 8 */
  113          #define BS_IOPINS0_6_VAL ((const uint8 CYFAR *)0x000802FCu)
  114          
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 3   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 3   
 
  115          
  116          /*******************************************************************************
@@ -190,7 +190,7 @@ line level    source
  172   1              CY_SET_REG8((void CYXDATA *)(CYREG_CLKDIST_MSTR0), 0x00u);
  173   1              CY_SET_REG8((void CYXDATA *)(CYREG_CLKDIST_LD), 0x02u);
  174   1      
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 4   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 4   
 
  175   1              CY_SET_REG8((void CYXDATA *)(CYREG_PM_ACT_CFG2), ((CY_GET_REG8((void CYXDATA *)CYREG_PM_ACT_CFG2) | 0x01u
              -)));
@@ -254,7 +254,7 @@ line level    source
  233   2                      regValue |= 0x22u;
  234   2              }
  235   1              else
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 5   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 5   
 
  236   1              {
  237   2                      regValue &= (uint8)~0x22u;
@@ -318,7 +318,7 @@ line level    source
  295          /*******************************************************************************
  296          * Function Name: CapSense_AMuxCH0_Unset
  297          ********************************************************************************
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 6   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 6   
 
  298          * Summary:
  299          *  This function is used to clear a particular channel from being active on the
@@ -382,7 +382,7 @@ line level    source
  356   2                              {(void CYFAR *)(CYDEV_UCFG_DSI0_BASE), 2560u},
  357   2                              {(void CYFAR *)(CYDEV_UCFG_DSI12_BASE), 512u},
  358   2                              {(void CYFAR *)(CYREG_BCTL0_MDCLK_EN), 32u},
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 7   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 7   
 
  359   2                      };
  360   2      
@@ -446,10 +446,10 @@ line level    source
  414   1              CYCONFIGCPY((void CYFAR *)CYDEV_PM_STBY_BASE, (const void CYFAR *)CYDEV_PM_ACT_BASE, 14u);
  415   1              CY_SET_REG8((void CYXDATA *)CYREG_PM_STBY_CFG0, CY_GET_REG8((void CYXDATA *)CYREG_PM_STBY_CFG0) & (uint8)
              -~0x02u);        /* Disable CPU */
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 8   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 8   
 
  416   1      }
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 9   
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 9   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -513,7 +513,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0037 7922              MOV     R1,#022H
 0039 7D08              MOV     R5,#08H
 003B 7C00              MOV     R4,#00H
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 10  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 10  
 
 003D 120000      E     LCALL   _cywrite16
                                            ; SOURCE LINE # 153
@@ -577,7 +577,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0099 7FE0              MOV     R7,#0E0H
 009B 7E01              MOV     R6,#01H
 009D 7D00              MOV     R5,#00H
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 11  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 11  
 
 009F 7C00              MOV     R4,#00H
 00A1 120000      E     LCALL   _CyDelayCycles
@@ -641,7 +641,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00FD FF                MOV     R7,A
 00FE 9043A2            MOV     DPTR,#043A2H
 0101 EF                MOV     A,R7
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 12  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 12  
 
 0102 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 176
@@ -705,7 +705,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 004B F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 208
 004C 22                RET     
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 13  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 13  
 
              ; FUNCTION AnalogSetDefault (END)
 
@@ -769,7 +769,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
              ; FUNCTION _CapSense_AMuxCH0_Set (BEGIN)
                                            ; SOURCE LINE # 287
 0000 900000      R     MOV     DPTR,#channel
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 14  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 14  
 
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
@@ -833,7 +833,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0004 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 310
                                            ; SOURCE LINE # 311
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 15  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 15  
 
 0005 900000      R     MOV     DPTR,#channel
 0008 E0                MOVX    A,@DPTR
@@ -897,7 +897,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0002 7A46              MOV     R2,#046H
 0004 79E8              MOV     R1,#0E8H
 0006 120000      E     LCALL   _cyread8
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 16  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 16  
 
 0009 EF                MOV     A,R7
 000A 4405              ORL     A,#05H
@@ -961,7 +961,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0067 7972              MOV     R1,#072H
 0069 7D00              MOV     R5,#00H
 006B 7C03              MOV     R4,#03H
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 17  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 17  
 
 006D 120000      E     LCALL   _cywrite16
                                            ; SOURCE LINE # 374
@@ -1025,7 +1025,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00D4 EF                MOV     A,R7
 00D5 F0                MOVX    @DPTR,A
                                            ; SOURCE LINE # 386
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 18  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 18  
 
                                            ; SOURCE LINE # 390
 00D6 7B08              MOV     R3,#08H
@@ -1089,7 +1089,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 014D C002              PUSH    AR2
 014F C001              PUSH    AR1
 0151 7B00              MOV     R3,#00H
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 19  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 19  
 
 0153 7A51              MOV     R2,#051H
 0155 7962              MOV     R1,#062H
@@ -1153,7 +1153,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01AF 7A43              MOV     R2,#043H
 01B1 79B0              MOV     R1,#0B0H
 01B3 900000      E     MOV     DPTR,#?_cyconfigcpy?BYTE+05H
-C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 16:00:55 PAGE 20  
+C51 COMPILER V9.51   CYFITTER_CFG                                                          11/29/2022 20:10:19 PAGE 20  
 
 01B6 120000      E     LCALL   ?C?PSTXDATA
 01B9 D001              POP     AR1
