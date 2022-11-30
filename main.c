@@ -4,6 +4,7 @@
 extern uint8 const CYCODE LCD_customFonts[];
 uint16 curPos = 160u;
 uint16 maxPos = 0u;
+int8 i = 0;
 
 int IsInfected = 0;
 int Is = 5000;
@@ -36,9 +37,19 @@ void CapSense_DisplayState(void)
         CyDelay(100);
         if(curPos == 0u)
         {
-            LCD_Position(1u, 11u);
-            LCD_PrintString("Alarm");
-            Pin_2_Write(1u);
+            while(i < 32)
+            {
+                LCD_Position(0u,7u);
+                LCD_PrintString("Sick");
+                LCD_Position(1u, 11u);
+                LCD_PrintString("Alarm");
+                Pin_2_Write(1u);
+                CyDelay(500u);
+                Pin_2_Write(0u);
+                LCD_ClearDisplay();
+                CyDelay(500u);
+                i++;
+            }
         }
     }
     
@@ -118,7 +129,7 @@ int main(void)
     LCD_LoadCustomFonts(LCD_customFonts);
 
     LCD_Position(1u, 0u);
-    LCD_PrintString("Korpan");
+    LCD_PrintString("Korpan B14 COVID");
 
     /* Initialize baselines */
     CapSense_InitializeAllBaselines();

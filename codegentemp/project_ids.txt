@@ -1,6 +1,6 @@
-C:\Users\Asus\Documents\PSoC Creator\Lab3.cydsn\Lab3.cyprj|222a7156-d222-4641-8071-d220e806a861
-C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|ef38ad28-6a0e-4f7c-8cb0-c715d0bd4e93
-C:\Users\Asus\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\Downloads ( 4.4).cyprj|abae40e9-c3cb-4ed6-a17a-69ab6093d65c
-C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|5062bfe5-0434-4bdd-87b0-b00b8c358719
-C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|4eae680f-1df3-486d-95d2-8b5c6a774fff
-C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|1ace03ae-6562-419c-88f3-f53bfe15f87c
+C:\Users\Asus\Documents\PSoC Creator\Lab3.cydsn\Lab3.cyprj|266c2e45-61c0-4ba5-ac0e-f0ad015c6fd4
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|7892c78b-1152-4ee2-a9cf-058bc877583c
+C:\Users\Asus\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\Downloads ( 4.4).cyprj|4db109d9-5abb-4c7f-bc53-69aee32a0d77
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|7858f5bf-ba89-4efe-b011-8526e00c95ad
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|4d244a64-42de-4572-82b7-f679a47ed295
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|e0c70f23-ef80-4b31-936b-aca0475c7347

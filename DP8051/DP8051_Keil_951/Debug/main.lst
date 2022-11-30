@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 1   
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE MAIN
@@ -15,206 +15,217 @@ line level    source
    4          extern uint8 const CYCODE LCD_customFonts[];
    5          uint16 curPos = 160u;
    6          uint16 maxPos = 0u;
-   7          
-   8          int IsInfected = 0;
-   9          int Is = 5000;
-  10          int n = 0;
-  11          
-  12          void CustomLCD_DrawHorizontalBG(uint8 row, uint8 column, uint8 maxCharacters, uint8 value);
-  13          void CustomLCD_WriteData(uint8 dByte);
-  14          void CustomLCD_WrDatNib(uint8 nibble);
-  15          
-  16          void CapSense_DisplayState(void)
-  17             {
-  18   1          /* Display BUTTON1 state */
-  19   1          if (CapSense_CheckIsWidgetActive(CapSense_BUTTON1__BTN))
-  20   1          {
-  21   2              Pin_2_Write(0u);
-  22   2              IsInfected = 1;
-  23   2              curPos = 0u;
-  24   2              LCD_Position(1u, 11u);
-  25   2              LCD_PrintString("     ");
-  26   2          }
-  27   1          else
-  28   1          {
-  29   2              IsInfected = 0;
-  30   2          }
-  31   1          /* Find Slider Position */
-  32   1          if(IsInfected == 0)
-  33   1          {
-  34   2              curPos--;//CapSense_GetCentroidPos(CapSense_LINEARSLIDER0__LS);//curPos + 1;//
-  35   2              CustomLCD_DrawHorizontalBG(0u, 0u, 16u, curPos >> 1);
-  36   2              CyDelay(100);
-  37   2              if(curPos == 0u)
-  38   2              {
-  39   3                  LCD_Position(1u, 11u);
-  40   3                  LCD_PrintString("Alarm");
-  41   3                  Pin_2_Write(1u);
-  42   3              }
-  43   2          }
-  44   1          
-  45   1          
-  46   1      }
-  47          void CustomLCD_WriteData(uint8 dByte) 
-  48          {
-  49   1          uint8 nibble;
-  50   1      
-  51   1          LCD_IsReady();
-  52   1          
-  53   1          nibble = dByte >> LCD_NIBBLE_SHIFT;
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 2   
+   7          int8 i = 0;
+   8          
+   9          int IsInfected = 0;
+  10          int Is = 5000;
+  11          int n = 0;
+  12          
+  13          void CustomLCD_DrawHorizontalBG(uint8 row, uint8 column, uint8 maxCharacters, uint8 value);
+  14          void CustomLCD_WriteData(uint8 dByte);
+  15          void CustomLCD_WrDatNib(uint8 nibble);
+  16          
+  17          void CapSense_DisplayState(void)
+  18             {
+  19   1          /* Display BUTTON1 state */
+  20   1          if (CapSense_CheckIsWidgetActive(CapSense_BUTTON1__BTN))
+  21   1          {
+  22   2              Pin_2_Write(0u);
+  23   2              IsInfected = 1;
+  24   2              curPos = 0u;
+  25   2              LCD_Position(1u, 11u);
+  26   2              LCD_PrintString("     ");
+  27   2          }
+  28   1          else
+  29   1          {
+  30   2              IsInfected = 0;
+  31   2          }
+  32   1          /* Find Slider Position */
+  33   1          if(IsInfected == 0)
+  34   1          {
+  35   2              curPos--;//CapSense_GetCentroidPos(CapSense_LINEARSLIDER0__LS);//curPos + 1;//
+  36   2              CustomLCD_DrawHorizontalBG(0u, 0u, 16u, curPos >> 1);
+  37   2              CyDelay(100);
+  38   2              if(curPos == 0u)
+  39   2              {
+  40   3                  while(i < 32)
+  41   3                  {
+  42   4                      LCD_Position(0u,7u);
+  43   4                      LCD_PrintString("Sick");
+  44   4                      LCD_Position(1u, 11u);
+  45   4                      LCD_PrintString("Alarm");
+  46   4                      Pin_2_Write(1u);
+  47   4                      CyDelay(500u);
+  48   4                      Pin_2_Write(0u);
+  49   4                      LCD_ClearDisplay();
+  50   4                      CyDelay(500u);
+  51   4                      i++;
+  52   4                  }
+  53   3              }
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 2   
 
-  54   1      
-  55   1          /* Write high nibble */
-  56   1          CustomLCD_WrDatNib(nibble);
-  57   1          nibble = dByte & LCD_NIBBLE_MASK;
-  58   1          /* Write low nibble */
-  59   1          CustomLCD_WrDatNib(nibble);
-  60   1      }
-  61          void CustomLCD_WrDatNib(uint8 nibble) 
-  62          {
-  63   1          LCD_PORT_DR_REG &= ((uint8)(~LCD_E));
-  64   1          LCD_PORT_DR_REG |= (nibble | LCD_E);
-  65   1          LCD_PORT_DR_REG |= LCD_RS;
-  66   1      }
-  67          void CustomLCD_DrawHorizontalBG(uint8 row, uint8 column, uint8 maxCharacters, uint8 value) \
-  68                                                                      
-  69              {
-  70   1              /* 8-bit Counter */
-  71   1              uint8 count8;
-  72   1              uint8 fullChars;
-  73   1              uint8 remainingPixels;
-  74   1      
-  75   1              /* Number of full characters to draw */
-  76   1              fullChars = value / LCD_CHARACTER_WIDTH;
-  77   1      
-  78   1              /* Number of remaining pixels to draw */
-  79   1              remainingPixels = value % LCD_CHARACTER_WIDTH;
-  80   1      
-  81   1              /* Ensure that the maximum character limit is followed. */
-  82   1              if(fullChars >= maxCharacters)
-  83   1              {
-  84   2                  fullChars = maxCharacters;
-  85   2              }
-  86   1      
-  87   1              /* Put Cursor at start position */
-  88   1              LCD_Position(row, column);
-  89   1      
-  90   1              /* Write full characters */
-  91   1              for(count8 = fullChars; count8 >  0u; count8--)
-  92   1              {
-  93   2                  CustomLCD_WriteData(LCD_CUSTOM_0);
-  94   2              }
-  95   1      
-  96   1              if(fullChars < maxCharacters)
-  97   1              {
-  98   2                  /* Write remaining pixels */
-  99   2                  LCD_WriteData(remainingPixels);
- 100   2      
- 101   2                  if(fullChars < (maxCharacters - 1u))
- 102   2                  {
- 103   3                      /* Fill with whitespace to end of bar graph */
- 104   3                      for(count8 = (maxCharacters - fullChars - 1u); count8 > 0u; count8--)
- 105   3                      {
- 106   4                          CustomLCD_WriteData(LCD_CUSTOM_5);
- 107   4                      }
- 108   3                  }
- 109   2              }
- 110   1          }
- 111          int main(void)
- 112          {
- 113   1          CyGlobalIntEnable; /* Enable global interrupts. */
- 114   1      
- 115   1          /* Place your initialization/startup code here (e.g. MyInst_Start()) */
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 3   
+  54   2          }
+  55   1          
+  56   1          
+  57   1      }
+  58          void CustomLCD_WriteData(uint8 dByte) 
+  59          {
+  60   1          uint8 nibble;
+  61   1      
+  62   1          LCD_IsReady();
+  63   1          
+  64   1          nibble = dByte >> LCD_NIBBLE_SHIFT;
+  65   1      
+  66   1          /* Write high nibble */
+  67   1          CustomLCD_WrDatNib(nibble);
+  68   1          nibble = dByte & LCD_NIBBLE_MASK;
+  69   1          /* Write low nibble */
+  70   1          CustomLCD_WrDatNib(nibble);
+  71   1      }
+  72          void CustomLCD_WrDatNib(uint8 nibble) 
+  73          {
+  74   1          LCD_PORT_DR_REG &= ((uint8)(~LCD_E));
+  75   1          LCD_PORT_DR_REG |= (nibble | LCD_E);
+  76   1          LCD_PORT_DR_REG |= LCD_RS;
+  77   1      }
+  78          void CustomLCD_DrawHorizontalBG(uint8 row, uint8 column, uint8 maxCharacters, uint8 value) \
+  79                                                                      
+  80              {
+  81   1              /* 8-bit Counter */
+  82   1              uint8 count8;
+  83   1              uint8 fullChars;
+  84   1              uint8 remainingPixels;
+  85   1      
+  86   1              /* Number of full characters to draw */
+  87   1              fullChars = value / LCD_CHARACTER_WIDTH;
+  88   1      
+  89   1              /* Number of remaining pixels to draw */
+  90   1              remainingPixels = value % LCD_CHARACTER_WIDTH;
+  91   1      
+  92   1              /* Ensure that the maximum character limit is followed. */
+  93   1              if(fullChars >= maxCharacters)
+  94   1              {
+  95   2                  fullChars = maxCharacters;
+  96   2              }
+  97   1      
+  98   1              /* Put Cursor at start position */
+  99   1              LCD_Position(row, column);
+ 100   1      
+ 101   1              /* Write full characters */
+ 102   1              for(count8 = fullChars; count8 >  0u; count8--)
+ 103   1              {
+ 104   2                  CustomLCD_WriteData(LCD_CUSTOM_0);
+ 105   2              }
+ 106   1      
+ 107   1              if(fullChars < maxCharacters)
+ 108   1              {
+ 109   2                  /* Write remaining pixels */
+ 110   2                  LCD_WriteData(remainingPixels);
+ 111   2      
+ 112   2                  if(fullChars < (maxCharacters - 1u))
+ 113   2                  {
+ 114   3                      /* Fill with whitespace to end of bar graph */
+ 115   3                      for(count8 = (maxCharacters - fullChars - 1u); count8 > 0u; count8--)
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 3   
 
- 116   1          LCD_Start();
- 117   1          CapSense_Start();
- 118   1          LCD_LoadCustomFonts(LCD_customFonts);
- 119   1      
- 120   1          LCD_Position(1u, 0u);
- 121   1          LCD_PrintString("Korpan");
- 122   1      
- 123   1          /* Initialize baselines */
- 124   1          CapSense_InitializeAllBaselines();
+ 116   3                      {
+ 117   4                          CustomLCD_WriteData(LCD_CUSTOM_5);
+ 118   4                      }
+ 119   3                  }
+ 120   2              }
+ 121   1          }
+ 122          int main(void)
+ 123          {
+ 124   1          CyGlobalIntEnable; /* Enable global interrupts. */
  125   1      
- 126   1          
- 127   1          while(1u)
- 128   1          {
- 129   2              /* Check whether the scanning of all enabled widgets is completed. */
- 130   2              if(0u == CapSense_IsBusy())
- 131   2              {
- 132   3                  /* Update all baselines */
- 133   3                  CapSense_UpdateEnabledBaselines();
- 134   3      
- 135   3                  /* Start scanning all enabled sensors */
- 136   3                  CapSense_ScanEnabledWidgets();
- 137   3              }
- 138   2      
- 139   2              /* Display CapSense state using LED/LCD */
- 140   2              CapSense_DisplayState();
- 141   2          }
- 142   1      
- 143   1      
- 144   1          for(;;)
- 145   1          {
- 146   2              /* Place your application code here. */
- 147   2          }
- 148   1      }
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 4   
+ 126   1          /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+ 127   1          LCD_Start();
+ 128   1          CapSense_Start();
+ 129   1          LCD_LoadCustomFonts(LCD_customFonts);
+ 130   1      
+ 131   1          LCD_Position(1u, 0u);
+ 132   1          LCD_PrintString("Korpan B14 COVID");
+ 133   1      
+ 134   1          /* Initialize baselines */
+ 135   1          CapSense_InitializeAllBaselines();
+ 136   1      
+ 137   1          
+ 138   1          while(1u)
+ 139   1          {
+ 140   2              /* Check whether the scanning of all enabled widgets is completed. */
+ 141   2              if(0u == CapSense_IsBusy())
+ 142   2              {
+ 143   3                  /* Update all baselines */
+ 144   3                  CapSense_UpdateEnabledBaselines();
+ 145   3      
+ 146   3                  /* Start scanning all enabled sensors */
+ 147   3                  CapSense_ScanEnabledWidgets();
+ 148   3              }
+ 149   2      
+ 150   2              /* Display CapSense state using LED/LCD */
+ 151   2              CapSense_DisplayState();
+ 152   2          }
+ 153   1      
+ 154   1      
+ 155   1          for(;;)
+ 156   1          {
+ 157   2              /* Place your application code here. */
+ 158   2          }
+ 159   1      }
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 4   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
 
              ; FUNCTION CapSense_DisplayState (BEGIN)
-                                           ; SOURCE LINE # 16
                                            ; SOURCE LINE # 17
-                                           ; SOURCE LINE # 19
+                                           ; SOURCE LINE # 18
+                                           ; SOURCE LINE # 20
 0000 7F02              MOV     R7,#02H
 0002 120000      E     LCALL   _CapSense_CheckIsWidgetActive
 0005 EF                MOV     A,R7
 0006 6028              JZ      ?C0001
-                                           ; SOURCE LINE # 20
                                            ; SOURCE LINE # 21
+                                           ; SOURCE LINE # 22
 0008 7F00              MOV     R7,#00H
 000A 120000      E     LCALL   _Pin_2_Write
-                                           ; SOURCE LINE # 22
+                                           ; SOURCE LINE # 23
 000D 900000      R     MOV     DPTR,#IsInfected
 0010 E4                CLR     A
 0011 F0                MOVX    @DPTR,A
 0012 A3                INC     DPTR
 0013 7401              MOV     A,#01H
 0015 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 23
+                                           ; SOURCE LINE # 24
 0016 900000      R     MOV     DPTR,#curPos
 0019 E4                CLR     A
 001A F0                MOVX    @DPTR,A
 001B A3                INC     DPTR
 001C E4                CLR     A
 001D F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 24
+                                           ; SOURCE LINE # 25
 001E 7D0B              MOV     R5,#0BH
 0020 7F01              MOV     R7,#01H
 0022 120000      E     LCALL   _LCD_Position
-                                           ; SOURCE LINE # 25
+                                           ; SOURCE LINE # 26
 0025 7BFF              MOV     R3,#0FFH
 0027 7A00        R     MOV     R2,#HIGH ?SC_0
 0029 7900        R     MOV     R1,#LOW ?SC_0
 002B 120000      E     LCALL   _LCD_PrintString
-                                           ; SOURCE LINE # 26
+                                           ; SOURCE LINE # 27
 002E 8008              SJMP    ?C0002
 0030         ?C0001:
-                                           ; SOURCE LINE # 28
                                            ; SOURCE LINE # 29
+                                           ; SOURCE LINE # 30
 0030 900000      R     MOV     DPTR,#IsInfected
 0033 E4                CLR     A
 0034 F0                MOVX    @DPTR,A
 0035 A3                INC     DPTR
 0036 E4                CLR     A
 0037 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 30
+                                           ; SOURCE LINE # 31
 0038         ?C0002:
-                                           ; SOURCE LINE # 32
+                                           ; SOURCE LINE # 33
 0038 900000      R     MOV     DPTR,#IsInfected
 003B E0                MOVX    A,@DPTR
 003C FE                MOV     R6,A
@@ -223,83 +234,129 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 003F FF                MOV     R7,A
 0040 EF                MOV     A,R7
 0041 4E                ORL     A,R6
-0042 7054              JNZ     ?C0005
-                                           ; SOURCE LINE # 33
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 5   
+0042 6003              JZ      $ + 5H
+0044 020000      R     LJMP    ?C0007
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 5   
 
                                            ; SOURCE LINE # 34
-0044 900000      R     MOV     DPTR,#curPos
-0047 74FF              MOV     A,#0FFH
-0049 75F0FF            MOV     B,#0FFH
-004C 120000      E     LCALL   ?C?IILDX
                                            ; SOURCE LINE # 35
-004F 900000      R     MOV     DPTR,#curPos
-0052 E0                MOVX    A,@DPTR
-0053 FE                MOV     R6,A
-0054 A3                INC     DPTR
-0055 E0                MOVX    A,@DPTR
-0056 FF                MOV     R7,A
-0057 EE                MOV     A,R6
-0058 C3                CLR     C
-0059 13                RRC     A
-005A FE                MOV     R6,A
-005B EF                MOV     A,R7
-005C 13                RRC     A
-005D FF                MOV     R7,A
-005E 900000      R     MOV     DPTR,#?_CustomLCD_DrawHorizontalBG?BYTE+03H
-0061 EF                MOV     A,R7
-0062 F0                MOVX    @DPTR,A
-0063 7B10              MOV     R3,#010H
-0065 7D00              MOV     R5,#00H
-0067 7F00              MOV     R7,#00H
-0069 120000      R     LCALL   _CustomLCD_DrawHorizontalBG
+0047 900000      R     MOV     DPTR,#curPos
+004A 74FF              MOV     A,#0FFH
+004C 75F0FF            MOV     B,#0FFH
+004F 120000      E     LCALL   ?C?IILDX
                                            ; SOURCE LINE # 36
-006C 7F64              MOV     R7,#064H
-006E 7E00              MOV     R6,#00H
-0070 7D00              MOV     R5,#00H
-0072 7C00              MOV     R4,#00H
-0074 120000      E     LCALL   _?CyDelay
+0052 900000      R     MOV     DPTR,#curPos
+0055 E0                MOVX    A,@DPTR
+0056 FE                MOV     R6,A
+0057 A3                INC     DPTR
+0058 E0                MOVX    A,@DPTR
+0059 FF                MOV     R7,A
+005A EE                MOV     A,R6
+005B C3                CLR     C
+005C 13                RRC     A
+005D FE                MOV     R6,A
+005E EF                MOV     A,R7
+005F 13                RRC     A
+0060 FF                MOV     R7,A
+0061 900000      R     MOV     DPTR,#?_CustomLCD_DrawHorizontalBG?BYTE+03H
+0064 EF                MOV     A,R7
+0065 F0                MOVX    @DPTR,A
+0066 7B10              MOV     R3,#010H
+0068 7D00              MOV     R5,#00H
+006A 7F00              MOV     R7,#00H
+006C 120000      R     LCALL   _CustomLCD_DrawHorizontalBG
                                            ; SOURCE LINE # 37
-0077 900000      R     MOV     DPTR,#curPos
-007A E0                MOVX    A,@DPTR
-007B FE                MOV     R6,A
-007C A3                INC     DPTR
-007D E0                MOVX    A,@DPTR
-007E FF                MOV     R7,A
-007F EF                MOV     A,R7
-0080 4E                ORL     A,R6
-0081 7015              JNZ     ?C0005
+006F 7F64              MOV     R7,#064H
+0071 7E00              MOV     R6,#00H
+0073 7D00              MOV     R5,#00H
+0075 7C00              MOV     R4,#00H
+0077 120000      E     LCALL   _?CyDelay
                                            ; SOURCE LINE # 38
+007A 900000      R     MOV     DPTR,#curPos
+007D E0                MOVX    A,@DPTR
+007E FE                MOV     R6,A
+007F A3                INC     DPTR
+0080 E0                MOVX    A,@DPTR
+0081 FF                MOV     R7,A
+0082 EF                MOV     A,R7
+0083 4E                ORL     A,R6
+0084 705A              JNZ     ?C0007
                                            ; SOURCE LINE # 39
-0083 7D0B              MOV     R5,#0BH
-0085 7F01              MOV     R7,#01H
-0087 120000      E     LCALL   _LCD_Position
+0086         ?C0005:
                                            ; SOURCE LINE # 40
-008A 7BFF              MOV     R3,#0FFH
-008C 7A00        R     MOV     R2,#HIGH ?SC_6
-008E 7900        R     MOV     R1,#LOW ?SC_6
-0090 120000      E     LCALL   _LCD_PrintString
+0086 900000      R     MOV     DPTR,#i
+0089 E0                MOVX    A,@DPTR
+008A FF                MOV     R7,A
+008B C3                CLR     C
+008C EF                MOV     A,R7
+008D 6480              XRL     A,#080H
+008F 94A0              SUBB    A,#0A0H
+0091 504D              JNC     ?C0007
                                            ; SOURCE LINE # 41
-0093 7F01              MOV     R7,#01H
-0095 120000      E     LCALL   _Pin_2_Write
                                            ; SOURCE LINE # 42
+0093 7D07              MOV     R5,#07H
+0095 7F00              MOV     R7,#00H
+0097 120000      E     LCALL   _LCD_Position
                                            ; SOURCE LINE # 43
+009A 7BFF              MOV     R3,#0FFH
+009C 7A00        R     MOV     R2,#HIGH ?SC_6
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 6   
+
+009E 7900        R     MOV     R1,#LOW ?SC_6
+00A0 120000      E     LCALL   _LCD_PrintString
+                                           ; SOURCE LINE # 44
+00A3 7D0B              MOV     R5,#0BH
+00A5 7F01              MOV     R7,#01H
+00A7 120000      E     LCALL   _LCD_Position
+                                           ; SOURCE LINE # 45
+00AA 7BFF              MOV     R3,#0FFH
+00AC 7A00        R     MOV     R2,#HIGH ?SC_11
+00AE 7900        R     MOV     R1,#LOW ?SC_11
+00B0 120000      E     LCALL   _LCD_PrintString
                                            ; SOURCE LINE # 46
-0098         ?C0005:
-0098 22                RET     
+00B3 7F01              MOV     R7,#01H
+00B5 120000      E     LCALL   _Pin_2_Write
+                                           ; SOURCE LINE # 47
+00B8 7FF4              MOV     R7,#0F4H
+00BA 7E01              MOV     R6,#01H
+00BC 7D00              MOV     R5,#00H
+00BE 7C00              MOV     R4,#00H
+00C0 120000      E     LCALL   _?CyDelay
+                                           ; SOURCE LINE # 48
+00C3 7F00              MOV     R7,#00H
+00C5 120000      E     LCALL   _Pin_2_Write
+                                           ; SOURCE LINE # 49
+00C8 7F01              MOV     R7,#01H
+00CA 120000      E     LCALL   _LCD_WriteControl
+                                           ; SOURCE LINE # 50
+00CD 7FF4              MOV     R7,#0F4H
+00CF 7E01              MOV     R6,#01H
+00D1 7D00              MOV     R5,#00H
+00D3 7C00              MOV     R4,#00H
+00D5 120000      E     LCALL   _?CyDelay
+                                           ; SOURCE LINE # 51
+00D8 900000      R     MOV     DPTR,#i
+00DB E0                MOVX    A,@DPTR
+00DC 04                INC     A
+00DD F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 52
+00DE 80A6              SJMP    ?C0005
+                                           ; SOURCE LINE # 53
+                                           ; SOURCE LINE # 54
+                                           ; SOURCE LINE # 57
+00E0         ?C0007:
+00E0 22                RET     
              ; FUNCTION CapSense_DisplayState (END)
 
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 6   
-
              ; FUNCTION _CustomLCD_WriteData (BEGIN)
-                                           ; SOURCE LINE # 47
+                                           ; SOURCE LINE # 58
 0000 900000      R     MOV     DPTR,#dByte
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 48
-                                           ; SOURCE LINE # 51
+                                           ; SOURCE LINE # 59
+                                           ; SOURCE LINE # 62
 0005 120000      E     LCALL   LCD_IsReady
-                                           ; SOURCE LINE # 53
+                                           ; SOURCE LINE # 64
 0008 900000      R     MOV     DPTR,#dByte
 000B E0                MOVX    A,@DPTR
 000C FF                MOV     R7,A
@@ -307,15 +364,17 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000E C4                SWAP    A
 000F 540F              ANL     A,#0FH
 0011 FF                MOV     R7,A
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 7   
+
 0012 900000      R     MOV     DPTR,#nibble
 0015 EF                MOV     A,R7
 0016 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 56
+                                           ; SOURCE LINE # 67
 0017 900000      R     MOV     DPTR,#nibble
 001A E0                MOVX    A,@DPTR
 001B FF                MOV     R7,A
 001C 120000      R     LCALL   _CustomLCD_WrDatNib
-                                           ; SOURCE LINE # 57
+                                           ; SOURCE LINE # 68
 001F 900000      R     MOV     DPTR,#dByte
 0022 E0                MOVX    A,@DPTR
 0023 FF                MOV     R7,A
@@ -325,22 +384,22 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0028 900000      R     MOV     DPTR,#nibble
 002B EF                MOV     A,R7
 002C F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 59
+                                           ; SOURCE LINE # 70
 002D 900000      R     MOV     DPTR,#nibble
 0030 E0                MOVX    A,@DPTR
 0031 FF                MOV     R7,A
 0032 120000      R     LCALL   _CustomLCD_WrDatNib
-                                           ; SOURCE LINE # 60
+                                           ; SOURCE LINE # 71
 0035 22                RET     
              ; FUNCTION _CustomLCD_WriteData (END)
 
              ; FUNCTION _CustomLCD_WrDatNib (BEGIN)
-                                           ; SOURCE LINE # 61
+                                           ; SOURCE LINE # 72
 0000 900000      R     MOV     DPTR,#nibble
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 62
-                                           ; SOURCE LINE # 63
+                                           ; SOURCE LINE # 73
+                                           ; SOURCE LINE # 74
 0005 905120            MOV     DPTR,#05120H
 0008 E0                MOVX    A,@DPTR
 0009 FF                MOV     R7,A
@@ -349,12 +408,10 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000D FF                MOV     R7,A
 000E EF                MOV     A,R7
 000F F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 64
+                                           ; SOURCE LINE # 75
 0010 905120            MOV     DPTR,#05120H
 0013 C083              PUSH    DPH
 0015 C082              PUSH    DPL
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 7   
-
 0017 E0                MOVX    A,@DPTR
 0018 FF                MOV     R7,A
 0019 900000      R     MOV     DPTR,#nibble
@@ -370,7 +427,9 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0027 D083              POP     DPH
 0029 EF                MOV     A,R7
 002A F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 65
+                                           ; SOURCE LINE # 76
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 8   
+
 002B 905120            MOV     DPTR,#05120H
 002E E0                MOVX    A,@DPTR
 002F FF                MOV     R7,A
@@ -379,12 +438,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0033 FF                MOV     R7,A
 0034 EF                MOV     A,R7
 0035 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 66
+                                           ; SOURCE LINE # 77
 0036 22                RET     
              ; FUNCTION _CustomLCD_WrDatNib (END)
 
              ; FUNCTION _CustomLCD_DrawHorizontalBG (BEGIN)
-                                           ; SOURCE LINE # 67
+                                           ; SOURCE LINE # 78
 0000 900000      R     MOV     DPTR,#row
 0003 EF                MOV     A,R7
 0004 F0                MOVX    @DPTR,A
@@ -394,8 +453,8 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000A 900000      R     MOV     DPTR,#maxCharacters
 000D EB                MOV     A,R3
 000E F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 69
-                                           ; SOURCE LINE # 76
+                                           ; SOURCE LINE # 80
+                                           ; SOURCE LINE # 87
 000F 900000      R     MOV     DPTR,#value
 0012 E0                MOVX    A,@DPTR
 0013 FF                MOV     R7,A
@@ -406,7 +465,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 001D 900000      R     MOV     DPTR,#fullChars
 0020 EF                MOV     A,R7
 0021 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 79
+                                           ; SOURCE LINE # 90
 0022 900000      R     MOV     DPTR,#value
 0025 E0                MOVX    A,@DPTR
 0026 FF                MOV     R7,A
@@ -417,10 +476,8 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0030 AF05              MOV     R7,AR5
 0032 900000      R     MOV     DPTR,#remainingPixels
 0035 EF                MOV     A,R7
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 8   
-
 0036 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 82
+                                           ; SOURCE LINE # 93
 0037 900000      R     MOV     DPTR,#maxCharacters
 003A E0                MOVX    A,@DPTR
 003B FF                MOV     R7,A
@@ -430,18 +487,20 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0041 EE                MOV     A,R6
 0042 C3                CLR     C
 0043 9F                SUBB    A,R7
-0044 400A              JC      ?C0008
-                                           ; SOURCE LINE # 83
-                                           ; SOURCE LINE # 84
+0044 400A              JC      ?C0010
+                                           ; SOURCE LINE # 94
+                                           ; SOURCE LINE # 95
 0046 900000      R     MOV     DPTR,#maxCharacters
 0049 E0                MOVX    A,@DPTR
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 9   
+
 004A FF                MOV     R7,A
 004B 900000      R     MOV     DPTR,#fullChars
 004E EF                MOV     A,R7
 004F F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 85
-0050         ?C0008:
-                                           ; SOURCE LINE # 88
+                                           ; SOURCE LINE # 96
+0050         ?C0010:
+                                           ; SOURCE LINE # 99
 0050 900000      R     MOV     DPTR,#row
 0053 E0                MOVX    A,@DPTR
 0054 FF                MOV     R7,A
@@ -449,56 +508,56 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0058 E0                MOVX    A,@DPTR
 0059 FD                MOV     R5,A
 005A 120000      E     LCALL   _LCD_Position
-                                           ; SOURCE LINE # 91
+                                           ; SOURCE LINE # 102
 005D 900000      R     MOV     DPTR,#fullChars
 0060 E0                MOVX    A,@DPTR
 0061 FF                MOV     R7,A
 0062 900000      R     MOV     DPTR,#count8
 0065 EF                MOV     A,R7
 0066 F0                MOVX    @DPTR,A
-0067         ?C0009:
+0067         ?C0011:
 0067 900000      R     MOV     DPTR,#count8
 006A E0                MOVX    A,@DPTR
 006B FF                MOV     R7,A
 006C EF                MOV     A,R7
 006D D3                SETB    C
 006E 9400              SUBB    A,#00H
-0070 400D              JC      ?C0010
-                                           ; SOURCE LINE # 92
-                                           ; SOURCE LINE # 93
+0070 400D              JC      ?C0012
+                                           ; SOURCE LINE # 103
+                                           ; SOURCE LINE # 104
 0072 7F00              MOV     R7,#00H
 0074 120000      R     LCALL   _CustomLCD_WriteData
-                                           ; SOURCE LINE # 94
+                                           ; SOURCE LINE # 105
 0077 900000      R     MOV     DPTR,#count8
 007A E0                MOVX    A,@DPTR
 007B 14                DEC     A
 007C F0                MOVX    @DPTR,A
-007D 80E8              SJMP    ?C0009
-007F         ?C0010:
-                                           ; SOURCE LINE # 96
+007D 80E8              SJMP    ?C0011
+007F         ?C0012:
+                                           ; SOURCE LINE # 107
 007F 900000      R     MOV     DPTR,#maxCharacters
 0082 E0                MOVX    A,@DPTR
 0083 FF                MOV     R7,A
 0084 900000      R     MOV     DPTR,#fullChars
 0087 E0                MOVX    A,@DPTR
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 9   
-
 0088 FE                MOV     R6,A
 0089 EE                MOV     A,R6
 008A C3                CLR     C
 008B 9F                SUBB    A,R7
-008C 5053              JNC     ?C0017
-                                           ; SOURCE LINE # 97
-                                           ; SOURCE LINE # 99
+008C 5053              JNC     ?C0019
+                                           ; SOURCE LINE # 108
+                                           ; SOURCE LINE # 110
 008E 900000      R     MOV     DPTR,#remainingPixels
 0091 E0                MOVX    A,@DPTR
 0092 FF                MOV     R7,A
 0093 120000      E     LCALL   _LCD_WriteData
-                                           ; SOURCE LINE # 101
+                                           ; SOURCE LINE # 112
 0096 900000      R     MOV     DPTR,#maxCharacters
 0099 E0                MOVX    A,@DPTR
 009A FF                MOV     R7,A
 009B 7E00              MOV     R6,#00H
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 10  
+
 009D EF                MOV     A,R7
 009E 24FF              ADD     A,#0FFH
 00A0 FF                MOV     R7,A
@@ -514,9 +573,9 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00AE 9F                SUBB    A,R7
 00AF EC                MOV     A,R4
 00B0 9E                SUBB    A,R6
-00B1 502E              JNC     ?C0017
-                                           ; SOURCE LINE # 102
-                                           ; SOURCE LINE # 104
+00B1 502E              JNC     ?C0019
+                                           ; SOURCE LINE # 113
+                                           ; SOURCE LINE # 115
 00B3 900000      R     MOV     DPTR,#fullChars
 00B6 E0                MOVX    A,@DPTR
 00B7 FF                MOV     R7,A
@@ -533,100 +592,100 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00C4 900000      R     MOV     DPTR,#count8
 00C7 EF                MOV     A,R7
 00C8 F0                MOVX    @DPTR,A
-00C9         ?C0014:
+00C9         ?C0016:
 00C9 900000      R     MOV     DPTR,#count8
 00CC E0                MOVX    A,@DPTR
 00CD FF                MOV     R7,A
 00CE EF                MOV     A,R7
 00CF D3                SETB    C
 00D0 9400              SUBB    A,#00H
-00D2 400D              JC      ?C0017
-                                           ; SOURCE LINE # 105
-                                           ; SOURCE LINE # 106
+00D2 400D              JC      ?C0019
+                                           ; SOURCE LINE # 116
+                                           ; SOURCE LINE # 117
 00D4 7F05              MOV     R7,#05H
 00D6 120000      R     LCALL   _CustomLCD_WriteData
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 10  
-
-                                           ; SOURCE LINE # 107
+                                           ; SOURCE LINE # 118
 00D9 900000      R     MOV     DPTR,#count8
 00DC E0                MOVX    A,@DPTR
 00DD 14                DEC     A
 00DE F0                MOVX    @DPTR,A
-00DF 80E8              SJMP    ?C0014
-                                           ; SOURCE LINE # 108
-                                           ; SOURCE LINE # 109
-                                           ; SOURCE LINE # 110
-00E1         ?C0017:
+00DF 80E8              SJMP    ?C0016
+                                           ; SOURCE LINE # 119
+                                           ; SOURCE LINE # 120
+                                           ; SOURCE LINE # 121
+00E1         ?C0019:
 00E1 22                RET     
              ; FUNCTION _CustomLCD_DrawHorizontalBG (END)
 
              ; FUNCTION main (BEGIN)
-                                           ; SOURCE LINE # 111
-                                           ; SOURCE LINE # 112
-                                           ; SOURCE LINE # 113
+                                           ; SOURCE LINE # 122
+                                           ; SOURCE LINE # 123
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 11  
+
+                                           ; SOURCE LINE # 124
 0000 D2AF              SETB    EA
 0002 9044F4            MOV     DPTR,#044F4H
 0005 74FD              MOV     A,#0FDH
 0007 F0                MOVX    @DPTR,A
-                                           ; SOURCE LINE # 116
+                                           ; SOURCE LINE # 127
 0008 120000      E     LCALL   LCD_Start
-                                           ; SOURCE LINE # 117
+                                           ; SOURCE LINE # 128
 000B 120000      E     LCALL   CapSense_Start
-                                           ; SOURCE LINE # 118
+                                           ; SOURCE LINE # 129
 000E 7BFF              MOV     R3,#0FFH
 0010 7A00        E     MOV     R2,#HIGH LCD_customFonts
 0012 7900        E     MOV     R1,#LOW LCD_customFonts
 0014 120000      E     LCALL   _LCD_LoadCustomFonts
-                                           ; SOURCE LINE # 120
+                                           ; SOURCE LINE # 131
 0017 7D00              MOV     R5,#00H
 0019 7F01              MOV     R7,#01H
 001B 120000      E     LCALL   _LCD_Position
-                                           ; SOURCE LINE # 121
+                                           ; SOURCE LINE # 132
 001E 7BFF              MOV     R3,#0FFH
-0020 7A00        R     MOV     R2,#HIGH ?SC_12
-0022 7900        R     MOV     R1,#LOW ?SC_12
+0020 7A00        R     MOV     R2,#HIGH ?SC_17
+0022 7900        R     MOV     R1,#LOW ?SC_17
 0024 120000      E     LCALL   _LCD_PrintString
-                                           ; SOURCE LINE # 124
+                                           ; SOURCE LINE # 135
 0027 120000      E     LCALL   CapSense_InitializeAllBaselines
-002A         ?C0018:
-                                           ; SOURCE LINE # 127
-                                           ; SOURCE LINE # 128
-                                           ; SOURCE LINE # 130
+002A         ?C0020:
+                                           ; SOURCE LINE # 138
+                                           ; SOURCE LINE # 139
+                                           ; SOURCE LINE # 141
 002A 120000      E     LCALL   CapSense_IsBusy
 002D EF                MOV     A,R7
-002E 7006              JNZ     ?C0020
-                                           ; SOURCE LINE # 131
-                                           ; SOURCE LINE # 133
-0030 120000      E     LCALL   CapSense_UpdateEnabledBaselines
-                                           ; SOURCE LINE # 136
-0033 120000      E     LCALL   CapSense_ScanEnabledWidgets
-                                           ; SOURCE LINE # 137
-0036         ?C0020:
-                                           ; SOURCE LINE # 140
-0036 120000      R     LCALL   CapSense_DisplayState
-                                           ; SOURCE LINE # 141
-0039 80EF              SJMP    ?C0018
+002E 7006              JNZ     ?C0022
+                                           ; SOURCE LINE # 142
                                            ; SOURCE LINE # 144
-003B         ?C0021:
-                                           ; SOURCE LINE # 145
-C51 COMPILER V9.51   MAIN                                                                  11/29/2022 20:10:18 PAGE 11  
-
+0030 120000      E     LCALL   CapSense_UpdateEnabledBaselines
                                            ; SOURCE LINE # 147
-003B 80FE              SJMP    ?C0021
+0033 120000      E     LCALL   CapSense_ScanEnabledWidgets
+                                           ; SOURCE LINE # 148
+0036         ?C0022:
+                                           ; SOURCE LINE # 151
+0036 120000      R     LCALL   CapSense_DisplayState
+                                           ; SOURCE LINE # 152
+0039 80EF              SJMP    ?C0020
+                                           ; SOURCE LINE # 155
+003B         ?C0023:
+                                           ; SOURCE LINE # 156
+                                           ; SOURCE LINE # 158
+003B 80FE              SJMP    ?C0023
 003D 22                RET     
              ; FUNCTION main (END)
 
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    550    ----
-   CONSTANT SIZE    =     19    ----
-   XDATA SIZE       =     10      10
+   CODE SIZE        =    622    ----
+   CONSTANT SIZE    =     34    ----
+   XDATA SIZE       =     11      10
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
    EDATA SIZE       =   ----    ----
+C51 COMPILER V9.51   MAIN                                                                  11/30/2022 23:44:21 PAGE 12  
+
    HDATA SIZE       =   ----    ----
    XDATA CONST SIZE =   ----    ----
    FAR CONST SIZE   =   ----    ----

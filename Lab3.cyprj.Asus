@@ -11,6 +11,70 @@
 <CyGuid_f44455c5-3770-4452-b988-0a7a7ff46256 type_name="CyDesigner.Common.ProjMgmt.Model.CyConfigDependencies" version="1">
 <dependency_info name="4bd5669a-0e4e-4e1c-9625-e982dd945372@Debug@DP8051" xml_contents_version="2">
 <CyGuid_1173175f-1b9b-4ad4-a065-754a48a27021 type_name="CyDesigner.Common.Base.CyFileDeps" version="1">
+<file name=".\DP8051\DP8051_Keil_951\Debug\main.obj">
+<dep name=".\Generated_Source\PSoC3\CapSense.h" />
+<dep name=".\Generated_Source\PSoC3\CapSense_AMuxCH0.h" />
+<dep name=".\Generated_Source\PSoC3\CapSense_CSHL.h" />
+<dep name=".\Generated_Source\PSoC3\CapSense_CompCH0.h" />
+<dep name=".\Generated_Source\PSoC3\CapSense_IdacCH0.h" />
+<dep name=".\Generated_Source\PSoC3\CapSense_IntClock.h" />
+<dep name=".\Generated_Source\PSoC3\CapSense_Pins.h" />
+<dep name=".\Generated_Source\PSoC3\CapSense_TunerHelper.h" />
+<dep name=".\Generated_Source\PSoC3\CyDmac.h" />
+<dep name=".\Generated_Source\PSoC3\CyFlash.h" />
+<dep name=".\Generated_Source\PSoC3\CyLib.h" />
+<dep name=".\Generated_Source\PSoC3\CySpc.h" />
+<dep name=".\Generated_Source\PSoC3\LCD.h" />
+<dep name=".\Generated_Source\PSoC3\LCD_LCDPort.h" />
+<dep name=".\Generated_Source\PSoC3\LCD_LCDPort_aliases.h" />
+<dep name=".\Generated_Source\PSoC3\PSoC3_8051.h" />
+<dep name=".\Generated_Source\PSoC3\Pin_1.h" />
+<dep name=".\Generated_Source\PSoC3\Pin_1_aliases.h" />
+<dep name=".\Generated_Source\PSoC3\Pin_2.h" />
+<dep name=".\Generated_Source\PSoC3\Pin_2_aliases.h" />
+<dep name=".\Generated_Source\PSoC3\cyPm.h" />
+<dep name=".\Generated_Source\PSoC3\cy_em_eeprom.h" />
+<dep name=".\Generated_Source\PSoC3\cydevice.h" />
+<dep name=".\Generated_Source\PSoC3\cydevice_trm.h" />
+<dep name=".\Generated_Source\PSoC3\cydisabledsheets.h" />
+<dep name=".\Generated_Source\PSoC3\cyfitter.h" />
+<dep name=".\Generated_Source\PSoC3\cyfitter_cfg.h" />
+<dep name=".\Generated_Source\PSoC3\cypins.h" />
+<dep name=".\Generated_Source\PSoC3\cytypes.h" />
+<dep name=".\Generated_Source\PSoC3\project.h" />
+<dep name=".\main.c" />
+</file>
+<file name=".\Generated_Source\PSoC3\CapSense.h" />
+<file name=".\Generated_Source\PSoC3\CapSense_AMuxCH0.h" />
+<file name=".\Generated_Source\PSoC3\CapSense_CSHL.h" />
+<file name=".\Generated_Source\PSoC3\CapSense_CompCH0.h" />
+<file name=".\Generated_Source\PSoC3\CapSense_IdacCH0.h" />
+<file name=".\Generated_Source\PSoC3\CapSense_IntClock.h" />
+<file name=".\Generated_Source\PSoC3\CapSense_Pins.h" />
+<file name=".\Generated_Source\PSoC3\CapSense_TunerHelper.h" />
+<file name=".\Generated_Source\PSoC3\CyDmac.h" />
+<file name=".\Generated_Source\PSoC3\CyFlash.h" />
+<file name=".\Generated_Source\PSoC3\CyLib.h" />
+<file name=".\Generated_Source\PSoC3\CySpc.h" />
+<file name=".\Generated_Source\PSoC3\LCD.h" />
+<file name=".\Generated_Source\PSoC3\LCD_LCDPort.h" />
+<file name=".\Generated_Source\PSoC3\LCD_LCDPort_aliases.h" />
+<file name=".\Generated_Source\PSoC3\PSoC3_8051.h" />
+<file name=".\Generated_Source\PSoC3\Pin_1.h" />
+<file name=".\Generated_Source\PSoC3\Pin_1_aliases.h" />
+<file name=".\Generated_Source\PSoC3\Pin_2.h" />
+<file name=".\Generated_Source\PSoC3\Pin_2_aliases.h" />
+<file name=".\Generated_Source\PSoC3\cyPm.h" />
+<file name=".\Generated_Source\PSoC3\cy_em_eeprom.h" />
+<file name=".\Generated_Source\PSoC3\cydevice.h" />
+<file name=".\Generated_Source\PSoC3\cydevice_trm.h" />
+<file name=".\Generated_Source\PSoC3\cydisabledsheets.h" />
+<file name=".\Generated_Source\PSoC3\cyfitter.h" />
+<file name=".\Generated_Source\PSoC3\cyfitter_cfg.h" />
+<file name=".\Generated_Source\PSoC3\cypins.h" />
+<file name=".\Generated_Source\PSoC3\cytypes.h" />
+<file name=".\Generated_Source\PSoC3\project.h" />
+<file name=".\main.c" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\CapSense.obj">
 <dep name=".\Generated_Source\PSoC3\CapSense.c" />
 <dep name=".\Generated_Source\PSoC3\CapSense.h" />
@@ -31,21 +95,6 @@
 <dep name=".\cyapicallbacks.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\CapSense.c" />
-<file name=".\Generated_Source\PSoC3\CapSense.h" />
-<file name=".\Generated_Source\PSoC3\CapSense_AMuxCH0.h" />
-<file name=".\Generated_Source\PSoC3\CapSense_CompCH0.h" />
-<file name=".\Generated_Source\PSoC3\CapSense_IdacCH0.h" />
-<file name=".\Generated_Source\PSoC3\CapSense_IntClock.h" />
-<file name=".\Generated_Source\PSoC3\CyFlash.h" />
-<file name=".\Generated_Source\PSoC3\CyLib.h" />
-<file name=".\Generated_Source\PSoC3\CySpc.h" />
-<file name=".\Generated_Source\PSoC3\PSoC3_8051.h" />
-<file name=".\Generated_Source\PSoC3\cyPm.h" />
-<file name=".\Generated_Source\PSoC3\cydevice.h" />
-<file name=".\Generated_Source\PSoC3\cydevice_trm.h" />
-<file name=".\Generated_Source\PSoC3\cyfitter.h" />
-<file name=".\Generated_Source\PSoC3\cyfitter_cfg.h" />
-<file name=".\Generated_Source\PSoC3\cytypes.h" />
 <file name=".\cyapicallbacks.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\CapSense_AMuxCH0.obj">
 <dep name=".\Generated_Source\PSoC3\CapSense_AMuxCH0.c" />
@@ -77,7 +126,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\CapSense_CSHL.c" />
-<file name=".\Generated_Source\PSoC3\CapSense_CSHL.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\CapSense_CompCH0.obj">
 <dep name=".\Generated_Source\PSoC3\CapSense_CompCH0.c" />
 <dep name=".\Generated_Source\PSoC3\CapSense_CompCH0.h" />
@@ -198,8 +246,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\CapSense_Pins.c" />
-<file name=".\Generated_Source\PSoC3\CapSense_Pins.h" />
-<file name=".\Generated_Source\PSoC3\cypins.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\CapSense_SMS_Wrapper.obj">
 <dep name=".\Generated_Source\PSoC3\CapSense.h" />
 <dep name=".\Generated_Source\PSoC3\CapSense_AMuxCH0.h" />
@@ -241,7 +287,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\CapSense_TunerHelper.c" />
-<file name=".\Generated_Source\PSoC3\CapSense_TunerHelper.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\CyDmac.obj">
 <dep name=".\Generated_Source\PSoC3\CyDmac.c" />
 <dep name=".\Generated_Source\PSoC3\CyDmac.h" />
@@ -256,7 +301,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\CyDmac.c" />
-<file name=".\Generated_Source\PSoC3\CyDmac.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\CyFlash.obj">
 <dep name=".\Generated_Source\PSoC3\CyFlash.c" />
 <dep name=".\Generated_Source\PSoC3\CyFlash.h" />
@@ -310,7 +354,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\LCD.c" />
-<file name=".\Generated_Source\PSoC3\LCD.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\LCD_BarGraph.obj">
 <dep name=".\Generated_Source\PSoC3\LCD.h" />
 <dep name=".\Generated_Source\PSoC3\LCD_BarGraph.c" />
@@ -331,8 +374,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\LCD_LCDPort.c" />
-<file name=".\Generated_Source\PSoC3\LCD_LCDPort.h" />
-<file name=".\Generated_Source\PSoC3\LCD_LCDPort_aliases.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\LCD_PM.obj">
 <dep name=".\Generated_Source\PSoC3\LCD.h" />
 <dep name=".\Generated_Source\PSoC3\LCD_PM.c" />
@@ -353,8 +394,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\Pin_1.c" />
-<file name=".\Generated_Source\PSoC3\Pin_1.h" />
-<file name=".\Generated_Source\PSoC3\Pin_1_aliases.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\Pin_2.obj">
 <dep name=".\Generated_Source\PSoC3\Pin_2.c" />
 <dep name=".\Generated_Source\PSoC3\Pin_2.h" />
@@ -366,8 +405,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\Pin_2.c" />
-<file name=".\Generated_Source\PSoC3\Pin_2.h" />
-<file name=".\Generated_Source\PSoC3\Pin_2_aliases.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\cyPm.obj">
 <dep name=".\Generated_Source\PSoC3\CyFlash.h" />
 <dep name=".\Generated_Source\PSoC3\CyLib.h" />
@@ -396,7 +433,6 @@
 <dep name=".\Generated_Source\PSoC3\cytypes.h" />
 </file>
 <file name=".\Generated_Source\PSoC3\cy_em_eeprom.c" />
-<file name=".\Generated_Source\PSoC3\cy_em_eeprom.h" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\cyfitter_cfg.obj">
 <dep name=".\Generated_Source\PSoC3\CyFlash.h" />
 <dep name=".\Generated_Source\PSoC3\CyLib.h" />
@@ -420,42 +456,6 @@
 <dep name=".\Generated_Source\PSoC3\cyutils.c" />
 </file>
 <file name=".\Generated_Source\PSoC3\cyutils.c" />
-<file name=".\DP8051\DP8051_Keil_951\Debug\main.obj">
-<dep name=".\Generated_Source\PSoC3\cydisabledsheets.h" />
-<dep name=".\Generated_Source\PSoC3\project.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense_AMuxCH0.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense_CSHL.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense_CompCH0.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense_IdacCH0.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense_IntClock.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense_Pins.h" />
-<dep name=".\Generated_Source\PSoC3\CapSense_TunerHelper.h" />
-<dep name=".\Generated_Source\PSoC3\CyDmac.h" />
-<dep name=".\Generated_Source\PSoC3\CyFlash.h" />
-<dep name=".\Generated_Source\PSoC3\CyLib.h" />
-<dep name=".\Generated_Source\PSoC3\CySpc.h" />
-<dep name=".\Generated_Source\PSoC3\LCD.h" />
-<dep name=".\Generated_Source\PSoC3\LCD_LCDPort.h" />
-<dep name=".\Generated_Source\PSoC3\LCD_LCDPort_aliases.h" />
-<dep name=".\Generated_Source\PSoC3\PSoC3_8051.h" />
-<dep name=".\Generated_Source\PSoC3\Pin_1.h" />
-<dep name=".\Generated_Source\PSoC3\Pin_1_aliases.h" />
-<dep name=".\Generated_Source\PSoC3\Pin_2.h" />
-<dep name=".\Generated_Source\PSoC3\Pin_2_aliases.h" />
-<dep name=".\Generated_Source\PSoC3\cyPm.h" />
-<dep name=".\Generated_Source\PSoC3\cy_em_eeprom.h" />
-<dep name=".\Generated_Source\PSoC3\cydevice.h" />
-<dep name=".\Generated_Source\PSoC3\cydevice_trm.h" />
-<dep name=".\Generated_Source\PSoC3\cyfitter.h" />
-<dep name=".\Generated_Source\PSoC3\cyfitter_cfg.h" />
-<dep name=".\Generated_Source\PSoC3\cypins.h" />
-<dep name=".\Generated_Source\PSoC3\cytypes.h" />
-<dep name=".\main.c" />
-</file>
-<file name=".\Generated_Source\PSoC3\cydisabledsheets.h" />
-<file name=".\Generated_Source\PSoC3\project.h" />
-<file name=".\main.c" />
 <file name=".\DP8051\DP8051_Keil_951\Debug\CyBootAsmKeil.obj">
 <dep name=".\Generated_Source\PSoC3\CyBootAsmKeil.a51" />
 <dep name=".\Generated_Source\PSoC3\PSoC3_8051.inc" />
@@ -966,7 +966,7 @@
 <v>C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\warp\lib\common\stdlogic\rtlpkg.vif</v>
 <v>C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\warp\lib\common\stdlogic\cy_psoc3.vif</v>
 </warp_dep>
-<deps_time v="133142190187260710" />
+<deps_time v="133143180734961662" />
 <top_block v="TopDesign" />
 <last_generation v="0" />
 <pdl_path v="" />
@@ -981,7 +981,7 @@
 <dataGuid v="769d31ea-68b1-4f0c-b90a-7c10a43ee563">
 <CyGuid_769d31ea-68b1-4f0c-b90a-7c10a43ee563 type_name="CyDesigner.Common.ProjMgmt.Model.CyLinkCustomData" version="1">
 <link_deps_times>
-<name_val_pair name="4bd5669a-0e4e-4e1c-9625-e982dd945372@Debug@DP8051" v="133142190238426157" />
+<name_val_pair name="4bd5669a-0e4e-4e1c-9625-e982dd945372@Debug@DP8051" v="133143182633345566" />
 </link_deps_times>
 </CyGuid_769d31ea-68b1-4f0c-b90a-7c10a43ee563>
 </dataGuid>
